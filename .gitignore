@@ -1,0 +1,14 @@
+# python / tooling
+__pycache__/
+*.pyc
+.venv/
+# generated (regenerate with the scripts in cad/)
+cad/out/
+cad/blender/meshes/
+cad/blender/renders/
+cad/blender/scene.json
+cad/blender/final/
+*.blend1
+# secrets
+firmware/secrets.yaml
+firmware/.esphome/

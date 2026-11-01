@@ -1,0 +1,9 @@
+build123d>=0.8
+trimesh
+manifold3d
+numpy
+pillow
+shapely
+networkx
+rtree
+scipy

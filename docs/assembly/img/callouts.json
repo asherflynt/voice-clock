@@ -1,0 +1,248 @@
+{
+ "hero_front": [],
+ "hero_back": [
+  {
+   "n": 1,
+   "key": "mute_plunger",
+   "label": "Mute button"
+  },
+  {
+   "n": 2,
+   "key": "scr_back",
+   "label": "3x M3x8 button head"
+  },
+  {
+   "n": 3,
+   "key": "back_plate",
+   "label": "Back plate"
+  },
+  {
+   "n": 4,
+   "key": "usb",
+   "label": "USB-C breakout (5.1k)"
+  }
+ ],
+ "step_01": [
+  {
+   "n": 1,
+   "key": "ins_rear",
+   "label": "3x M3 insert"
+  },
+  {
+   "n": 2,
+   "key": "rear_shell",
+   "label": "Rear shell"
+  },
+  {
+   "n": 3,
+   "key": "ins_carrier",
+   "label": "3x M3 insert"
+  },
+  {
+   "n": 4,
+   "key": "back_plate",
+   "label": "Back plate"
+  },
+  {
+   "n": 5,
+   "key": "ins_front",
+   "label": "3x M3 insert"
+  },
+  {
+   "n": 6,
+   "key": "front_shell",
+   "label": "Front shell"
+  },
+  {
+   "n": 7,
+   "key": "ins_spider",
+   "label": "3x M2 insert"
+  },
+  {
+   "n": 8,
+   "key": "spider",
+   "label": "Spider bracket"
+  },
+  {
+   "n": 9,
+   "key": "carrier",
+   "label": "Carrier"
+  }
+ ],
+ "step_02": [
+  {
+   "n": 1,
+   "key": "ins_spider",
+   "label": "3x M2 insert"
+  },
+  {
+   "n": 2,
+   "key": "spider",
+   "label": "Spider bracket"
+  },
+  {
+   "n": 3,
+   "key": "scr_cp",
+   "label": "3x M3x12 SHCS"
+  },
+  {
+   "n": 4,
+   "key": "cp_knob",
+   "label": "CrowPanel 2.1\" display"
+  }
+ ],
+ "step_03": [
+  {
+   "n": 1,
+   "key": "board_spacers",
+   "label": "3x printed spacer"
+  },
+  {
+   "n": 2,
+   "key": "rs_pcb",
+   "label": "reSpeaker XVF3800"
+  },
+  {
+   "n": 3,
+   "key": "light_guide",
+   "label": "Light guide (PETG)"
+  }
+ ],
+ "step_04": [
+  {
+   "n": 1,
+   "key": "carrier",
+   "label": "Carrier"
+  },
+  {
+   "n": 2,
+   "key": "scr_clamp",
+   "label": "3x M2x20 SHCS"
+  },
+  {
+   "n": 3,
+   "key": "rs_pcb",
+   "label": "reSpeaker XVF3800"
+  },
+  {
+   "n": 4,
+   "key": "ins_carrier",
+   "label": "3x M3 insert"
+  }
+ ],
+ "step_05": [
+  {
+   "n": 1,
+   "key": "light_guide",
+   "label": "Light guide (PETG)"
+  },
+  {
+   "n": 2,
+   "key": "cp_knob",
+   "label": "CrowPanel 2.1\" display"
+  },
+  {
+   "n": 3,
+   "key": "spider",
+   "label": "Spider bracket"
+  }
+ ],
+ "step_06": [
+  {
+   "n": 1,
+   "key": "carrier",
+   "label": "Carrier"
+  },
+  {
+   "n": 2,
+   "key": "scr_rim",
+   "label": "3x M3x6 SHCS"
+  },
+  {
+   "n": 3,
+   "key": "mute_plunger",
+   "label": "Mute button"
+  },
+  {
+   "n": 4,
+   "key": "front_shell",
+   "label": "Front shell"
+  }
+ ],
+ "step_07": [
+  {
+   "n": 1,
+   "key": "ins_rear",
+   "label": "3x M3 insert"
+  },
+  {
+   "n": 2,
+   "key": "scr_rib",
+   "label": "3x M3x8 button head"
+  },
+  {
+   "n": 3,
+   "key": "front_shell",
+   "label": "Front shell"
+  },
+  {
+   "n": 4,
+   "key": "rear_shell",
+   "label": "Rear shell"
+  }
+ ],
+ "step_08": [
+  {
+   "n": 1,
+   "key": "speaker",
+   "label": "Speaker 4428 3 W"
+  },
+  {
+   "n": 2,
+   "key": "scr_spk",
+   "label": "2x M2x10 SHCS"
+  },
+  {
+   "n": 3,
+   "key": "tpu_wash",
+   "label": "4x TPU washer"
+  },
+  {
+   "n": 4,
+   "key": "foam_spk",
+   "label": "Foam ring"
+  },
+  {
+   "n": 5,
+   "key": "back_plate",
+   "label": "Back plate"
+  },
+  {
+   "n": 6,
+   "key": "usb",
+   "label": "USB-C breakout (5.1k)"
+  }
+ ],
+ "step_09": [
+  {
+   "n": 1,
+   "key": "scr_back",
+   "label": "3x M3x8 button head"
+  },
+  {
+   "n": 2,
+   "key": "back_plate",
+   "label": "Back plate"
+  },
+  {
+   "n": 3,
+   "key": "usb",
+   "label": "USB-C breakout (5.1k)"
+  },
+  {
+   "n": 4,
+   "key": "rear_shell",
+   "label": "Rear shell"
+  }
+ ]
+}

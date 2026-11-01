@@ -1,0 +1,24 @@
+# Mirrors one HA light into the control page. Included from voice-clock.yaml with vars idx and entity.
+sensor:
+  - platform: homeassistant
+    id: ha_brightness_${idx}
+    entity_id: ${entity}
+    attribute: brightness
+    internal: true
+    on_value:
+      - lambda: |-
+          if (millis() - id(last_local_ms)[${idx}] < vc::ECHO_IGNORE_MS) return;
+          id(levels)[${idx}] = std::isnan(x) ? 0 : (int) lroundf(x / 2.55f);
+      - script.execute: refresh_ui
+
+text_sensor:
+  - platform: homeassistant
+    id: ha_state_${idx}
+    entity_id: ${entity}
+    internal: true
+    on_value:
+      - lambda: |-
+          id(states_on)[${idx}] = (x == "on");
+          if (x != "on" && millis() - id(last_local_ms)[${idx}] >= vc::ECHO_IGNORE_MS) id(levels)[${idx}] = 0;
+      - script.execute: refresh_ui
+      - script.execute: eval_night

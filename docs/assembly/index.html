@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Voice Clock Assembly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;600&display=swap">
+<style>img{max-width:100%}
+/* Layout: a workshop manual. Sticky step index on wide screens, one column of
+   figure + parts legend + instructions per step. */
+:root{
+  --bg:#f8f4f3; --panel:#ffffff; --ink:#2a2224; --muted:#6f6264; --rule:#e5dad8;
+  --accent:#7a1830; --pink:#d39b95; --red:#c6372f; --callout:#ff6a13; --check-bg:#f1ebe0; --check-rule:#d9c9ab;
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body:"Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#171213; --panel:#221b1c; --ink:#f1e9e8; --muted:#b4a5a6; --rule:#3a2f30;
+  --accent:#f0a3b2; --pink:#d39b95; --red:#ff7a6e; --check-bg:#2a2420; --check-rule:#5a4a35; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#171213; --panel:#221b1c; --ink:#f1e9e8; --muted:#b4a5a6; --rule:#3a2f30;
+  --accent:#f0a3b2; --pink:#d39b95; --red:#ff7a6e; --check-bg:#2a2420; --check-rule:#5a4a35; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font-family:var(--body); font-size:16.5px; line-height:1.6; margin:0}
+.wrap{max-width:1180px; margin:0 auto; padding-inline:clamp(16px,4vw,40px); padding-block:28px 80px}
+h1,h2,h3{font-family:var(--display); text-wrap:balance; line-height:1.1; margin:0}
+h1{font-size:clamp(2.4rem,6vw,4.2rem); font-weight:700; letter-spacing:-0.02em}
+h2{font-size:clamp(1.6rem,3vw,2.2rem); font-weight:650; letter-spacing:-0.01em}
+h3{font-size:1.05rem; font-weight:650}
+p{margin:0}
+code{font-family:var(--mono); font-size:.88em; background:var(--check-bg); padding:.05em .35em; border-radius:4px}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--mono); font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+.hero{display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:clamp(20px,4vw,48px); align-items:center; padding-block:12px 36px; border-bottom:1px solid var(--rule)}
+.hero .lede{font-size:1.15rem; color:var(--muted); max-width:46ch; margin-top:16px}
+.facts{display:flex; flex-wrap:wrap; gap:10px 22px; margin-top:22px; font-family:var(--mono); font-size:.86rem}
+.facts span b{font-family:var(--display); font-size:1.5rem; display:block; color:var(--accent); font-weight:700}
+.hero img{border-radius:14px; width:100%; height:auto; display:block}
+.layout{display:grid; grid-template-columns:200px minmax(0,1fr); gap:44px; margin-top:40px}
+nav.toc{position:sticky; top:calc(env(safe-area-inset-top,0px) + 20px); align-self:start; font-size:.92rem}
+nav.toc ol{list-style:none; padding:0; margin:12px 0 0; display:grid; gap:6px; counter-reset:t}
+nav.toc a{color:var(--ink); text-decoration:none; display:flex; gap:10px}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent)}
+nav.toc .n{font-family:var(--mono); color:var(--muted); min-width:1.6em}
+section{scroll-margin-top:24px}
+.prep{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px; margin-top:20px}
+.card{background:var(--panel); border:1px solid var(--rule); border-radius:12px; padding:20px 22px}
+.card h3{margin-bottom:10px}
+table{width:100%; border-collapse:collapse; font-size:.92rem}
+th,td{text-align:left; padding:7px 8px; border-bottom:1px solid var(--rule); vertical-align:top}
+th{font-family:var(--mono); font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:500}
+td.q{font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; color:var(--accent); font-weight:600}
+.scroll{overflow-x:auto}
+ul.plain{margin:0; padding-left:1.1em; display:grid; gap:4px}
+.step{padding-block:44px; border-top:1px solid var(--rule)}
+.step header{display:flex; align-items:baseline; gap:16px; margin-bottom:18px}
+.step header .num{font-family:var(--display); font-size:3rem; font-weight:700; color:var(--pink); line-height:.9; font-variant-numeric:tabular-nums}
+figure{margin:0}
+figure img{width:100%; height:auto; display:block; border-radius:12px; border:1px solid var(--rule)}
+.body{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.35fr); gap:28px; margin-top:20px}
+ol.legend{list-style:none; margin:0; padding:0; display:grid; gap:8px}
+ol.legend li{display:flex; align-items:center; gap:10px; font-size:.95rem}
+ol.legend .b{width:26px; height:26px; flex:none; border-radius:50%; background:var(--ink); color:var(--bg); font-family:var(--mono); font-size:.8rem; display:grid; place-items:center; font-weight:600}
+ol.do{margin:0; padding-left:1.3em; display:grid; gap:10px}
+ol.do li::marker{font-family:var(--mono); color:var(--muted)}
+.check{margin-top:18px; background:var(--check-bg); border:1px solid var(--check-rule); border-radius:10px; padding:12px 16px; font-size:.95rem}
+.check strong{font-family:var(--mono); font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; display:block; color:var(--muted); margin-bottom:2px}
+.wiring{width:100%; height:auto; max-width:720px; display:block; background:var(--panel); border:1px solid var(--rule); border-radius:12px}
+.done{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin-top:18px}
+.done img{width:100%; height:auto; border-radius:12px; border:1px solid var(--rule)}
+footer{margin-top:56px; padding-top:20px; border-top:1px solid var(--rule); color:var(--muted); font-size:.9rem}
+@media (max-width:900px){
+  .hero,.layout,.body,.prep,.done{grid-template-columns:minmax(0,1fr)}
+  nav.toc{position:static}
+}
+</style>
+</head><body><div class="wrap">
+  <div class="hero">
+    <div>
+      <p class="eyebrow">Open-source Home Assistant voice clock · assembly guide</p>
+      <h1>Voice Clock assembly</h1>
+      <p class="lede">A knit-textured 120 mm sphere around a CrowPanel 2.1" knob display, a reSpeaker XVF3800 microphone array and a 3 W speaker. Ten steps. The only glue is for the USB-C inlet.</p>
+      <div class="facts"><span><b>10</b>printed parts</span><span><b>17</b>screws</span><span><b>14</b>heat-set inserts</span><span><b>2</b>thread sizes</span></div>
+    </div>
+    <img src="img/hero_front.jpg" alt="The finished Voice Clock: a pink knit-textured sphere with a round clock display" width="1800" height="1350">
+  </div>
+  <div class="layout">
+    <nav class="toc" aria-label="Steps"><p class="eyebrow">Steps</p><ol><li><a href="#before"><span class="n">0</span>Before you start</a></li><li><a href="#step-1"><span class="n">1</span>Heat-set inserts</a></li><li><a href="#step-2"><span class="n">2</span>Power harness</a></li><li><a href="#step-3"><span class="n">3</span>Spider bracket onto the CrowPanel</a></li><li><a href="#step-4"><span class="n">4</span>Light guide from behind</a></li><li><a href="#step-5"><span class="n">5</span>Spacers and reSpeaker</a></li><li><a href="#step-6"><span class="n">6</span>Carrier and clamp screws</a></li><li><a href="#step-7"><span class="n">7</span>Into the front shell</a></li><li><a href="#step-8"><span class="n">8</span>Rear shell</a></li><li><a href="#step-9"><span class="n">9</span>Speaker and USB-C on the back plate</a></li><li><a href="#step-10"><span class="n">10</span>Close up</a></li><li><a href="#done"><span class="n">✓</span>Finished</a></li></ol></nav>
+    <main>
+      <section id="before"><h2>Before you start</h2>
+        <div class="prep">
+          <div class="card"><h3>Print plates</h3><div class="scroll"><table><thead><tr><th>Plate</th><th>Parts</th><th>Material</th><th>Notes</th></tr></thead><tbody><tr><td class="q">1</td><td>Front shell, rear shell</td><td>Matte PLA</td><td>5 mm brim, no supports. Shells print face-down and rim-down.</td></tr><tr><td class="q">2</td><td>Carrier, back plate, spider bracket, mute button, 3 spacers, insert test block</td><td>Matte PLA</td><td>Print this plate first. Spider and spacers at 100% infill.</td></tr><tr><td class="q">3</td><td>Light guide</td><td>Clear or natural PETG</td><td>100% infill for an even glow. Bezel face down.</td></tr><tr><td class="q">4</td><td>4 speaker washers (optional)</td><td>TPU</td><td>Or use M2 rubber washers.</td></tr></tbody></table></div></div>
+          <div class="card"><h3>Electronics</h3><ul class="plain"><li>Elecrow CrowPanel 2.1" rotary display (ESP32-S3)</li><li>Seeed reSpeaker XVF3800 4-mic array with XIAO ESP32-S3</li><li>4428 3 W 8 Ω speaker with JST-PH lead</li><li>5 V 3 A USB-C charger</li></ul><h3 style="margin-top:16px">Tools</h3><ul class="plain"><li>Soldering iron with M2 and M3 heat-set tips</li><li>Hex keys 1.5, 2.0 and 2.5 mm, plus a 2.0 mm driver with a 60 mm or longer shaft</li><li>Multimeter</li><li>Wire strippers, flush cutters, heat gun or lighter</li><li>Tweezers, craft knife, 5 mm and 2 mm hole punch (or scissors)</li></ul></div>
+        </div>
+        <div class="card" style="margin-top:28px"><h3>Hardware</h3><div class="scroll"><table><thead><tr><th>Qty</th><th>Part</th><th>Where it goes</th></tr></thead><tbody><tr><td class="q">3</td><td>M3 × 12 socket head</td><td>Spider to the CrowPanel hub (replaces its 3 rear screws)</td></tr><tr><td class="q">3</td><td>M2 × 20 socket head</td><td>Carrier through the reSpeaker into the spider</td></tr><tr><td class="q">3</td><td>M3 × 6 socket head</td><td>Carrier rim to the front shell</td></tr><tr><td class="q">6</td><td>M3 × 8 button head</td><td>Rear shell to the carrier (3), back plate to the rear shell (3)</td></tr><tr><td class="q">2</td><td>M2 × 10 socket head</td><td>Speaker</td></tr><tr><td class="q">9</td><td>M3 heat-set insert (4 × 4.2 mm)</td><td>Front shell 3, carrier 3, rear shell 3</td></tr><tr><td class="q">5</td><td>M2 heat-set insert (3 × 3.2 mm)</td><td>Spider 3, back plate 2</td></tr><tr><td class="q">1</td><td>USB-C breakout with 5.1 kΩ CC resistors</td><td>Power inlet, glued into the back plate</td></tr><tr><td class="q">—</td><td>1/16" adhesive closed-cell foam</td><td>4 mic gaskets, 1 speaker ring</td></tr><tr><td class="q">—</td><td>22 and 24 AWG silicone wire, JST-PH 2-pin pair, heat shrink, zip tie, 5-minute epoxy</td><td>Power harness</td></tr></tbody></table></div></div>
+      </section>
+      <section class="step" id="step-1">
+  <header><span class="num">01</span><h2>Heat-set inserts</h2></header>
+  <figure><img src="img/step_01.jpg" alt="Step 1: Heat-set inserts" loading="lazy" width="1800" height="1350"></figure>
+  <div class="body"><div><h3 class="eyebrow">In this picture</h3><ol class="legend"><li><span class="b">1</span>3x M3 insert</li><li><span class="b">2</span>Rear shell</li><li><span class="b">3</span>3x M3 insert</li><li><span class="b">4</span>Back plate</li><li><span class="b">5</span>3x M3 insert</li><li><span class="b">6</span>Front shell</li><li><span class="b">7</span>3x M2 insert</li><li><span class="b">8</span>Spider bracket</li><li><span class="b">9</span>Carrier</li></ol></div>
+    <div><ol class="do"><li>Print the insert test block from plate 2 first. Set one insert in each hole and note which hole (1, 2 or 3 dots) holds best. The middle one is the default; if another fits better, change the hole size in <code>cad/voice_clock.py</code> and reprint.</li><li>Set the iron to 190–200 °C for PLA. Press each insert straight in until it is flush, then hold a flat tool on it for a few seconds while it cools.</li><li>Front shell: 3 × M3 in the lugs just inside the split. Carrier: 3 × M3 from the back face (use inserts 5 mm long or shorter here). Rear shell: 3 × M3 in the lugs at the back opening.</li><li>Spider: 3 × M2 in the underside at the end of each arm. Back plate: 2 × M2 in the speaker bosses.</li></ol><div class="check"><strong>Check before moving on</strong>Run a screw into each insert by hand. It should start straight and stop on the thread, not on a blob of plastic.</div></div>
+  </div>
+</section><section class="step" id="step-2">
+  <header><span class="num">02</span><h2>Power harness</h2></header>
+  <svg class="wiring" viewBox="0 0 720 300" role="img" aria-label="Power wiring: the USB-C inlet feeds a JST-PH plug, which splits to the reSpeaker XIAO 5V pin and the CrowPanel 5V input.">
+  <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink)"/></marker></defs>
+  <g font-family="var(--mono)" font-size="13" fill="var(--ink)">
+    <rect x="16" y="112" width="150" height="76" rx="8" fill="var(--panel)" stroke="var(--rule)"/>
+    <text x="91" y="142" text-anchor="middle" font-weight="600">USB-C inlet</text>
+    <text x="91" y="162" text-anchor="middle" fill="var(--muted)">5.1 kΩ CC, back plate</text>
+    <rect x="230" y="122" width="110" height="56" rx="8" fill="var(--panel)" stroke="var(--rule)"/>
+    <text x="285" y="148" text-anchor="middle" font-weight="600">JST-PH 2</text>
+    <text x="285" y="166" text-anchor="middle" fill="var(--muted)">disconnect</text>
+    <rect x="470" y="30" width="234" height="76" rx="8" fill="var(--panel)" stroke="var(--rule)"/>
+    <text x="587" y="60" text-anchor="middle" font-weight="600">reSpeaker XVF3800</text>
+    <text x="587" y="80" text-anchor="middle" fill="var(--muted)">XIAO 5V + GND pins</text>
+    <rect x="470" y="194" width="234" height="76" rx="8" fill="var(--panel)" stroke="var(--rule)"/>
+    <text x="587" y="224" text-anchor="middle" font-weight="600">CrowPanel 2.1"</text>
+    <text x="587" y="244" text-anchor="middle" fill="var(--muted)">5 V + GND input</text>
+    <path d="M166 150 H226" stroke="var(--red)" stroke-width="3" fill="none" marker-end="url(#ah)"/>
+    <path d="M340 150 H400 V68 H466" stroke="var(--red)" stroke-width="3" fill="none" marker-end="url(#ah)"/>
+    <path d="M400 150 V232 H466" stroke="var(--red)" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+    <text x="196" y="138" text-anchor="middle" fill="var(--muted)">22 AWG</text>
+    <text x="432" y="58" text-anchor="middle" fill="var(--muted)">22 AWG</text>
+    <text x="432" y="252" text-anchor="middle" fill="var(--muted)">24 AWG</text>
+    <text x="587" y="128" text-anchor="middle" fill="var(--muted)">speaker lead plugs in here too</text>
+  </g>
+</svg>
+  <div class="body"><div><h3 class="eyebrow">Parts</h3><ul class="plain"><li>USB-C breakout</li><li>22 and 24 AWG wire</li><li>JST-PH 2-pin pair</li><li>Heat shrink</li></ul></div>
+    <div><ol class="do"><li>Solder 10 cm of 22 AWG red and black to the USB-C breakout's VBUS and GND pads, and finish them in one half of a JST-PH 2-pin pair. This lead stays with the back plate.</li><li>Solder the other JST-PH half to a short split: one 22 AWG pair to the XIAO's 5V and GND pins on the back of the reSpeaker, one 24 AWG pair to the CrowPanel's 5 V and GND (splice into the cable that came with it, or a lead into its 4-pin connector after checking the pinout with a multimeter).</li><li>Cover every joint with heat shrink and strain-relieve the solder joints so a tug never loads a pad.</li><li>Plug the speaker lead into the reSpeaker's speaker socket. It runs through the carrier's centre hole later.</li></ol><div class="check"><strong>Check before moving on</strong>With a multimeter, confirm 5 V and GND are not shorted. Power both boards on the bench and confirm they boot before anything goes into the case. Never plug a laptop into either board while the USB-C inlet is powered.</div></div>
+  </div>
+</section><section class="step" id="step-3">
+  <header><span class="num">03</span><h2>Spider bracket onto the CrowPanel</h2></header>
+  <figure><img src="img/step_02.jpg" alt="Step 3: Spider bracket onto the CrowPanel" loading="lazy" width="1800" height="1350"></figure>
+  <div class="body"><div><h3 class="eyebrow">In this picture</h3><ol class="legend"><li><span class="b">1</span>3x M2 insert</li><li><span class="b">2</span>Spider bracket</li><li><span class="b">3</span>3x M3x12 SHCS</li><li><span class="b">4</span>CrowPanel 2.1" display</li></ol></div>
+    <div><ol class="do"><li>Remove the three M3 screws from the hub on the back of the CrowPanel.</li><li>Fit the spider so its hub sits on the CrowPanel hub. Turn it so its arms run between the three 4-pin connectors; only one of the three screw positions leaves all the connectors uncovered.</li><li>Fit 3 × M3 × 12 from the spider side into the hub. Tighten evenly until snug.</li></ol><div class="check"><strong>Check before moving on</strong>The knob still turns and still clicks when pressed, and nothing touches the connectors.</div></div>
+  </div>
+</section><section class="step" id="step-4">
+  <header><span class="num">04</span><h2>Light guide from behind</h2></header>
+  <figure><img src="img/step_05.jpg" alt="Step 4: Light guide from behind" loading="lazy" width="1800" height="1350"></figure>
+  <div class="body"><div><h3 class="eyebrow">In this picture</h3><ol class="legend"><li><span class="b">1</span>Light guide (PETG)</li><li><span class="b">2</span>CrowPanel 2.1" display</li><li><span class="b">3</span>Spider bracket</li></ol></div>
+    <div><ol class="do"><li>Slide the light guide over the spider from behind and onto the display. Its inner lip is smaller than the knob, so it only goes on this way. It stops when the lip meets the back of the display housing and stays loose for now: the front shell pushes it back onto the reSpeaker in step 7.</li><li>Turn it so its cable notch sits over the CrowPanel power wires, lower right seen from the front.</li><li>Punch four foam rings (5 mm across with a 2 mm hole) and stick one over each microphone hole on the front of the reSpeaker, on its four diagonals.</li></ol><div class="check"><strong>Check before moving on</strong>The light guide turns freely around the knob ring with an even gap all round.</div></div>
+  </div>
+</section><section class="step" id="step-5">
+  <header><span class="num">05</span><h2>Spacers and reSpeaker</h2></header>
+  <figure><img src="img/step_03.jpg" alt="Step 5: Spacers and reSpeaker" loading="lazy" width="1800" height="1350"></figure>
+  <div class="body"><div><h3 class="eyebrow">In this picture</h3><ol class="legend"><li><span class="b">1</span>3x printed spacer</li><li><span class="b">2</span>reSpeaker XVF3800</li><li><span class="b">3</span>Light guide (PETG)</li></ol></div>
+    <div><ol class="do"><li>Set the three printed spacers on the spider's M2 inserts.</li><li>Lay the reSpeaker on the spacers with its LED ring and foam gaskets facing the display. The side button that ends up at 12 o'clock is the mute button.</li><li>Keep the CrowPanel wires in the light guide's notch.</li></ol><div class="check"><strong>Check before moving on</strong>All three reSpeaker mounting holes line up with the spacers, and no wire is trapped under the light guide.</div></div>
+  </div>
+</section><section class="step" id="step-6">
+  <header><span class="num">06</span><h2>Carrier and clamp screws</h2></header>
+  <figure><img src="img/step_04.jpg" alt="Step 6: Carrier and clamp screws" loading="lazy" width="1800" height="1350"></figure>
+  <div class="body"><div><h3 class="eyebrow">In this picture</h3><ol class="legend"><li><span class="b">1</span>Carrier</li><li><span class="b">2</span>3x M2x20 SHCS</li><li><span class="b">3</span>reSpeaker XVF3800</li><li><span class="b">4</span>3x M3 insert</li></ol></div>
+    <div><ol class="do"><li>Feed the speaker lead through the carrier's centre hole.</li><li>Set the carrier behind the reSpeaker with its cable notch lined up with the light guide's notch (lower right seen from the front, lower left seen from the back).</li><li>Fit 3 × M2 × 20 from the back of the carrier, through the board and spacers, into the spider inserts. Tighten in turn until snug.</li></ol><div class="check"><strong>Check before moving on</strong>The board doesn't rock and no wire is pinched.</div></div>
+  </div>
+</section><section class="step" id="step-7">
+  <header><span class="num">07</span><h2>Into the front shell</h2></header>
+  <figure><img src="img/step_06.jpg" alt="Step 7: Into the front shell" loading="lazy" width="1800" height="1350"></figure>
+  <div class="body"><div><h3 class="eyebrow">In this picture</h3><ol class="legend"><li><span class="b">1</span>Carrier</li><li><span class="b">2</span>3x M3x6 SHCS</li><li><span class="b">3</span>Mute button</li><li><span class="b">4</span>Front shell</li></ol></div>
+    <div><ol class="do"><li>Drop the mute button into the hole at the top of the front shell, cap outside.</li><li>Slide the whole stack into the front shell from behind, knob first. The shell's bezel ring pushes the light guide back until it sits flat on the reSpeaker, lip over the LED ring. Push on until the carrier rim sits on the three lugs.</li><li>Fit 3 × M3 × 6 through the carrier rim into the lug inserts.</li></ol><div class="check"><strong>Check before moving on</strong>Pressing the mute button clicks the reSpeaker's mute switch. The knob stands about 7 mm proud of the face and still presses.</div></div>
+  </div>
+</section><section class="step" id="step-8">
+  <header><span class="num">08</span><h2>Rear shell</h2></header>
+  <figure><img src="img/step_07.jpg" alt="Step 8: Rear shell" loading="lazy" width="1800" height="1350"></figure>
+  <div class="body"><div><h3 class="eyebrow">In this picture</h3><ol class="legend"><li><span class="b">1</span>3x M3 insert</li><li><span class="b">2</span>3x M3x8 button head</li><li><span class="b">3</span>Front shell</li><li><span class="b">4</span>Rear shell</li></ol></div>
+    <div><ol class="do"><li>The speaker is still hanging on its lead: pass it out through the rear shell's back opening first.</li><li>Fit the rear shell to the front shell so its three inner ribs land on the carrier's inserts.</li><li>Reach through the open back with the long 2.0 mm driver and fit 3 × M3 × 8 button head through the ribs.</li></ol><div class="check"><strong>Check before moving on</strong>The seam between the shells closes evenly all the way round.</div></div>
+  </div>
+</section><section class="step" id="step-9">
+  <header><span class="num">09</span><h2>Speaker and USB-C on the back plate</h2></header>
+  <figure><img src="img/step_08.jpg" alt="Step 9: Speaker and USB-C on the back plate" loading="lazy" width="1800" height="1350"></figure>
+  <div class="body"><div><h3 class="eyebrow">In this picture</h3><ol class="legend"><li><span class="b">1</span>Speaker 4428 3 W</li><li><span class="b">2</span>2x M2x10 SHCS</li><li><span class="b">3</span>4x TPU washer</li><li><span class="b">4</span>Foam ring</li><li><span class="b">5</span>Back plate</li><li><span class="b">6</span>USB-C breakout (5.1k)</li></ol></div>
+    <div><ol class="do"><li>Stick a foam ring around the speaker's face.</li><li>The speaker stays plugged into the reSpeaker; work with the back plate next to the clock. Set a TPU washer on each speaker boss, place the speaker with its face toward the round grille and its lead toward the top, then add a washer on top of each ear.</li><li>Fit 2 × M2 × 10. Snug only: the washers do the isolation, so don't crush them.</li><li>Glue the USB-C breakout into its pocket with 5-minute epoxy, receptacle in the slot. Keep a cable plugged in while it cures to hold it square. Zip-tie the speaker lead to the anchor.</li></ol><div class="check"><strong>Check before moving on</strong>A USB-C cable plugs in fully from outside, and the speaker doesn't touch the plate anywhere except the foam and washers.</div></div>
+  </div>
+</section><section class="step" id="step-10">
+  <header><span class="num">10</span><h2>Close up</h2></header>
+  <figure><img src="img/step_09.jpg" alt="Step 10: Close up" loading="lazy" width="1800" height="1350"></figure>
+  <div class="body"><div><h3 class="eyebrow">In this picture</h3><ol class="legend"><li><span class="b">1</span>3x M3x8 button head</li><li><span class="b">2</span>Back plate</li><li><span class="b">3</span>USB-C breakout (5.1k)</li><li><span class="b">4</span>Rear shell</li></ol></div>
+    <div><ol class="do"><li>Plug the inlet's JST lead into the harness and tuck the wires clear of the speaker.</li><li>Fit the back plate with the grille over the speaker and the USB-C port at the bottom.</li><li>Fit 3 × M3 × 8 button head.</li></ol><div class="check"><strong>Check before moving on</strong>Plug in a 5 V 3 A charger. The clock face comes up and the LED ring lights. Then flash and set up the firmware.</div></div>
+  </div>
+</section>
+      <section class="step" id="done"><header><span class="num">✓</span><h2>Finished</h2></header>
+        <div class="done"><img src="img/hero_front.jpg" alt="Finished clock, front" loading="lazy"><img src="img/hero_back.jpg" alt="Finished clock, back, with the speaker grille and USB-C inlet" loading="lazy"></div>
+        <p style="margin-top:18px">Next: flash the clock face with the ESPHome config in <code>firmware/</code>, and the voice satellite on the reSpeaker with the formatBCE XVF3800 ESPHome integration. Cap the speaker volume in ESPHome; the amp can deliver more than the 3 W speaker is rated for.</p>
+      </section>
+      <footer>Renders are generated from the parametric CAD in <code>cad/</code> with Blender Cycles; the numbered callouts are placed automatically on visible surfaces. Licensed MIT.</footer>
+    </main>
+  </div>
+</div></body></html>
