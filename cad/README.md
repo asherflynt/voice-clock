@@ -92,7 +92,7 @@ Illustrated, step-by-step guide: [`../docs/assembly`](../docs/assembly/ASSEMBLY.
 
 ## Still to verify before the full print
 
-- **Which side button is mute.** The model puts it at 12 o'clock with `RS_ROT = 90`. If mute lands at 6 o'clock, set `RS_ROT = -90`. The cable notch angle follows automatically.
+- **Mute button (confirmed).** The button marked A is mute, at 9 o'clock seen from the LED side with the XIAO at the top. `RS_ROT = -90` puts it at 12 o'clock under the plunger; the cable notch and rear-shell rib angles are set for this orientation.
 - **CrowPanel "up".** The model assumes the STEP's +Z is display-up. The screen can also be rotated in firmware.
 - **USB-C breakout.** The slot (9.4 × 3.6), outside overmould recess and inside cage are sized for the 22.1 × 13 mm board. Check the receptacle reaches the outer face before gluing.
 - **Fit print first:** print the spider, the carrier, and a `FACE_Z - 10` slice of the front shell. Check the knob gap, bezel seating, and board clamp.

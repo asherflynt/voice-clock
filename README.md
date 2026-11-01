@@ -35,9 +35,8 @@ The [build plan](docs/build-plan.md) explains the design decisions: mic-channel 
 
 ## Status
 
-Version 0: the CAD passes its automated checks (no part overlaps, board and light-guide insertion paths clear, screw engagement 2.5–4 mm, every M3 insert hole fully enclosed), but the full enclosure has not been printed and assembled yet. Things to confirm on your hardware, all single parameters in `cad/voice_clock.py`:
+Version 0: the CAD passes its automated checks (no part overlaps, board and light-guide insertion paths clear, screw engagement 2.5–4 mm, every M3 insert hole fully enclosed), but the full enclosure has not been printed and assembled yet. Confirmed on hardware: the reSpeaker's mute button is the one marked **A** (at 9 o'clock seen from the LED side with the XIAO at the top), so the board is rotated −90° to put it under the plunger. Things to confirm on your hardware, all single parameters in `cad/voice_clock.py`:
 
-- Which reSpeaker side button is mute (`RS_ROT`, puts it at 12 o'clock).
 - Heat-set insert hole size: print `insert_coupon` first (`M2_INSERT_D`, `M3_INSERT_D`).
 - The CrowPanel's display orientation (also fixable in firmware).
 - That the light guide's cable notch (`NOTCH_ANG`) falls between two LEDs on your reSpeaker, so the bezel glows evenly.

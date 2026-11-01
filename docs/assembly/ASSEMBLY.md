@@ -32,7 +32,7 @@
 
 ![Step 1](img/step_01.jpg)
 
-In this picture: **1** 3x M3 insert, **2** Rear shell, **3** 3x M3 insert, **4** Back plate, **5** 3x M3 insert, **6** Front shell, **7** 3x M2 insert, **8** Spider bracket, **9** Carrier
+In this picture: **1** 3x M3 insert, **2** Rear shell, **3** 3x M3 insert, **4** Back plate, **5** 3x M3 insert, **6** Front shell, **7** Spider bracket, **8** 3x M2 insert, **9** Carrier
 
 1. Print the insert test block from plate 2 first. Set one insert in each hole and note which hole (1, 2 or 3 dots) holds best. The middle one is the default; if another fits better, change the hole size in `cad/voice_clock.py` and reprint.
 2. Set the iron to 190–200 °C for PLA. Press each insert straight in until it is flush, then hold a flat tool on it for a few seconds while it cools.
@@ -61,7 +61,7 @@ flowchart LR
 
 ![Step 3](img/step_02.jpg)
 
-In this picture: **1** 3x M2 insert, **2** Spider bracket, **3** 3x M3x12 SHCS, **4** CrowPanel 2.1" display
+In this picture: **1** Spider bracket, **2** 3x M3x12 SHCS, **3** CrowPanel 2.1" display, **4** 3x M2 insert
 
 1. Remove the three M3 screws from the hub on the back of the CrowPanel.
 2. Fit the spider so its hub sits on the CrowPanel hub. Turn it so its arms run between the three 4-pin connectors; only one of the three screw positions leaves all the connectors uncovered.
@@ -76,7 +76,7 @@ In this picture: **1** 3x M2 insert, **2** Spider bracket, **3** 3x M3x12 SHCS, 
 In this picture: **1** Light guide (PETG), **2** CrowPanel 2.1" display, **3** Spider bracket
 
 1. Slide the light guide over the spider from behind and onto the display. Its inner lip is smaller than the knob, so it only goes on this way. It stops when the lip meets the back of the display housing and stays loose for now: the front shell pushes it back onto the reSpeaker in step 7.
-2. Turn it so its cable notch sits over the CrowPanel power wires, lower right seen from the front.
+2. Turn it so its cable notch sits over the CrowPanel power wires, lower left seen from the front.
 3. Punch four foam rings (5 mm across with a 2 mm hole) and stick one over each microphone hole on the front of the reSpeaker, on its four diagonals.
 
 > **Check:** The light guide turns freely around the knob ring with an even gap all round.
@@ -88,7 +88,7 @@ In this picture: **1** Light guide (PETG), **2** CrowPanel 2.1" display, **3** S
 In this picture: **1** 3x printed spacer, **2** reSpeaker XVF3800, **3** Light guide (PETG)
 
 1. Set the three printed spacers on the spider's M2 inserts.
-2. Lay the reSpeaker on the spacers with its LED ring and foam gaskets facing the display. The side button that ends up at 12 o'clock is the mute button.
+2. Lay the reSpeaker on the spacers with its LED ring and foam gaskets facing the display. The mute button (marked A) goes at 12 o'clock and the RST button at 6 o'clock; the XIAO module then sits at 3 o'clock seen from the front.
 3. Keep the CrowPanel wires in the light guide's notch.
 
 > **Check:** All three reSpeaker mounting holes line up with the spacers, and no wire is trapped under the light guide.
@@ -97,10 +97,10 @@ In this picture: **1** 3x printed spacer, **2** reSpeaker XVF3800, **3** Light g
 
 ![Step 6](img/step_04.jpg)
 
-In this picture: **1** Carrier, **2** 3x M2x20 SHCS, **3** reSpeaker XVF3800, **4** 3x M3 insert
+In this picture: **1** Carrier, **2** 3x M2x20 SHCS, **3** 3x M3 insert, **4** reSpeaker XVF3800
 
 1. Feed the speaker lead through the carrier's centre hole.
-2. Set the carrier behind the reSpeaker with its cable notch lined up with the light guide's notch (lower right seen from the front, lower left seen from the back).
+2. Set the carrier behind the reSpeaker with its cable notch lined up with the light guide's notch (lower left seen from the front, lower right seen from the back).
 3. Fit 3 × M2 × 20 from the back of the carrier, through the board and spacers, into the spider inserts. Tighten in turn until snug.
 
 > **Check:** The board doesn't rock and no wire is pinched.
@@ -121,7 +121,7 @@ In this picture: **1** Carrier, **2** 3x M3x6 SHCS, **3** Mute button, **4** Fro
 
 ![Step 8](img/step_07.jpg)
 
-In this picture: **1** 3x M3 insert, **2** 3x M3x8 button head, **3** Front shell, **4** Rear shell
+In this picture: **1** 3x M3 insert, **2** Rear shell, **3** 3x M3x8 button head, **4** Front shell
 
 1. The speaker is still hanging on its lead: pass it out through the rear shell's back opening first.
 2. Fit the rear shell to the front shell so its three inner ribs land on the carrier's inserts.

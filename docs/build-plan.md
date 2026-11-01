@@ -137,7 +137,7 @@ An open-source Home Assistant voice clock shaped like the reference photo: a sph
 | Flat foot | **Ø42** | Anti-roll. Cut down from Ø50 so the reSpeaker's 6 o'clock side button clears the floor while the board slides in. A 1 mm relief groove in the floor helps too. Final clearance is 3.1 mm, CAD-checked. |
 | Overall | About 115 mm tall, 106 mm deep with the knob | Similar to a large alarm clock |
 
-**Board rotation:** turn the reSpeaker 90° so its mute button points straight up. A printed plunger through the top of the shell then gives you a physical mic-mute on top, like commercial speakers have. The mics stay on the diagonals, so all four channels exit above the foot.
+**Board rotation:** turn the reSpeaker −90° (clockwise seen from the front) so its mute button (marked A, confirmed on hardware) points straight up. A printed plunger through the top of the shell then gives you a physical mic-mute on top, like commercial speakers have. The mics stay on the diagonals, so all four channels exit above the foot.
 
 ### Parts
 

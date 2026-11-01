@@ -36,8 +36,8 @@ RS_EDGE_R     = 53.6
 RS_T          = 1.2
 RS_BACK_PARTS = 7.9       # tallest back-side part below PCB front (6.7 + 1.2)
 RS_HOLES_DRAW = [(-21.35, 24.5), (21.35, 24.5), (0.0, -34.0)]
-RS_ROT        = 90.0      # deg CCW: a side button ends up at 12 o'clock (mute).
-                          # If mute lands at 6 o'clock instead, set -90.
+RS_ROT        = -90.0     # deg CCW. Mute ("A") is at 9 o'clock seen from the LED side with the
+                          # XIAO at the top (confirmed on hardware 1 Nov 2026); -90 puts it at 12.
 RS_MIC_R      = 46.67     # mics on the 45 deg diagonals
 RS_LED_R      = 40.0
 RS_BTN_Z      = -0.6      # side-button centre height (VERIFY)
@@ -90,7 +90,8 @@ CARRIER_FRONT = SPLIT_Z + CARRIER_T            # -12.0
 SHELL_LUG_ANG = [120.0, 240.0, 330.0]
 SHELL_LUG_R   = 53.4      # inward so the M3 x 6 SHCS heads clear the rear-shell wall
 RIM_CB        = (6.0, 1.2)  # carrier-rim counterbore for M3 x 6 SHCS (d5.5 x 3 head)
-REAR_RIB_ANG  = [60.0, 180.0, 300.0]   # clear of the M2 clamp heads at 0/139/221 deg
+REAR_RIB_ANG  = [0.0, 150.0, 270.0]    # clear of clamp heads (41/180/319), rim heads (120/240/330)
+                                        # and the back-plate lugs (90/210/330) on the driver path
 REAR_RIB_R    = 38.0      # inside the back opening -> straight driver access
 # heat-set insert holes for the user's kit (OD - ~0.45). insert_coupon brackets these.
 M3_INSERT_D   = 3.7       # M3 x 4 x OD4.2

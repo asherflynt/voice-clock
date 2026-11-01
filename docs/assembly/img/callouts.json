@@ -55,13 +55,13 @@
   },
   {
    "n": 7,
-   "key": "ins_spider",
-   "label": "3x M2 insert"
+   "key": "spider",
+   "label": "Spider bracket"
   },
   {
    "n": 8,
-   "key": "spider",
-   "label": "Spider bracket"
+   "key": "ins_spider",
+   "label": "3x M2 insert"
   },
   {
    "n": 9,
@@ -72,23 +72,23 @@
  "step_02": [
   {
    "n": 1,
-   "key": "ins_spider",
-   "label": "3x M2 insert"
-  },
-  {
-   "n": 2,
    "key": "spider",
    "label": "Spider bracket"
   },
   {
-   "n": 3,
+   "n": 2,
    "key": "scr_cp",
    "label": "3x M3x12 SHCS"
   },
   {
-   "n": 4,
+   "n": 3,
    "key": "cp_knob",
    "label": "CrowPanel 2.1\" display"
+  },
+  {
+   "n": 4,
+   "key": "ins_spider",
+   "label": "3x M2 insert"
   }
  ],
  "step_03": [
@@ -121,13 +121,13 @@
   },
   {
    "n": 3,
-   "key": "rs_pcb",
-   "label": "reSpeaker XVF3800"
+   "key": "ins_carrier",
+   "label": "3x M3 insert"
   },
   {
    "n": 4,
-   "key": "ins_carrier",
-   "label": "3x M3 insert"
+   "key": "rs_pcb",
+   "label": "reSpeaker XVF3800"
   }
  ],
  "step_05": [
@@ -177,18 +177,18 @@
   },
   {
    "n": 2,
+   "key": "rear_shell",
+   "label": "Rear shell"
+  },
+  {
+   "n": 3,
    "key": "scr_rib",
    "label": "3x M3x8 button head"
   },
   {
-   "n": 3,
+   "n": 4,
    "key": "front_shell",
    "label": "Front shell"
-  },
-  {
-   "n": 4,
-   "key": "rear_shell",
-   "label": "Rear shell"
   }
  ],
  "step_08": [
