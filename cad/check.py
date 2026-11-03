@@ -50,6 +50,9 @@ for n in ("rs_pcb", "carrier", "speaker", "back_plate"):
     print(f"  {n:12s} lowest point {bb_min - FLOOR_TOP:+.2f} mm above floor top")
 
 print("== spider vs CrowPanel plug keep-outs")
+n_sp = len(parts["spider"].solids())
+print(f"  spider is {n_sp} solid(s)", "ok" if n_sp == 1 else "ARM DETACHED")
+bad += n_sp != 1
 for (x0, x1, y0, y1) in CP_KEEPOUT:
     k = Pos((x0 + x1) / 2, (y0 + y1) / 2, 0) * Box(x1 - x0, y1 - y0, CP_REAR_Z, align=(Align.CENTER, Align.CENTER, Align.MIN))
     v = (k & parts["spider"]).volume
