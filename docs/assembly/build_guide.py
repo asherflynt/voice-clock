@@ -84,7 +84,7 @@ STEPS = [
      ["Stick a foam ring around the speaker's face.",
       "The speaker stays plugged into the reSpeaker; work with the back plate next to the clock. Set a TPU washer on each speaker boss, place the speaker with its face toward the round grille and its lead toward the top, then add a washer on top of each ear.",
       "Fit 2 × M2 × 10. Snug only: the washers do the isolation, so don't crush them.",
-      "Glue the USB-C breakout into its pocket with 5-minute epoxy, receptacle in the slot. Keep a cable plugged in while it cures to hold it square. Zip-tie the speaker lead to the anchor."],
+      "Stand the USB-C breakout on its USB edge with the socket in the slot, board against the backing wall, and fit 2 × M2 × 10 through its holes into the wall. Zip-tie the speaker lead to the anchor."],
      "A USB-C cable plugs in fully from outside, and the speaker doesn't touch the plate anywhere except the foam and washers."),
     ("step_09", "Close up",
      ["Plug the inlet's JST lead into the harness and tuck the wires clear of the speaker.",

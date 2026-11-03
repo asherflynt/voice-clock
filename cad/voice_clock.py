@@ -119,13 +119,20 @@ SPK_GASKET    = 1.1                            # 1/16" (1.6 mm) foam squeezed to
 TPU_WASHER_T  = 1.0                            # isolation washer, one each side of each ear
 M2_INSERT_D   = 2.8                            # M2 x 3 x OD3.2 insert hole
 M2_INSERT_DEPTH = 6.5                          # M2 x 10 passes 2.6 mm beyond the insert
-# USB-C inlet: 16-pin breakout with 5.1k CC resistors (22.1 x 13.05 PCB), standing on
-# edge so its receptacle sits in the slot. The outside recess lets the plug's
-# overmould in so the plug fully seats. The breakout is glued into the cage.
+# USB-C inlet: 6-pin breakout with 5.1k CC resistors, measured 3 Nov 2026:
+# PCB 21.96 x 13.11 x 1.61, socket on the top face centred on the long (USB) edge,
+# socket 3.30 tall, opening overhangs that edge by 1.48. Two holes near the USB edge:
+# 18.95 outer-to-outer, hole edge 1.61 from the USB edge (hole d not measured, ~2.5).
+# The board stands on its USB edge on the plate; the socket goes through the slot;
+# 2x M2 x 10 thread through the board holes into oval holes in a backing wall.
 USB_CY        = -27.0
-USB_SLOT      = (9.4, 3.6)                     # receptacle shell 8.94 x 3.26
+USB_SLOT      = (9.4, 3.6)                     # socket shell ~8.94 x 3.30
 USB_RECESS    = (13.5, 8.0, 1.6)               # outside, for the plug overmould
-USB_CAGE      = (15.0, 7.0, 8.0)               # inside: pocket x, y, height for the PCB edge
+USB_PCB       = (21.96, 13.11, 1.61)           # length (along the USB edge), height, thickness
+USB_SOCKET_H  = 3.30
+USB_HOLE_D    = 2.5                            # estimate
+USB_HOLE_PITCH= 18.95 - USB_HOLE_D             # centre-to-centre (~16.45)
+USB_HOLE_Z    = 1.61 + USB_HOLE_D / 2          # hole centre above the plate's inner face
 
 # ---------------------------------------------------------------- derived
 C_Z    = FACE_Z - sqrt(SPHERE_R**2 - FACE_R**2)          # sphere centre z (-5.8)
@@ -285,15 +292,26 @@ def back_plate():
         bx = sxn * SPK_EAR_PITCH / 2
         plate = plate + cyl(3.4, BACK_Z, boss_top, bx, SPK_CY)
         plate = plate - cyl(M2_INSERT_D / 2, boss_top - M2_INSERT_DEPTH, boss_top + 1, bx, SPK_CY)
-    # USB-C inlet: slot for the receptacle, outside recess for the plug overmould,
-    # inside cage that locates the breakout's PCB edge (glue it in)
+    # USB-C inlet: slot + outside overmould recess; board stands on edge behind the slot
     rx, ry, rd = USB_RECESS
-    cx, cy_, ch = USB_CAGE
-    plate = plate + (Pos(0, USB_CY, BACK_Z) * Box(cx + 3.2, cy_ + 3.2, ch,
-                                                  align=(Align.CENTER, Align.CENTER, Align.MIN)))
-    plate = plate - Pos(0, USB_CY, BACK_Z - 0.01) * Box(cx, cy_, ch + 1, align=(Align.CENTER, Align.CENTER, Align.MIN))
     plate = plate - Pos(0, USB_CY, BACK_Z - 2) * Box(*USB_SLOT, 6)
     plate = plate - Pos(0, USB_CY, BACK_Z - BACK_T - 0.01) * Box(rx, ry, rd, align=(Align.CENTER, Align.CENTER, Align.MIN))
+    L, Hb, T = USB_PCB
+    y_pcb_top = USB_CY - USB_SOCKET_H / 2              # PCB face carrying the socket
+    y_pcb_bot = y_pcb_top - T - 0.15                   # 0.15 mm fit clearance
+    wall_t, wall_h = 4.0, 9.0
+    wall = Pos(0, y_pcb_bot - wall_t / 2, BACK_Z) * Box(L + 2 * 2.2, wall_t, wall_h,
+                                                        align=(Align.CENTER, Align.CENTER, Align.MIN))
+    plate = plate + wall
+    for sx in (-1, 1):                                 # end stops locate the board's length
+        xs = sx * (L / 2 + 0.2 + 1.0)
+        plate = plate + Pos(xs, (y_pcb_bot + y_pcb_top) / 2 + 0.5, BACK_Z) * Box(2.0, T + 1.2, 6.0,
+                                                                                align=(Align.CENTER, Align.CENTER, Align.MIN))
+    for sx in (-1, 1):                                 # oval M2 holes through the wall (self-tapping)
+        hx = sx * USB_HOLE_PITCH / 2
+        oval = Pos(hx, y_pcb_bot - wall_t / 2, BACK_Z + USB_HOLE_Z) * Rot(90, 0, 0) * \
+            (Box(0.7, 1.8, wall_t + 2) + Pos(-0.35, 0, 0) * Cylinder(0.9, wall_t + 2) + Pos(0.35, 0, 0) * Cylinder(0.9, wall_t + 2))
+        plate = plate - oval
     # zip-tie anchor for the speaker lead
     ay = SPK_CY + SPK_BODY[1] / 2 + 10.5
     plate = plate + Pos(0, ay, BACK_Z + 2) * Box(8, 4, 4)

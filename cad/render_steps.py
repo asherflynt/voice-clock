@@ -190,9 +190,11 @@ def hw_spk_foam():
 
 
 def hw_usb():
-    z_mouth = BACK_Z - BACK_T + USB_RECESS[2]
-    rec = box((0, USB_CY, z_mouth + 3.65), (8.94, 3.26, 7.3))
-    pcb = box((0, USB_CY - 2.45, BACK_Z + 0.1 + 11.05), (13.05, 1.6, 22.1))
+    """Measured 6-pin breakout: standing on its USB edge, socket through the slot."""
+    L, Hb, T = USB_PCB
+    y_top = USB_CY - USB_SOCKET_H / 2
+    rec = box((0, USB_CY, BACK_Z - 1.48 + 7.3 / 2), (8.94, USB_SOCKET_H, 7.3))
+    pcb = box((0, y_top - T / 2, BACK_Z + Hb / 2), (L, T, Hb))
     return [rec, pcb]
 
 
