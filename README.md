@@ -12,7 +12,7 @@ An open-source bedside clock and Home Assistant voice satellite: a knit-textured
 
 | | |
 |---|---|
-| **Print** | [`print/`](print): `VoiceClock_U1.3mf` (4 plates, Snapmaker U1, per-part settings embedded), single-plate 3MFs, and STL/STEP for any slicer. Matte PLA for the body, clear or natural PETG for the light guide. |
+| **Print** | [`print/`](print): `VoiceClock_U1.3mf` (4 plates, Snapmaker U1, per-part settings embedded), single-plate 3MFs, and STL/STEP for any slicer. Filament slots: 1 = clear or natural PETG (light guide), 2 = matte PLA (body), 4 = TPU (optional washers). |
 | **Assemble** | [Illustrated assembly guide](docs/assembly/ASSEMBLY.md) ([web version](docs/assembly/index.html)): 10 steps, numbered callouts for every part and fastener. |
 | **Flash** | [`firmware/`](firmware): ESPHome config for the CrowPanel clock face. The reSpeaker runs the [formatBCE XVF3800 ESPHome integration](https://github.com/formatBCE/Respeaker-XVF3800-ESPHome-integration). |
 | **Modify** | [`cad/`](cad): `voice_clock.py` (model), `check.py` (fit checks), `make_3mf.py` (print files), `blender/` (photoreal renders and callouts). |

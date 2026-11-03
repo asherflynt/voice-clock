@@ -45,12 +45,12 @@ Every dimension is a named constant at the top of `voice_clock.py`. Values marke
 - **Matte PLA** for everything except the light guide (clear or natural PETG, on its own plate because the bed temperatures differ). 0.2 mm layers, 4 walls (the heat-set inserts need wall material), 20% gyroid. Set heat-set inserts at about 190–200 °C in PLA. PLA is fine for a bedside clock, but keep it out of sunny windows and hot cars.
 - Textured PEI: the face-down bezel comes out with the plate texture.
 - `out/VoiceClock_U1.3mf` holds all 4 plates. Per-object settings are embedded: 4 walls, 5 mm brim on the shells, 100% infill on the spider, plunger, light guide and washers, no supports. If the plates load stacked or off-bed in your slicer build, use `out/plates/VoiceClock_plate1..4.3mf` instead.
-- The 3MFs are **model-only**. Your own printer, process and filament presets stay selected. Each part is already assigned to extruder 1 (PLA), 2 (PETG light guide) or 3 (TPU washers).
+- The 3MFs are **model-only**. Your own printer, process and filament presets stay selected. Each part is already assigned to a filament slot: 1 = PETG light guide, 2 = matte PLA body, 4 = TPU washers.
 
 **After opening a 3MF, check:**
 1. Printer is still your U1 (not `...(VoiceClock...3mf)`).
 2. Filament slots show your material.
-3. The light guide is on extruder 2, the TPU washers on 3, everything else on 1.
+3. The light guide is on slot 1 (PETG), the TPU washers on slot 4, everything else on slot 2 (PLA).
 
 ## Hardware
 

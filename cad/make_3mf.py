@@ -16,23 +16,25 @@ BED = 270.0
 # name, extruder (1 = matte PLA body, 2 = clear/natural PETG light guide, 3 = TPU), bed x, y, rot-z
 # PLA and PETG never share a plate (different bed temperatures).
 PLATES = [
-    ("Shells - matte PLA", [
-        ("front_shell", 1, 70, 135, 0),
-        ("rear_shell", 1, 200, 135, 0),
+    # filament slots match the U1 as loaded: 1 = PETG (light guide), 2 = matte PLA (body),
+    # 4 = TPU (washers, optional). Slot 3 is unused.
+    ("Shells - PLA slot 2", [
+        ("front_shell", 2, 70, 135, 0),
+        ("rear_shell", 2, 200, 135, 0),
     ]),
-    ("Internals - matte PLA", [
-        ("carrier", 1, 68, 72, 0),
-        ("back_plate", 1, 62, 196, 0),
-        ("spider", 1, 188, 192, 0),
-        ("mute_plunger", 1, 246, 246, 0),
-        ("insert_coupon", 1, 200, 60, 0),
-        ("board_spacers", 1, 205, 112, 0),
+    ("Internals - PLA slot 2", [
+        ("carrier", 2, 68, 72, 0),
+        ("back_plate", 2, 62, 196, 0),
+        ("spider", 2, 188, 192, 0),
+        ("mute_plunger", 2, 246, 246, 0),
+        ("insert_coupon", 2, 200, 60, 0),
+        ("board_spacers", 2, 205, 112, 0),
     ]),
-    ("Light guide - clear PETG", [
-        ("light_guide", 2, 135, 135, 0),
+    ("Light guide - PETG slot 1", [
+        ("light_guide", 1, 135, 135, 0),
     ]),
-    ("TPU washers (optional)", [
-        ("tpu_washers", 3, 135, 135, 0),
+    ("TPU washers - slot 4 (optional)", [
+        ("tpu_washers", 4, 135, 135, 0),
     ]),
 ]
 # object-level overrides (independent of the user's preset names)
@@ -103,12 +105,17 @@ def write(path, plates):
     meshes = [m for _, ms in plates for m in ms]
     plate = path.stem
 
+    # meshes are written centred on their own origin; placement goes in the build item,
+    # the way slicer-saved 3MFs do it
+    place_xy = {k: ((m.bounds[0][0] + m.bounds[1][0]) / 2, (m.bounds[0][1] + m.bounds[1][1]) / 2)
+                for k, (_, _, m) in enumerate(meshes, 1)}
     tmp = OUT / f"_{plate}_object.model"
     with open(tmp, "w") as f:
         f.write(f'<?xml version="1.0" encoding="UTF-8"?>\n<model unit="millimeter" xml:lang="en-US" {NS}>\n<resources>\n')
         for k, (name, ext, m) in enumerate(meshes, 1):
             f.write(f'<object id="{k}" type="model"><mesh><vertices>\n')
-            for v in m.vertices:
+            cx, cy = place_xy[k]
+            for v in m.vertices - [cx, cy, 0.0]:
                 f.write(f'<vertex x="{v[0]:.6f}" y="{v[1]:.6f}" z="{v[2]:.6f}"/>\n')
             f.write('</vertices><triangles>\n')
             for t in m.faces:
@@ -127,7 +134,7 @@ def write(path, plates):
                     f'</components></object>')
     root.append('</resources>\n<build>')
     for k, _ in enumerate(meshes, 1):
-        root.append(f'<item objectid="{100 + k}" transform="1 0 0 0 1 0 0 0 1 0 0 0" printable="1"/>')
+        root.append(f'<item objectid="{100 + k}" transform="1 0 0 0 1 0 0 0 1 {place_xy[k][0]:.4f} {place_xy[k][1]:.4f} 0" printable="1"/>')
     root.append('</build>\n</model>\n')
 
     ms = ['<?xml version="1.0" encoding="UTF-8"?>\n<config>']
@@ -156,7 +163,7 @@ def write(path, plates):
         ms += ['  </plate>']
     ms += ['  <assemble>']
     for k, _ in enumerate(meshes, 1):
-        ms.append(f'   <assemble_item object_id="{100 + k}" instance_id="0" transform="1 0 0 0 1 0 0 0 1 0 0 0" offset="0 0 0"/>')
+        ms.append(f'   <assemble_item object_id="{100 + k}" instance_id="0" transform="1 0 0 0 1 0 0 0 1 {place_xy[k][0]:.4f} {place_xy[k][1]:.4f} 0" offset="0 0 0"/>')
     ms += ['  </assemble>', '</config>\n']
 
     ct = ('<?xml version="1.0" encoding="UTF-8"?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
