@@ -329,14 +329,14 @@ def spider():
         r = sqrt(x * x + y * y)
         sp = sp + cyl(4.0, z0, z1, x, y)
         sp = sp + cyl(3.5, z1, z1 + SPIDER_PILLAR, x, y)   # closes the insert hole
-        path = [(0.0, 0.0), (x, y)]
-        # dog-leg if a straight arm would cover a connector plug
-        if any(_seg_hits_box(path[0], path[1], ARM_W / 2 + 1, b) for b in CP_KEEPOUT):
-            mid = polar(22.0, ang - 35.0 if ang > -90 else ang + 35.0)
-            path = [(0.0, 0.0), mid, (x, y)]
-            sp = sp + cyl(ARM_W / 2, z0, z1, *mid)
+        path = _route_arm((x, y))
+        clr = min(_seg_box_dist(p, q, bx) for p, q in zip(path[:-1], path[1:]) for bx in CP_KEEPOUT)
+        w = min(ARM_W, 2 * (clr - 1.0) - 0.1)          # narrow an arm that squeezes between plugs
+        assert w >= 5.0, f"spider arm too narrow ({w:.1f} mm)"
+        for mid in path[1:-1]:
+            sp = sp + cyl(w / 2, z0, z1, *mid)
         for a, b in zip(path[:-1], path[1:]):
-            sp = sp + _bar(a, b, ARM_W, z0, z1)
+            sp = sp + _bar(a, b, w, z0, z1)
         sp = sp - cyl(M2_INSERT_D / 2, z0 - 1, z0 + M2_INSERT_L + 0.3, x, y)   # M2 insert, from below
         sp = sp - cyl(M2_CLR / 2, z0, z1 + SPIDER_PILLAR - 0.6, x, y)        # screw-tip room
     for (x, y) in CP_SCREWS:
@@ -355,6 +355,42 @@ def _bar(a, b, w, z0, z1):
     L = sqrt((bx - ax) ** 2 + (by - ay) ** 2)
     ang = degrees(atan2(by - ay, bx - ax))
     return Pos(ax, ay, z0) * Rot(0, 0, ang) * Box(L, w, z1 - z0, align=(Align.MIN, Align.CENTER, Align.MIN))
+
+
+def _seg_box_dist(a, b, box):
+    """Euclidean distance between segment a-b and an axis-aligned box (x0, x1, y0, y1)."""
+    import numpy as np
+    x0, x1, y0, y1 = box
+    best = 1e9
+    for t in np.linspace(0, 1, 201):
+        px, py = a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t
+        dx = max(x0 - px, 0, px - x1)
+        dy = max(y0 - py, 0, py - y1)
+        best = min(best, (dx * dx + dy * dy) ** 0.5)
+    return best
+
+
+def _route_arm(end, need=ARM_W / 2 + 1.0):
+    """Hub -> standoff path that keeps every connector plug keep-out clear.
+    Tries the straight arm, then one-bend paths; returns the path with the
+    most clearance (ties go to the shortest)."""
+    from math import hypot
+    cands = [[(0.0, 0.0), end]]
+    ang0 = degrees(atan2(end[1], end[0]))
+    for da in range(-60, 61, 3):
+        for r in (14, 16, 18, 20, 22, 24):
+            cands.append([(0.0, 0.0), polar(r, ang0 + da), end])
+
+    def clearance(path):
+        return min(_seg_box_dist(a, b, bx) for a, b in zip(path[:-1], path[1:]) for bx in CP_KEEPOUT)
+
+    def length(path):
+        return sum(hypot(b[0] - a[0], b[1] - a[1]) for a, b in zip(path[:-1], path[1:]))
+
+    ok = [c for c in cands if clearance(c) >= need]
+    if ok:
+        return min(ok, key=length)
+    return max(cands, key=clearance)
 
 
 def _seg_hits_box(a, b, pad, box):
