@@ -30,21 +30,21 @@ Every dimension is a named constant at the top of `voice_clock.py`. Values marke
 
 | Part | Plate | Orientation | Notes |
 |---|---|---|---|
-| front_shell | 1 | Face down | Only about 350 mm² touches the bed, so **use a 5 mm brim** |
-| rear_shell | 1 | Back rim down | Brim recommended |
+| front_shell | 1 → **extruder 2 (PLA)** | Face down | Visible exterior shell (~350 mm² bed contact, **5 mm brim**) |
+| rear_shell | 1 → **extruder 2 (PLA)** | Back rim down | Visible exterior shell (5 mm brim recommended) |
+| back_plate | 1 → **extruder 2 (PLA)** | Outer face down | Visible exterior back plate (fits on Plate 1 with shells) |
+| mute_plunger | 1 → **extruder 2 (PLA)** | Cap down | 100% infill (also on Plate 2 if preferred in PETG) |
 | carrier | 2 → **extruder 1 (PETG)** | Back face down, bosses up | Internal non-visible bracket |
 | spider | 2 → **extruder 1 (PETG)** | Plate down, hub boss up | Internal non-visible bracket; 100% infill |
 | board_spacers | 2 → **extruder 1 (PETG)** | Flat | 3 × Ø6.5 × 5 internal spacers (100% infill) |
-| mute_plunger | 2 → **extruder 1 (PETG)** | Cap down | 100% infill |
 | insert_coupon | 2 → **extruder 1 (PETG)** | Flat | Print first; verifies 3DZWMAN insert hole sizes |
-| light_guide | 2 → **extruder 1 (PETG)** | Bezel face down | Clear PETG light ring; 100% infill |
-| back_plate | 3 → **extruder 2 (PLA)** | Outer face down | Visible exterior back plate (or on 7-part PETG plate) |
-| tpu_washers | 4 → **extruder 4 (optional)** | Flat | 4× speaker isolation washers in TPU |
+| light_guide | 2 → **extruder 1 (PETG)** | Bezel face down | Clear PETG light ring; 100% infill or all walls |
+| tpu_washers | 3 → **extruder 4 (optional)** | Flat | 4× speaker isolation washers in TPU |
 
 **Suggested U1 settings:**
 - **Matte PLA** for everything except the light guide (clear or natural PETG, on its own plate because the bed temperatures differ). 0.2 mm layers, 4 walls (the heat-set inserts need wall material), 20% gyroid. Set heat-set inserts at about 190–200 °C in PLA. PLA is fine for a bedside clock, but keep it out of sunny windows and hot cars.
 - Textured PEI: the face-down bezel comes out with the plate texture.
-- `out/VoiceClock_U1.3mf` holds all 4 plates. Per-object settings are embedded: 4 walls, 5 mm brim on the shells, 100% infill on the spider, plunger, light guide and washers, no supports. If the plates load stacked or off-bed in your slicer build, use `out/plates/VoiceClock_plate1..4.3mf` instead.
+- `out/VoiceClock_U1.3mf` holds all 3 plates (Plate 1: all externals in PLA; Plate 2: all internals & light ring in PETG; Plate 3: TPU washers). Single-plate project and generic 3MFs are in `out/plates/`.
 - The 3MFs are **model-only**. Your own printer, process and filament presets stay selected. Each part is already assigned to a filament slot: 1 = PETG light guide, 2 = matte PLA body, 4 = TPU washers.
 
 **After opening a 3MF, check:**

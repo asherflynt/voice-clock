@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 700" width="1100" height="700" role="img" aria-label="USB-C inlet, disconnect and Y splice details">
+<style>
+  text{font-family:Helvetica,Arial,sans-serif;fill:#222}
+  .h{font-size:22px;font-weight:700}
+  .b{font-size:15px;font-weight:700}
+  .t{font-size:13px}
+  .s{font-size:11.5px;fill:#555}
+  .wt{fill:#fff}
+  .hs{fill:#9cc7e8;stroke:#3d6f99;stroke-width:1.2}
+  .card{fill:#fafafa;stroke:#ccc;stroke-width:1.2}
+  .pad{fill:#c9a34a;stroke:#7a5e1e}
+  .ok{fill:#1e7d3a;font-weight:700}
+  .no{fill:#c62828;font-weight:700}
+</style>
+<rect width="1100" height="700" fill="#fff"/>
+<text x="24" y="38" class="h">04 · USB-C inlet, disconnect and Y splice</text>
+<text x="24" y="60" class="s">Lead A stays with the back plate. Everything after the disconnect stays with the board stack, so the back plate can come off.</text>
+
+<!-- USB-C breakout -->
+<rect x="24" y="80" width="340" height="330" rx="10" class="card"/>
+<text x="40" y="104" class="b">USB-C breakout (22 × 13 mm)</text>
+<rect x="84" y="150" width="200" height="118" rx="3" fill="#1d2a22" stroke="#111"/>
+<rect x="144" y="134" width="80" height="30" rx="10" fill="#c4c4c4" stroke="#666"/>
+<text x="184" y="128" class="s" text-anchor="middle">socket (through the back-plate slot)</text>
+<circle cx="100" cy="166" r="7" fill="#fff" stroke="#999"/><circle cx="268" cy="166" r="7" fill="#fff" stroke="#999"/>
+<g class="pad"><rect x="108" y="244" width="16" height="16"/><rect x="136" y="244" width="16" height="16"/><rect x="164" y="244" width="16" height="16"/><rect x="192" y="244" width="16" height="16"/><rect x="220" y="244" width="16" height="16"/><rect x="248" y="244" width="16" height="16"/></g>
+<rect x="104" y="240" width="24" height="24" fill="none" stroke="#222" stroke-width="3"/>
+<rect x="132" y="240" width="24" height="24" fill="none" stroke="#d62728" stroke-width="3"/>
+<g style="font-size:10px"><text x="184" y="200" text-anchor="middle" style="fill:#cfd;font-size:10px">5.1 kΩ × 2 on board</text><rect x="160" y="208" width="14" height="8" fill="#333"/><rect x="194" y="208" width="14" height="8" fill="#333"/></g>
+<path d="M144 264 V330" stroke="#d62728" stroke-width="4"/>
+<path d="M116 264 V330" stroke="#222" stroke-width="4"/>
+<text x="40" y="298" class="t" font-weight="700">GND</text>
+<text x="156" y="298" class="t" font-weight="700" style="fill:#d62728">VBUS</text>
+<text x="40" y="350" class="s">Pad order and names vary (VBUS may read V, VCC or 5V;</text>
+<text x="40" y="364" class="s">GND may read G). Go by your board's silkscreen.</text>
+<text x="40" y="380" class="s">Leave CC1 / CC2 and D+ / D− alone.</text>
+<text x="40" y="396" class="s">Check: CC1→GND and CC2→GND each ≈ 5.1 kΩ.</text>
+
+<!-- disconnect -->
+<rect x="380" y="80" width="340" height="330" rx="10" class="card"/>
+<text x="396" y="104" class="b">Disconnect (2-pin, wire-to-wire)</text>
+<path d="M396 170 H460" stroke="#d62728" stroke-width="4"/><path d="M396 196 H460" stroke="#222" stroke-width="4"/>
+<rect x="460" y="156" width="64" height="54" rx="4" fill="#f3efe4" stroke="#222" stroke-width="1.4"/>
+<rect x="470" y="164" width="44" height="14" rx="2" fill="#333"/><rect x="470" y="188" width="44" height="14" rx="2" fill="#333"/>
+<rect x="540" y="160" width="60" height="46" rx="4" fill="#f3efe4" stroke="#222" stroke-width="1.4"/>
+<path d="M528 171 H556 M528 195 H556" stroke="#b8862b" stroke-width="4"/>
+<path d="M600 170 H690" stroke="#d62728" stroke-width="4"/><path d="M600 196 H690" stroke="#222" stroke-width="4"/>
+<text x="456" y="160" class="s" text-anchor="end">▲1</text>
+<text x="492" y="230" class="s" text-anchor="middle">socket half</text>
+<text x="492" y="244" class="s" text-anchor="middle">(lead A, inlet)</text>
+<text x="570" y="230" class="s" text-anchor="middle">pin half</text>
+<text x="570" y="244" class="s" text-anchor="middle">(lead B, boards)</text>
+<text x="396" y="272" class="t">The live (inlet) side gets the shrouded sockets,</text>
+<text x="396" y="288" class="t">so a loose lead can't short. Pin 1 = red.</text>
+<text x="396" y="318" class="b" style="font-size:13px">Which connector</text>
+<text x="396" y="338" class="t"><tspan class="ok">✓</tspan> JST-SM 2-pin (LED-strip pigtails): 3 A, 22 AWG</text>
+<text x="396" y="356" class="t"><tspan class="ok">✓</tspan> JST-XH 2-pin male/female pair: 3 A, 22–28 AWG</text>
+<text x="396" y="374" class="t"><tspan class="no">✗</tspan> JST-PH: 2 A, crimps take 24–32 AWG only</text>
+<text x="396" y="396" class="s">Buy pre-wired pairs, then solder 22 AWG onto their leads.</text>
+
+<!-- Y splice -->
+<rect x="736" y="80" width="340" height="330" rx="10" class="card"/>
+<text x="752" y="104" class="b">Y splice (one per colour)</text>
+<!-- red joint -->
+<path d="M776 140 H826 C851 140 856 162 880 162" stroke="#d62728" stroke-width="4" fill="none"/>
+<text x="756" y="144" class="t" font-weight="700">B</text>
+<path d="M776 162 H826 C851 162 856 162 880 162" stroke="#d62728" stroke-width="4" fill="none"/>
+<text x="756" y="166" class="t" font-weight="700">C</text>
+<path d="M776 184 H826 C851 184 856 162 880 162" stroke="#d62728" stroke-width="3" fill="none"/>
+<text x="756" y="188" class="t" font-weight="700">D</text>
+<rect x="876" y="144" width="70" height="36" rx="8" class="hs"/>
+<text x="911" y="166" class="s" text-anchor="middle" style="fill:#123">4.8 mm</text>
+<!-- black joint -->
+<path d="M776 262 H876 C901 262 906 284 930 284" stroke="#222" stroke-width="4" fill="none"/>
+<text x="756" y="266" class="t" font-weight="700">B</text>
+<path d="M776 284 H876 C901 284 906 284 930 284" stroke="#222" stroke-width="4" fill="none"/>
+<text x="756" y="288" class="t" font-weight="700">C</text>
+<path d="M776 306 H876 C901 306 906 284 930 284" stroke="#222" stroke-width="3" fill="none"/>
+<text x="756" y="310" class="t" font-weight="700">D</text>
+<rect x="926" y="266" width="70" height="36" rx="8" class="hs"/>
+<text x="961" y="288" class="s" text-anchor="middle" style="fill:#123">4.8 mm</text>
+<path d="M946 222 H996" stroke="#555" stroke-width="1.5"/><path d="M946 214 V230 M996 214 V230" stroke="#555"/>
+<text x="971" y="246" class="s" text-anchor="middle">15 mm stagger</text>
+<text x="752" y="346" class="s">B from the disconnect (22 AWG), C to the reSpeaker</text>
+<text x="752" y="360" class="s">(22 AWG), D to the CrowPanel (24 AWG).</text>
+<text x="752" y="376" class="s">Slide the 4.8 mm sleeve on first. All three ends point</text>
+<text x="752" y="390" class="s">the same way: twist, solder, trim to 8 mm, shrink.</text>
+
+<!-- cap -->
+<rect x="24" y="426" width="520" height="130" rx="10" class="card"/>
+<text x="40" y="450" class="b">Optional 470 µF / 10 V capacitor</text>
+<rect x="60" y="476" width="70" height="40" rx="8" fill="#1f4f8f"/>
+<rect x="60" y="476" width="70" height="12" fill="#c9d6ea"/>
+<text x="95" y="486" class="s" text-anchor="middle" style="fill:#123">− − −</text>
+<path d="M130 486 H190" stroke="#888" stroke-width="2"/><path d="M130 506 H190" stroke="#888" stroke-width="2"/>
+<text x="196" y="490" class="t">short leg / stripe → GND (black) joint</text>
+<text x="196" y="510" class="t">long leg → +5 V (red) joint</text>
+<text x="40" y="534" class="s">Solder its legs into the two Y joints before shrinking. Keep the legs short</text>
+<text x="40" y="548" class="s">and sleeved. It smooths the amp's current peaks.</text>
+
+<!-- order of work -->
+<rect x="560" y="426" width="516" height="260" rx="10" fill="#fdecec" stroke="#d62728" stroke-width="1.4"/>
+<text x="576" y="450" class="b">Order of work</text>
+<g class="t">
+<text x="576" y="474">1. Bench checks: sheet 02 (reSpeaker) and sheet 03 step A.</text>
+<text x="576" y="494">2. Lead A: solder to the breakout, then to the disconnect socket half.</text>
+<text x="576" y="514">3. Lead B: the pin half's own leads, trimmed to ~3 cm.</text>
+<text x="576" y="534">4. Lead E + D: pigtail splice (sheet 03 step B).</text>
+<text x="576" y="554">5. Lead C: solder to the reSpeaker header (sheet 02).</text>
+<text x="576" y="574">6. Y splice: B + C + D (+ cap). Slide shrink on first!</text>
+<text x="576" y="594">7. Meter: 5 V to GND not 0 Ω at the disconnect pins.</text>
+<text x="576" y="614">8. Charger into the inlet, meter at the socket half: +5.0 V,</text>
+<text x="590" y="630">red probe on pin 1. Then plug together: both boards boot.</text>
+<text x="576" y="650">9. Play audio loud: header 5V–GND stays above 4.75 V.</text>
+<text x="576" y="670">10. Hot-glue or tie the Y and splices to the carrier back.</text>
+</g>
+
+<!-- iron settings -->
+<rect x="24" y="572" width="520" height="114" rx="10" class="card"/>
+<text x="40" y="596" class="b">Iron and materials</text>
+<text x="40" y="618" class="t">• Swap the heat-set tip for a 2 mm chisel. 340 °C for wire, 370 °C for ground-plane pads.</text>
+<text x="40" y="638" class="t">• 0.6–0.8 mm flux-core solder (63/37 is easiest), extra flux pen for the header.</text>
+<text x="40" y="658" class="t">• Silicone wire: 22 AWG red + black, 24 AWG red + black. Heat shrink 1.5, 2.5, 4.8 mm.</text>
+<text x="40" y="678" class="t">• Tin each stripped end before joining. Let joints cool before you move them.</text>
+</svg>

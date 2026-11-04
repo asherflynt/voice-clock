@@ -181,6 +181,8 @@ Everything in this stack is inside r < 40. The light guide (r = 40.5–43.5) is 
 
 ### Power (soldered harness)
 
+> **Wiring sheets (4 Nov 2026):** [`wiring/WIRING.md`](wiring/WIRING.md) supersedes the solder points below. The reSpeaker is fed at its 2×10 header (5V / GND, through-hole), the CrowPanel through a plug-in MX1.25 pigtail into its power port, and the disconnect is a JST-SM or JST-XH (JST-PH crimps don't take 22 AWG).
+
 ```
 Back plate: USB-C panel breakout (5.1 kΩ CC) ─ 22 AWG ─┬─ reSpeaker 5 V / GND (XIAO 5V/GND pins if they feed the
                                                         │  whole board, else main USB-C VBUS/GND or a large cap / test pad)

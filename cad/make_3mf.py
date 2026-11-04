@@ -14,15 +14,28 @@ import html
 OUT = Path(__file__).parent / "out"
 BED = 270.0
 
+EXTERNALS_PLA = [
+    ("front_shell", 2, 68, 68, 0),
+    ("back_plate", 2, 68, 205, 0),
+    ("rear_shell", 2, 202, 135, 0),
+    ("mute_plunger", 2, 202, 235, 0),
+]
+
+SHELLS_ONLY_PLA = [
+    ("front_shell", 2, 70, 135, 0),
+    ("rear_shell", 2, 200, 135, 0),
+]
+
+BACK_PLATE_ONLY_PLA = [
+    ("back_plate", 2, 135, 135, 0),
+]
+
 # name, extruder (1 = matte PLA body, 2 = clear/natural PETG light guide, 3 = TPU), bed x, y, rot-z
 # PLA and PETG never share a plate (different bed temperatures).
 PLATES = [
     # filament slots match the U1 as loaded: 1 = PETG (internals & light guide), 2 = matte PLA (shells),
     # 4 = TPU (washers, optional). Slot 3 is unused.
-    ("Shells - PLA slot 2", [
-        ("front_shell", 2, 70, 135, 0),
-        ("rear_shell", 2, 200, 135, 0),
-    ]),
+    ("Externals - PLA slot 2", EXTERNALS_PLA),
     ("Internals and Light Guide - PETG slot 1", [
         ("carrier", 1, 68, 72, 0),
         ("light_guide", 1, 68, 195, 0),
@@ -30,9 +43,6 @@ PLATES = [
         ("board_spacers", 1, 188, 155, 0),
         ("insert_coupon", 1, 188, 225, 0),
         ("mute_plunger", 1, 135, 135, 0),
-    ]),
-    ("Back plate - PLA slot 2", [
-        ("back_plate", 2, 135, 135, 0),
     ]),
     ("TPU washers - slot 4 (optional)", [
         ("tpu_washers", 4, 135, 135, 0),
@@ -261,13 +271,13 @@ def verify(path, expect):
 def report(path, meshes, plates):
     print(f"\n{path.name}")
     print(f"  {'part':14s} plate ext  watertight  cm3    z0     height  on-plate  extruder-ok")
-    pidx = {name: i for i, (_, items) in enumerate(plates) for (name, *_r) in items}
+    plate_indices = [pi for pi, (_, ms) in enumerate(plates) for _ in ms]
     rows = verify(path, meshes)
-    for (name, ext, m), r in zip(meshes, rows):
-        ox, oy = plate_origin(pidx[name], len(plates))
+    for pi, (name, ext, m), r in zip(plate_indices, meshes, rows):
+        ox, oy = plate_origin(pi, len(plates))
         b = m.bounds
         on = ox <= b[0][0] and b[1][0] <= ox + BED and oy <= b[0][1] and b[1][1] <= oy + BED
-        print(f"  {r[0]:14s} {pidx[name] + 1:>5} {r[1]:>3}  {str(r[2]):10s} {r[3]:6.2f} {r[4]:6.3f} {r[5]:6.1f}  {str(on):8s}  {r[6]}")
+        print(f"  {r[0]:14s} {pi + 1:>5} {r[1]:>3}  {str(r[2]):10s} {r[3]:6.2f} {r[4]:6.3f} {r[5]:6.1f}  {str(on):8s}  {r[6]}")
         assert r[2] and r[4] == 0 and r[6] and on
 
 
@@ -285,11 +295,16 @@ if __name__ == "__main__":
     for i, (pname, items) in enumerate(PLATES, 1):
         pp = OUT / "plates" / f"VoiceClock_plate{i}.3mf"
         write(pp, [(pname, place(items))])
-    # Also write named single-plate convenience files
+    # Named single-plate convenience files (OrcaSlicer project)
+    write(OUT / "plates" / "VoiceClock_externals_PLA.3mf", [(PLATES[0][0], place(EXTERNALS_PLA))])
+    write(OUT / "plates" / "VoiceClock_shells_only_PLA.3mf", [("Shells only - PLA slot 2", place(SHELLS_ONLY_PLA))])
+    write(OUT / "plates" / "VoiceClock_back_plate_only.3mf", [("Back plate - PLA slot 2", place(BACK_PLATE_ONLY_PLA))])
     write(OUT / "plates" / "VoiceClock_internals_PETG.3mf", [(PLATES[1][0], place(PLATES[1][1]))])
     write(OUT / "plates" / "VoiceClock_internals_with_back_plate_PETG.3mf", [("Internals with Back Plate - PETG slot 1", place(SEVEN_PARTS_PETG))])
-    write(OUT / "plates" / "VoiceClock_back_plate_only.3mf", [(PLATES[2][0], place(PLATES[2][1]))])
     # Universal generic 3MFs (raw meshes embedded in 3D/3dmodel.model, works in every slicer & import mode)
+    write_generic(OUT / "plates" / "VoiceClock_externals_PLA_generic.3mf", EXTERNALS_PLA)
+    write_generic(OUT / "plates" / "VoiceClock_shells_only_PLA_generic.3mf", SHELLS_ONLY_PLA)
+    write_generic(OUT / "plates" / "VoiceClock_back_plate_only_generic.3mf", BACK_PLATE_ONLY_PLA)
     write_generic(OUT / "plates" / "VoiceClock_internals_PETG_generic.3mf", PLATES[1][1])
     write_generic(OUT / "plates" / "VoiceClock_internals_with_back_plate_PETG_generic.3mf", SEVEN_PARTS_PETG)
     for old in OUT.glob("VoiceClock_plate*.3mf"):

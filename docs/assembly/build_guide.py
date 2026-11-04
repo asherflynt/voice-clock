@@ -29,9 +29,9 @@ HARDWARE = [
     ("5", "M2 heat-set insert (3 × 3.2 mm)", "Spider 3, back plate 2"),
     ("1", "USB-C breakout with 5.1 kΩ CC resistors", "Power inlet, glued into the back plate"),
     ("—", "1/16\" adhesive closed-cell foam", "4 mic gaskets, 1 speaker ring"),
-    ("—", "22 and 24 AWG silicone wire, JST-PH 2-pin pair, heat shrink, zip tie, 5-minute epoxy", "Power harness"),
+    ("—", "22 and 24 AWG silicone wire, 2-pin JST-SM or JST-XH pair, MX1.25 4-pin pigtail, heat shrink, zip tie, 5-minute epoxy", "Power harness (see docs/wiring/WIRING.md)"),
 ]
-TOOLS = ["Soldering iron with M2 and M3 heat-set tips", "Hex keys 1.5, 2.0 and 2.5 mm, plus a 2.0 mm driver with a 60 mm or longer shaft",
+TOOLS = ["Soldering iron with M2 and M3 heat-set tips and a 2 mm chisel tip", "Hex keys 1.5, 2.0 and 2.5 mm, plus a 2.0 mm driver with a 60 mm or longer shaft",
          "Multimeter", "Wire strippers, flush cutters, heat gun or lighter", "Tweezers, craft knife, 5 mm and 2 mm hole punch (or scissors)"]
 ELECTRONICS = ["Elecrow CrowPanel 2.1\" rotary display (ESP32-S3)", "Seeed reSpeaker XVF3800 4-mic array with XIAO ESP32-S3",
                "4428 3 W 8 Ω speaker with JST-PH lead", "5 V 3 A USB-C charger"]
@@ -45,8 +45,9 @@ STEPS = [
       "Spider: 3 × M2 in the underside at the end of each arm. Back plate: 2 × M2 in the speaker bosses."],
      "Run a screw into each insert by hand. It should start straight and stop on the thread, not on a blob of plastic."),
     (None, "Power harness",
-     ["Solder 10 cm of 22 AWG red and black to the USB-C breakout's VBUS and GND pads, and finish them in one half of a JST-PH 2-pin pair. This lead stays with the back plate.",
-      "Solder the other JST-PH half to a short split: one 22 AWG pair to the XIAO's 5V and GND pins on the back of the reSpeaker, one 24 AWG pair to the CrowPanel's 5 V and GND (splice into the cable that came with it, or a lead into its 4-pin connector after checking the pinout with a multimeter).",
+     ["Follow the wiring sheets in <code>docs/wiring/WIRING.md</code> (printable PDF there too). Do their bench checks first.",
+      "Solder 10 cm of 22 AWG red and black from the USB-C breakout's VBUS and GND pads to the socket half of a 2-pin JST-SM or JST-XH pair. This lead stays with the back plate.",
+      "From the pin half, make a Y splice: one 22 AWG pair to the reSpeaker's 2×10 header (5V row 1 right, GND row 2 left, on the back), and one 24 AWG pair spliced to a spare MX1.25 4-pin pigtail for the CrowPanel's power port. Find the port's 5 V and GND positions with a meter on the supplied USB cable first.",
       "Cover every joint with heat shrink and strain-relieve the solder joints so a tug never loads a pad.",
       "Plug the speaker lead into the reSpeaker's speaker socket. It runs through the carrier's centre hole later."],
      "With a multimeter, confirm 5 V and GND are not shorted. Power both boards on the bench and confirm they boot before anything goes into the case. Never plug a laptop into either board while the USB-C inlet is powered."),
@@ -98,21 +99,21 @@ def esc(s):
     return html.escape(s, quote=False).replace("&lt;code&gt;", "<code>").replace("&lt;/code&gt;", "</code>")
 
 
-WIRING_SVG = """<svg class="wiring" viewBox="0 0 720 300" role="img" aria-label="Power wiring: the USB-C inlet feeds a JST-PH plug, which splits to the reSpeaker XIAO 5V pin and the CrowPanel 5V input.">
+WIRING_SVG = """<svg class="wiring" viewBox="0 0 720 300" role="img" aria-label="Power wiring: the USB-C inlet feeds a 2-pin disconnect, which splits to the reSpeaker header 5V pin and a pigtail into the CrowPanel power port.">
   <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink)"/></marker></defs>
   <g font-family="var(--mono)" font-size="13" fill="var(--ink)">
     <rect x="16" y="112" width="150" height="76" rx="8" fill="var(--panel)" stroke="var(--rule)"/>
     <text x="91" y="142" text-anchor="middle" font-weight="600">USB-C inlet</text>
     <text x="91" y="162" text-anchor="middle" fill="var(--muted)">5.1 kΩ CC, back plate</text>
     <rect x="230" y="122" width="110" height="56" rx="8" fill="var(--panel)" stroke="var(--rule)"/>
-    <text x="285" y="148" text-anchor="middle" font-weight="600">JST-PH 2</text>
+    <text x="285" y="148" text-anchor="middle" font-weight="600">2-pin SM/XH</text>
     <text x="285" y="166" text-anchor="middle" fill="var(--muted)">disconnect</text>
     <rect x="470" y="30" width="234" height="76" rx="8" fill="var(--panel)" stroke="var(--rule)"/>
     <text x="587" y="60" text-anchor="middle" font-weight="600">reSpeaker XVF3800</text>
-    <text x="587" y="80" text-anchor="middle" fill="var(--muted)">XIAO 5V + GND pins</text>
+    <text x="587" y="80" text-anchor="middle" fill="var(--muted)">header 5V + GND (back)</text>
     <rect x="470" y="194" width="234" height="76" rx="8" fill="var(--panel)" stroke="var(--rule)"/>
     <text x="587" y="224" text-anchor="middle" font-weight="600">CrowPanel 2.1"</text>
-    <text x="587" y="244" text-anchor="middle" fill="var(--muted)">5 V + GND input</text>
+    <text x="587" y="244" text-anchor="middle" fill="var(--muted)">MX1.25 pigtail, power port</text>
     <path d="M166 150 H226" stroke="var(--red)" stroke-width="3" fill="none" marker-end="url(#ah)"/>
     <path d="M340 150 H400 V68 H466" stroke="var(--red)" stroke-width="3" fill="none" marker-end="url(#ah)"/>
     <path d="M400 150 V232 H466" stroke="var(--red)" stroke-width="2" fill="none" marker-end="url(#ah)"/>
@@ -220,7 +221,7 @@ def page(img_prefix="img/"):
         steps.append(f'''<section class="step" id="step-{i}">
   <header><span class="num">{i:02d}</span><h2>{esc(title)}</h2></header>
   {fig}
-  <div class="body">{legend_html(rid) if rid else '<div><h3 class="eyebrow">Parts</h3><ul class="plain"><li>USB-C breakout</li><li>22 and 24 AWG wire</li><li>JST-PH 2-pin pair</li><li>Heat shrink</li></ul></div>'}
+  <div class="body">{legend_html(rid) if rid else '<div><h3 class="eyebrow">Parts</h3><ul class="plain"><li>USB-C breakout</li><li>22 and 24 AWG wire</li><li>2-pin JST-SM or JST-XH pair</li><li>MX1.25 4-pin pigtail</li><li>Heat shrink</li></ul></div>'}
     <div><ol class="do">{lis}</ol><div class="check"><strong>Check before moving on</strong>{esc(check)}</div></div>
   </div>
 </section>''')
@@ -272,8 +273,8 @@ def markdown():
             if LEG.get(rid):
                 out += ["In this picture: " + ", ".join(f"**{it['n']}** {it['label']}" for it in LEG[rid]), ""]
         else:
-            out += ["```mermaid", "flowchart LR", "  A[USB-C inlet, 5.1k CC] -- 22 AWG --> B[JST-PH 2 disconnect]",
-                    "  B -- 22 AWG --> C[reSpeaker XIAO 5V + GND]", "  B -- 24 AWG --> D[CrowPanel 5 V + GND]", "```", ""]
+            out += ["```mermaid", "flowchart LR", "  A[USB-C inlet, 5.1k CC] -- 22 AWG --> B[2-pin SM/XH disconnect]",
+                    "  B -- 22 AWG --> C[reSpeaker header 5V + GND]", "  B -- 24 AWG + MX1.25 pigtail --> D[CrowPanel power port]", "```", ""]
         out += [f"{k}. {t.replace('<code>', '`').replace('</code>', '`')}" for k, t in enumerate(todo, 1)]
         out += ["", f"> **Check:** {check}"]
     out += ["", "## Finished", "", "![Back](img/hero_back.jpg)", "",

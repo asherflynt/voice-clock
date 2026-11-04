@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 710" width="1100" height="710" role="img" aria-label="Side section showing the cable route inside the Voice Clock">
+<style>
+  text{font-family:Helvetica,Arial,sans-serif;fill:#222}
+  .h{font-size:22px;font-weight:700}
+  .b{font-size:15px;font-weight:700}
+  .t{font-size:13px}
+  .s{font-size:11.5px;fill:#555}
+  .num{font-size:12px;font-weight:700;fill:#fff}
+  .part{font-size:11px;fill:#444}
+</style>
+<rect width="1100" height="710" fill="#fff"/>
+<text x="24" y="38" class="h">05 · Where the wires run (side section)</text>
+<text x="24" y="60" class="s">Front (knob) on the left, back plate on the right. Parts to scale (4.5 px/mm) from the CAD, face tilt left out. Wires drawn schematically.</text>
+
+<g transform="translate(0,34)">
+<!-- shell -->
+<path d="M202.5 132 A270 270 0 0 1 565.65 128.4 L565.65 531.6 A270 270 0 0 1 202.5 528 Z" fill="#fbf6f4" stroke="#c9b8b3" stroke-width="10"/>
+<rect x="565.65" y="128.4" width="11.3" height="403.2" fill="#d9ccc8" stroke="#a99"/>
+<text x="571" y="122" class="part" text-anchor="middle">back plate</text>
+<!-- light guide -->
+<rect x="202.5" y="132" width="150" height="17" fill="#cfe8f5" stroke="#7ab" opacity=".9"/>
+<path d="M202.5 511 H335 V519 H352.5 V528 H202.5 Z" fill="#cfe8f5" stroke="#7ab" opacity=".9"/>
+<text x="276" y="126" class="part" text-anchor="middle">light guide</text>
+<!-- CrowPanel -->
+<rect x="171" y="152" width="63" height="356" rx="6" fill="#c4c8cc" stroke="#666"/>
+<rect x="234" y="155" width="43" height="350" fill="#aab0b6" stroke="#666"/>
+<rect x="277" y="222" width="15" height="216" fill="#24502f" stroke="#123"/>
+<rect x="277" y="292" width="24" height="76" fill="#9aa0a6" stroke="#555"/>
+<rect x="292" y="240" width="29" height="18" fill="#f3efe4" stroke="#222"/>
+<rect x="292" y="398" width="29" height="18" fill="#f3efe4" stroke="#222"/>
+<text x="224" y="96" class="part" text-anchor="middle">CrowPanel knob + display</text>
+<path d="M224 100 V150" stroke="#999"/>
+<!-- spider + spacers -->
+<rect x="324" y="200" width="13.5" height="260" fill="#e7d9a8" stroke="#a8964d"/>
+<rect x="337.5" y="180" width="22.5" height="14" fill="#e7d9a8" stroke="#a8964d"/>
+<rect x="337.5" y="466" width="22.5" height="14" fill="#e7d9a8" stroke="#a8964d"/>
+<text x="331" y="194" class="part" text-anchor="middle">spider</text>
+<!-- reSpeaker -->
+<rect x="360" y="105" width="5.4" height="450" fill="#1a1a1a"/>
+<rect x="365.4" y="118" width="26" height="40" fill="#2a4a8a"/>
+<rect x="365.4" y="300" width="14" height="30" fill="#c9a34a" stroke="#7a5e1e"/>
+<rect x="365.4" y="352" width="12" height="16" fill="#f3efe4" stroke="#222"/>
+<text x="362" y="98" class="part" text-anchor="middle">reSpeaker</text>
+<text x="367" y="294" class="part">header</text>
+<text x="381" y="380" class="part">SPK</text>
+<!-- carrier -->
+<path d="M414 92 H425 V300 H414 Z M414 360 H425 V556 H414 Z" fill="#e2d4cf" stroke="#a99"/>
+<text x="420" y="86" class="part" text-anchor="middle">carrier</text>
+<!-- speaker -->
+<rect x="497" y="260" width="68.6" height="140" rx="4" fill="#555" stroke="#222"/>
+<rect x="552" y="272" width="13" height="116" fill="#888"/>
+<text x="531" y="252" class="part" text-anchor="middle">speaker</text>
+<!-- USB-C inlet -->
+<rect x="506" y="445" width="59.6" height="12" fill="#1d2a22"/>
+<rect x="565.65" y="444" width="11" height="14" fill="#bbb" stroke="#666"/>
+<text x="536" y="476" class="part" text-anchor="middle">USB-C inlet</text>
+
+<!-- CrowPanel lead: plug -> spider gap -> notch -> over board edge -> carrier channel -> splice -> Y -->
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M321 405 H346 V514 V560 Q346 576 362 576 H418 Q440 576 444 560 V520" stroke="#d62728" stroke-width="3"/>
+  <path d="M321 410 H342 V514 V562 Q342 580 362 580 H418 Q446 580 448 560 V520" stroke="#222" stroke-width="3"/>
+  <!-- C to header via centre hole -->
+  <path d="M452 494 V340 H379" stroke="#d62728" stroke-width="3"/>
+  <path d="M456 494 V346 H379" stroke="#222" stroke-width="3"/>
+  <!-- trunk + A -->
+  <path d="M444 500 H480 M486 500 Q500 500 506 452" stroke="#d62728" stroke-width="3"/>
+  <path d="M448 506 H480 M486 506 Q506 506 510 457" stroke="#222" stroke-width="3"/>
+  <!-- speaker lead -->
+  <path d="M497 300 H470 Q462 300 462 310 V360 H377" stroke="#888" stroke-width="2.5" stroke-dasharray="6 3"/>
+</g>
+<rect x="439" y="508" width="14" height="14" rx="3" fill="#9cc7e8" stroke="#3d6f99"/>
+<circle cx="450" cy="497" r="7" fill="#fff" stroke="#222" stroke-width="2"/>
+<rect x="478" y="494" width="10" height="18" fill="#f3efe4" stroke="#222"/>
+
+<!-- callout markers -->
+<g>
+  <circle cx="306" cy="430" r="10" fill="#1b6ca8"/><text x="306" y="434" class="num" text-anchor="middle">1</text>
+  <circle cx="330" cy="528" r="10" fill="#1b6ca8"/><text x="330" y="532" class="num" text-anchor="middle">2</text>
+  <circle cx="390" cy="598" r="10" fill="#1b6ca8"/><text x="390" y="602" class="num" text-anchor="middle">3</text>
+  <circle cx="428" cy="528" r="10" fill="#1b6ca8"/><text x="428" y="532" class="num" text-anchor="middle">4</text>
+  <circle cx="466" cy="484" r="10" fill="#1b6ca8"/><text x="466" y="488" class="num" text-anchor="middle">5</text>
+  <circle cx="440" cy="330" r="10" fill="#1b6ca8"/><text x="440" y="334" class="num" text-anchor="middle">6</text>
+  <circle cx="494" cy="524" r="10" fill="#1b6ca8"/><text x="494" y="528" class="num" text-anchor="middle">7</text>
+  <circle cx="520" cy="430" r="10" fill="#1b6ca8"/><text x="520" y="434" class="num" text-anchor="middle">8</text>
+  <circle cx="480" cy="286" r="10" fill="#1b6ca8"/><text x="480" y="290" class="num" text-anchor="middle">9</text>
+  <circle cx="352" cy="490" r="10" fill="#d62728"/><text x="352" y="494" class="num" text-anchor="middle">!</text>
+</g>
+
+</g>
+<!-- legend -->
+<g transform="translate(624,110)">
+  <rect x="0" y="0" width="452" height="566" rx="10" fill="#fafafa" stroke="#ccc"/>
+  <g class="t">
+    <circle cx="24" cy="30" r="10" fill="#1b6ca8"/><text x="24" y="34" class="num" text-anchor="middle">1</text>
+    <text x="44" y="34">Pigtail plug in the CrowPanel power port.</text>
+    <circle cx="24" cy="76" r="10" fill="#1b6ca8"/><text x="24" y="80" class="num" text-anchor="middle">2</text>
+    <text x="44" y="72">Out through the spider, across the 5 mm gap and out</text>
+    <text x="44" y="88">through the light guide's notch (lower left from the front).</text>
+    <circle cx="24" cy="126" r="10" fill="#1b6ca8"/><text x="24" y="130" class="num" text-anchor="middle">3</text>
+    <text x="44" y="122">Over the reSpeaker's edge (3.6 mm to the shell wall)</text>
+    <text x="44" y="138">and through the carrier's wire channel.</text>
+    <circle cx="24" cy="176" r="10" fill="#1b6ca8"/><text x="24" y="180" class="num" text-anchor="middle">4</text>
+    <text x="44" y="172">Pigtail-to-24 AWG splices (E→D). Only behind the</text>
+    <text x="44" y="188">carrier, where there is room.</text>
+    <circle cx="24" cy="226" r="10" fill="#1b6ca8"/><text x="24" y="230" class="num" text-anchor="middle">5</text>
+    <text x="44" y="222">Y splice (+ optional capacitor). Hot-glue or zip-tie</text>
+    <text x="44" y="238">it to the carrier back so no tug reaches a pad.</text>
+    <circle cx="24" cy="276" r="10" fill="#1b6ca8"/><text x="24" y="280" class="num" text-anchor="middle">6</text>
+    <text x="44" y="272">Lead C through the carrier centre hole to the</text>
+    <text x="44" y="288">reSpeaker header (5V / GND).</text>
+    <circle cx="24" cy="326" r="10" fill="#1b6ca8"/><text x="24" y="330" class="num" text-anchor="middle">7</text>
+    <text x="44" y="322">Disconnect. Unplug it to lift the back plate off.</text>
+    <text x="44" y="338">Clear of the speaker and the inlet cage.</text>
+    <circle cx="24" cy="376" r="10" fill="#1b6ca8"/><text x="24" y="380" class="num" text-anchor="middle">8</text>
+    <text x="44" y="372">Lead A to the USB-C inlet. Stays with the back plate.</text>
+    <text x="44" y="388">10 cm gives room to set the plate beside the clock.</text>
+    <circle cx="24" cy="426" r="10" fill="#1b6ca8"/><text x="24" y="430" class="num" text-anchor="middle">9</text>
+    <text x="44" y="422">Speaker lead (plug-in, no soldering) through the</text>
+    <text x="44" y="438">centre hole to the SPK socket. Zip-tie it to its anchor.</text>
+    <circle cx="24" cy="480" r="10" fill="#d62728"/><text x="24" y="484" class="num" text-anchor="middle">!</text>
+    <text x="44" y="476" font-weight="700">No joints, heat shrink or loops in the 5 mm gap</text>
+    <text x="44" y="492">between the spider and the reSpeaker, or in the notch.</text>
+    <text x="44" y="508">Only the bare pigtail passes there (notch 4.5 × 4 mm).</text>
+    <text x="20" y="546" class="s">Leave about 2 cm of slack on lead D so the board stack can slide</text>
+    <text x="20" y="560" class="s">into the front shell before the carrier screws go in.</text>
+  </g>
+</g>
+</svg>

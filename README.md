@@ -13,6 +13,7 @@ An open-source bedside clock and Home Assistant voice satellite: a knit-textured
 | | |
 |---|---|
 | **Print** | [`print/`](print): `VoiceClock_U1.3mf` (4 plates, Snapmaker U1, per-part settings embedded), single-plate 3MFs, and STL/STEP for any slicer. Filament slots: 1 = clear or natural PETG (light guide), 2 = matte PLA (body), 4 = TPU (optional washers). |
+| **Wire** | [Wiring and soldering sheets](docs/wiring/WIRING.md) ([printable PDF](docs/wiring/wiring_sheets.pdf)): wiring diagram, exact solder points on each board, cut list, splice details, cable route and a power-up checklist. |
 | **Assemble** | [Illustrated assembly guide](docs/assembly/ASSEMBLY.md) ([web version](docs/assembly/index.html)): 10 steps, numbered callouts for every part and fastener. |
 | **Flash** | [`firmware/`](firmware): ESPHome config for the CrowPanel clock face. The reSpeaker runs the [formatBCE XVF3800 ESPHome integration](https://github.com/formatBCE/Respeaker-XVF3800-ESPHome-integration). |
 | **Modify** | [`cad/`](cad): `voice_clock.py` (model), `check.py` (fit checks), `make_3mf.py` (print files), `blender/` (photoreal renders and callouts). |
@@ -27,7 +28,7 @@ An open-source bedside clock and Home Assistant voice satellite: a knit-textured
 | 1 | USB-C breakout with 5.1 kΩ CC resistors, and a 5 V 3 A USB-C charger |
 | 17 | Screws: M2 × 10 / × 20 and M3 × 6 / × 8 / × 12 (socket and button head) |
 | 14 | Brass heat-set inserts: 9 × M3 (4 × 4.2 mm), 5 × M2 (3 × 3.2 mm) |
-| | 1/16" adhesive closed-cell foam, 22 and 24 AWG wire, JST-PH 2-pin pair, heat shrink, epoxy |
+| | 1/16" adhesive closed-cell foam, 22 and 24 AWG wire, 2-pin JST-SM or JST-XH pair, MX1.25 4-pin pigtail, heat shrink, epoxy |
 
 The [build plan](docs/build-plan.md) explains the design decisions: mic-channel acoustics, speaker isolation, power, why the boards are clamped the way they are, and the known risks.
 

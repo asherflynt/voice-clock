@@ -13,7 +13,7 @@
 
 **Electronics:** Elecrow CrowPanel 2.1" rotary display (ESP32-S3); Seeed reSpeaker XVF3800 4-mic array with XIAO ESP32-S3; 4428 3 W 8 Ω speaker with JST-PH lead; 5 V 3 A USB-C charger
 
-**Tools:** Soldering iron with M2 and M3 heat-set tips; Hex keys 1.5, 2.0 and 2.5 mm, plus a 2.0 mm driver with a 60 mm or longer shaft; Multimeter; Wire strippers, flush cutters, heat gun or lighter; Tweezers, craft knife, 5 mm and 2 mm hole punch (or scissors)
+**Tools:** Soldering iron with M2 and M3 heat-set tips and a 2 mm chisel tip; Hex keys 1.5, 2.0 and 2.5 mm, plus a 2.0 mm driver with a 60 mm or longer shaft; Multimeter; Wire strippers, flush cutters, heat gun or lighter; Tweezers, craft knife, 5 mm and 2 mm hole punch (or scissors)
 
 | Qty | Part | Where it goes |
 |---|---|---|
@@ -26,7 +26,7 @@
 | 5 | M2 heat-set insert (3 × 3.2 mm) | Spider 3, back plate 2 |
 | 1 | USB-C breakout with 5.1 kΩ CC resistors | Power inlet, glued into the back plate |
 | — | 1/16" adhesive closed-cell foam | 4 mic gaskets, 1 speaker ring |
-| — | 22 and 24 AWG silicone wire, JST-PH 2-pin pair, heat shrink, zip tie, 5-minute epoxy | Power harness |
+| — | 22 and 24 AWG silicone wire, 2-pin JST-SM or JST-XH pair, MX1.25 4-pin pigtail, heat shrink, zip tie, 5-minute epoxy | Power harness (see docs/wiring/WIRING.md) |
 
 ## 1. Heat-set inserts
 
@@ -45,15 +45,16 @@ In this picture: **1** 3x M3 insert, **2** Rear shell, **3** 3x M3 insert, **4**
 
 ```mermaid
 flowchart LR
-  A[USB-C inlet, 5.1k CC] -- 22 AWG --> B[JST-PH 2 disconnect]
-  B -- 22 AWG --> C[reSpeaker XIAO 5V + GND]
-  B -- 24 AWG --> D[CrowPanel 5 V + GND]
+  A[USB-C inlet, 5.1k CC] -- 22 AWG --> B[2-pin SM/XH disconnect]
+  B -- 22 AWG --> C[reSpeaker header 5V + GND]
+  B -- 24 AWG + MX1.25 pigtail --> D[CrowPanel power port]
 ```
 
-1. Solder 10 cm of 22 AWG red and black to the USB-C breakout's VBUS and GND pads, and finish them in one half of a JST-PH 2-pin pair. This lead stays with the back plate.
-2. Solder the other JST-PH half to a short split: one 22 AWG pair to the XIAO's 5V and GND pins on the back of the reSpeaker, one 24 AWG pair to the CrowPanel's 5 V and GND (splice into the cable that came with it, or a lead into its 4-pin connector after checking the pinout with a multimeter).
-3. Cover every joint with heat shrink and strain-relieve the solder joints so a tug never loads a pad.
-4. Plug the speaker lead into the reSpeaker's speaker socket. It runs through the carrier's centre hole later.
+1. Follow the wiring sheets in `docs/wiring/WIRING.md` (printable PDF there too). Do their bench checks first.
+2. Solder 10 cm of 22 AWG red and black from the USB-C breakout's VBUS and GND pads to the socket half of a 2-pin JST-SM or JST-XH pair. This lead stays with the back plate.
+3. From the pin half, make a Y splice: one 22 AWG pair to the reSpeaker's 2×10 header (5V row 1 right, GND row 2 left, on the back), and one 24 AWG pair spliced to a spare MX1.25 4-pin pigtail for the CrowPanel's power port. Find the port's 5 V and GND positions with a meter on the supplied USB cable first.
+4. Cover every joint with heat shrink and strain-relieve the solder joints so a tug never loads a pad.
+5. Plug the speaker lead into the reSpeaker's speaker socket. It runs through the carrier's centre hole later.
 
 > **Check:** With a multimeter, confirm 5 V and GND are not shorted. Power both boards on the bench and confirm they boot before anything goes into the case. Never plug a laptop into either board while the USB-C inlet is powered.
 
@@ -138,7 +139,7 @@ In this picture: **1** Speaker 4428 3 W, **2** 2x M2x10 SHCS, **3** 4x TPU washe
 1. Stick a foam ring around the speaker's face.
 2. The speaker stays plugged into the reSpeaker; work with the back plate next to the clock. Set a TPU washer on each speaker boss, place the speaker with its face toward the round grille and its lead toward the top, then add a washer on top of each ear.
 3. Fit 2 × M2 × 10. Snug only: the washers do the isolation, so don't crush them.
-4. Glue the USB-C breakout into its pocket with 5-minute epoxy, receptacle in the slot. Keep a cable plugged in while it cures to hold it square. Zip-tie the speaker lead to the anchor.
+4. Stand the USB-C breakout on its USB edge with the socket in the slot, board against the backing wall, and fit 2 × M2 × 10 through its holes into the wall. Zip-tie the speaker lead to the anchor.
 
 > **Check:** A USB-C cable plugs in fully from outside, and the speaker doesn't touch the plate anywhere except the foam and washers.
 
