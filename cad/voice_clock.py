@@ -94,7 +94,7 @@ REAR_RIB_ANG  = [0.0, 150.0, 270.0]    # clear of clamp heads (41/180/319), rim 
                                         # and the back-plate lugs (90/210/330) on the driver path
 REAR_RIB_R    = 38.0      # inside the back opening -> straight driver access
 # heat-set insert holes for the user's kit (OD - ~0.45). insert_coupon brackets these.
-M3_INSERT_D   = 3.7       # M3 x 4 x OD4.2
+M3_INSERT_D   = 4.0       # 3DZWMAN D3 for M3 (OD 4.2 -> hole 4.0, min wall W=1.6)
 M3_INSERT_DEPTH = 6.5     # inserts are 4 long; the extra depth is screw-tip room
 CARRIER_INSERT_DEPTH = 5.0  # carrier bosses can't grow (board parts)
 M2_INSERT_L   = 3.0       # M2 x 3 x OD3.2
@@ -107,7 +107,7 @@ MIC_CH_Z      = 3.0
 # back plate
 BACK_LUG_ANG  = [90.0, 210.0, 330.0]
 BACK_SCREW_R  = 37.5
-# speaker: 4428 3 W 8 ohm, from vendor/speaker_4428_3W8R.step
+# speaker: 4428 3 W 8 ohm, from ../decive files/speaker_4428_3W8R.step
 SPK_STEP      = Path(__file__).parent / "vendor" / "speaker_4428_3W8R.step"
 SPK_BODY      = (28.2, 31.0, 15.3)             # body x (ear axis), y, z (back -> diaphragm face)
 SPK_EAR_PITCH = 36.7                           # ear hole c-c, holes d2.4 -> M2
@@ -117,7 +117,7 @@ SPK_CONE_R    = 13.0                           # diaphragm recess radius
 SPK_CY        = 0.0                            # speaker centre, D y (lead exits toward +y)
 SPK_GASKET    = 1.1                            # 1/16" (1.6 mm) foam squeezed to 1.1
 TPU_WASHER_T  = 1.0                            # isolation washer, one each side of each ear
-M2_INSERT_D   = 2.8                            # M2 x 3 x OD3.2 insert hole
+M2_INSERT_D   = 2.9                            # 3DZWMAN D3 for M2 (OD 3.0 -> hole 2.9, min wall W=1.3)
 M2_INSERT_DEPTH = 6.5                          # M2 x 10 passes 2.6 mm beyond the insert
 # USB-C inlet: 6-pin breakout with 5.1k CC resistors, measured 3 Nov 2026:
 # PCB 21.96 x 13.11 x 1.61, socket on the top face centred on the long (USB) edge,
@@ -230,7 +230,7 @@ def front_shell():
     # carrier lugs with M2.5 heat-set inserts (board edge must pass r > RS_R)
     for ang in SHELL_LUG_ANG:
         lug = rz_profile([(RS_R + 0.6, CARRIER_FRONT), (SPHERE_R + 1, CARRIER_FRONT),
-                          (SPHERE_R + 1, CARRIER_FRONT + 17), (RS_R + 0.6, CARRIER_FRONT + 6.5)], ang, 4.5)
+                          (SPHERE_R + 1, CARRIER_FRONT + 17), (RS_R + 0.6, CARRIER_FRONT + 8.0)], ang, 4.5)
         shell = shell + (lug & env & zslab(CARRIER_FRONT, FACE_Z))
         x, y = polar(SHELL_LUG_R, ang)
         shell = shell - cyl(M3_INSERT_D / 2, CARRIER_FRONT - 1, CARRIER_FRONT + M3_INSERT_DEPTH, x, y)
@@ -355,7 +355,7 @@ def spider():
             sp = sp + cyl(w / 2, z0, z1, *mid)
         for a, b in zip(path[:-1], path[1:]):
             sp = sp + _bar(a, b, w, z0, z1)
-        sp = sp - cyl(M2_INSERT_D / 2, z0 - 1, z0 + M2_INSERT_L + 0.3, x, y)   # M2 insert, from below
+        sp = sp - cyl(M2_INSERT_D / 2, z0 - 1, z0 + M2_INSERT_L + 1.0, x, y)   # M2 insert, from below (depth L+1mm)
         sp = sp - cyl(M2_CLR / 2, z0, z1 + SPIDER_PILLAR - 0.6, x, y)        # screw-tip room
     for (x, y) in CP_SCREWS:
         sp = sp - cyl(M3_CLR / 2, z0 - 1, CP_HUB_FACE_Z + 1, x, y)

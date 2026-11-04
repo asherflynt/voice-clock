@@ -16,26 +16,36 @@ BED = 270.0
 # name, extruder (1 = matte PLA body, 2 = clear/natural PETG light guide, 3 = TPU), bed x, y, rot-z
 # PLA and PETG never share a plate (different bed temperatures).
 PLATES = [
-    # filament slots match the U1 as loaded: 1 = PETG (light guide), 2 = matte PLA (body),
+    # filament slots match the U1 as loaded: 1 = PETG (internals & light guide), 2 = matte PLA (shells),
     # 4 = TPU (washers, optional). Slot 3 is unused.
     ("Shells - PLA slot 2", [
         ("front_shell", 2, 70, 135, 0),
         ("rear_shell", 2, 200, 135, 0),
     ]),
-    ("Internals - PLA slot 2", [
-        ("carrier", 2, 68, 72, 0),
-        ("back_plate", 2, 62, 196, 0),
-        ("spider", 2, 188, 192, 0),
-        ("mute_plunger", 2, 246, 246, 0),
-        ("insert_coupon", 2, 200, 60, 0),
-        ("board_spacers", 2, 205, 112, 0),
+    ("Internals & Light Guide - PETG slot 1", [
+        ("carrier", 1, 68, 72, 0),
+        ("light_guide", 1, 68, 195, 0),
+        ("spider", 1, 188, 72, 0),
+        ("board_spacers", 1, 188, 155, 0),
+        ("insert_coupon", 1, 188, 225, 0),
+        ("mute_plunger", 1, 135, 135, 0),
     ]),
-    ("Light guide - PETG slot 1", [
-        ("light_guide", 1, 135, 135, 0),
+    ("Back plate - PLA slot 2", [
+        ("back_plate", 2, 135, 135, 0),
     ]),
     ("TPU washers - slot 4 (optional)", [
         ("tpu_washers", 4, 135, 135, 0),
     ]),
+]
+
+SEVEN_PARTS_PETG = [
+    ("carrier", 1, 64, 64, 0),
+    ("back_plate", 1, 195, 60, 0),
+    ("light_guide", 1, 58, 195, 0),
+    ("spider", 1, 180, 155, 0),
+    ("board_spacers", 1, 185, 230, 0),
+    ("insert_coupon", 1, 115, 240, 0),
+    ("mute_plunger", 1, 135, 135, 0),
 ]
 # object-level overrides (independent of the user's preset names)
 SETTINGS = {
@@ -237,6 +247,10 @@ if __name__ == "__main__":
     for i, (pname, items) in enumerate(PLATES, 1):
         pp = OUT / "plates" / f"VoiceClock_plate{i}.3mf"
         write(pp, [(pname, place(items))])
+    # Also write named single-plate convenience files
+    write(OUT / "plates" / "VoiceClock_internals_PETG.3mf", [(PLATES[1][0], place(PLATES[1][1]))])
+    write(OUT / "plates" / "VoiceClock_internals_with_back_plate_PETG.3mf", [("Internals with Back Plate - PETG slot 1", place(SEVEN_PARTS_PETG))])
+    write(OUT / "plates" / "VoiceClock_back_plate_only.3mf", [(PLATES[2][0], place(PLATES[2][1]))])
     for old in OUT.glob("VoiceClock_plate*.3mf"):
         old.unlink()
     print("\nall plates verified")

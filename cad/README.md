@@ -32,14 +32,14 @@ Every dimension is a named constant at the top of `voice_clock.py`. Values marke
 |---|---|---|---|
 | front_shell | 1 | Face down | Only about 350 mm² touches the bed, so **use a 5 mm brim** |
 | rear_shell | 1 | Back rim down | Brim recommended |
-| carrier | 2 | Back face down, bosses up | |
-| back_plate | 2 | Outer face down | |
-| spider | 2 | Plate down, hub boss up | 100% infill (it carries the display) |
-| mute_plunger | 2 | Cap down | |
-| insert_coupon | 2 | Flat | Print first; it confirms the insert hole size |
-| board_spacers | 2 | Flat | 3 × Ø6.5 × 5 spacers between the reSpeaker and the spider |
-| light_guide | 3 → **extruder 2** (own plate) | Bezel face down | Natural or clear PETG. Use 100% infill or all walls for an even glow |
-| tpu_washers | 4 → **extruder 3** (optional) | Flat | 4× speaker isolation washers in TPU. Skip this plate if you use M2 rubber washers instead |
+| carrier | 2 → **extruder 1 (PETG)** | Back face down, bosses up | Internal non-visible bracket |
+| spider | 2 → **extruder 1 (PETG)** | Plate down, hub boss up | Internal non-visible bracket; 100% infill |
+| board_spacers | 2 → **extruder 1 (PETG)** | Flat | 3 × Ø6.5 × 5 internal spacers (100% infill) |
+| mute_plunger | 2 → **extruder 1 (PETG)** | Cap down | 100% infill |
+| insert_coupon | 2 → **extruder 1 (PETG)** | Flat | Print first; verifies 3DZWMAN insert hole sizes |
+| light_guide | 2 → **extruder 1 (PETG)** | Bezel face down | Clear PETG light ring; 100% infill |
+| back_plate | 3 → **extruder 2 (PLA)** | Outer face down | Visible exterior back plate (or on 7-part PETG plate) |
+| tpu_washers | 4 → **extruder 4 (optional)** | Flat | 4× speaker isolation washers in TPU |
 
 **Suggested U1 settings:**
 - **Matte PLA** for everything except the light guide (clear or natural PETG, on its own plate because the bed temperatures differ). 0.2 mm layers, 4 walls (the heat-set inserts need wall material), 20% gyroid. Set heat-set inserts at about 190–200 °C in PLA. PLA is fine for a bedside clock, but keep it out of sunny windows and hot cars.
@@ -67,8 +67,8 @@ Sized for common kits: heat-set inserts M2 (3 long × 3.2 OD) and M3 (4 long × 
 
 | Qty | Insert | Where |
 |---|---|---|
-| 9 | M3 (hole Ø3.7) | Front-shell lugs ×3, carrier bosses ×3, rear-shell lugs ×3 |
-| 5 | M2 (hole Ø2.8) | Spider underside ×3, speaker bosses ×2 |
+| 9 | M3 (hole Ø4.0, depth ≥5.0 mm) | Front-shell lugs ×3, carrier bosses ×3, rear-shell lugs ×3 |
+| 5 | M2 (hole Ø2.9, depth ≥4.0 mm) | Spider underside ×3, speaker bosses ×2 |
 
 Also needed: the USB-C breakout with 5.1 kΩ (glued into the back-plate cage with epoxy), 1/16" adhesive closed-cell foam (4 mic gaskets Ø5 with Ø2 hole, speaker-face ring), wire, JST-PH pigtails and heat shrink.
 
