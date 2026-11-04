@@ -9,6 +9,7 @@ import zipfile
 from pathlib import Path
 import numpy as np
 import trimesh
+import html
 
 OUT = Path(__file__).parent / "out"
 BED = 270.0
@@ -22,7 +23,7 @@ PLATES = [
         ("front_shell", 2, 70, 135, 0),
         ("rear_shell", 2, 200, 135, 0),
     ]),
-    ("Internals & Light Guide - PETG slot 1", [
+    ("Internals and Light Guide - PETG slot 1", [
         ("carrier", 1, 68, 72, 0),
         ("light_guide", 1, 68, 195, 0),
         ("spider", 1, 188, 72, 0),
@@ -136,7 +137,7 @@ def write(path, plates):
     root = [f'<?xml version="1.0" encoding="UTF-8"?>\n<model unit="millimeter" xml:lang="en-US" {NS}>',
             '<metadata name="Application">SnapmakerOrca-02.04.00.70</metadata>',
             '<metadata name="BambuStudio:3mfVersion">1</metadata>',
-            f'<metadata name="Title">{plate}</metadata>', '<resources>']
+            f'<metadata name="Title">{html.escape(plate)}</metadata>', '<resources>']
     for k, (name, ext, m) in enumerate(meshes, 1):
         root.append(f'<object id="{100 + k}" p:UUID="0000{100 + k:04d}-61cb-4c03-9d28-80fed5dfa1dc" type="model"><components>'
                     f'<component p:path="/3D/Objects/object_1.model" objectid="{k}" '
@@ -163,7 +164,7 @@ def write(path, plates):
                '    </part>', '  </object>']
     k = 0
     for pi, (pname, pm) in enumerate(plates, 1):
-        ms += ['  <plate>', f'    <metadata key="plater_id" value="{pi}"/>', f'    <metadata key="plater_name" value="{pname}"/>',
+        ms += ['  <plate>', f'    <metadata key="plater_id" value="{pi}"/>', f'    <metadata key="plater_name" value="{html.escape(pname)}"/>',
                '    <metadata key="locked" value="false"/>']
         for _ in pm:
             k += 1
@@ -196,6 +197,43 @@ def write(path, plates):
     tmp.unlink()
     return meshes
 
+
+
+def write_generic(path, items):
+    """Write a standard generic 3MF where geometry is directly in 3D/3dmodel.model."""
+    meshes = place(items)
+    root = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02">',
+        '<resources>'
+    ]
+    for k, (name, ext, m) in enumerate(meshes, 1):
+        root.append(f'<object id="{k}" name="{name}" type="model"><mesh><vertices>')
+        for v in m.vertices:
+            root.append(f'<vertex x="{v[0]:.6f}" y="{v[1]:.6f}" z="{v[2]:.6f}"/>')
+        root.append('</vertices><triangles>')
+        for t in m.faces:
+            root.append(f'<triangle v1="{t[0]}" v2="{t[1]}" v3="{t[2]}"/>')
+        root.append('</triangles></mesh></object>')
+    root.append('</resources>\n<build>')
+    for k, _ in enumerate(meshes, 1):
+        root.append(f'<item objectid="{k}" printable="1"/>')
+    root.append('</build>\n</model>')
+
+    ct = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+          '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+          '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+          '<Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/></Types>\n')
+    rels = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+            '<Relationship Target="/3D/3dmodel.model" Id="rel-1" '
+            'Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/></Relationships>\n')
+
+    with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as z:
+        z.writestr('[Content_Types].xml', ct)
+        z.writestr('_rels/.rels', rels)
+        z.writestr('3D/3dmodel.model', '\n'.join(root))
+    return meshes
 
 def verify(path, expect):
     """Re-read the archive and rebuild each part from the raw XML (not trimesh's 3MF loader)."""
@@ -251,6 +289,9 @@ if __name__ == "__main__":
     write(OUT / "plates" / "VoiceClock_internals_PETG.3mf", [(PLATES[1][0], place(PLATES[1][1]))])
     write(OUT / "plates" / "VoiceClock_internals_with_back_plate_PETG.3mf", [("Internals with Back Plate - PETG slot 1", place(SEVEN_PARTS_PETG))])
     write(OUT / "plates" / "VoiceClock_back_plate_only.3mf", [(PLATES[2][0], place(PLATES[2][1]))])
+    # Universal generic 3MFs (raw meshes embedded in 3D/3dmodel.model, works in every slicer & import mode)
+    write_generic(OUT / "plates" / "VoiceClock_internals_PETG_generic.3mf", PLATES[1][1])
+    write_generic(OUT / "plates" / "VoiceClock_internals_with_back_plate_PETG_generic.3mf", SEVEN_PARTS_PETG)
     for old in OUT.glob("VoiceClock_plate*.3mf"):
         old.unlink()
     print("\nall plates verified")
