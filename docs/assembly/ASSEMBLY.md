@@ -112,7 +112,7 @@ In this picture: **1** Carrier, **2** 3x M2x20 SHCS, **3** 3x M3 insert, **4** r
 
 In this picture: **1** Carrier, **2** 3x M3x6 SHCS, **3** Mute button, **4** Front shell
 
-1. Drop the mute button into the hole at the top of the front shell, cap outside.
+1. Click the mute button plunger into the hole at the top of the front shell from the outside (its snap-fit barb and flexure slot capture it so it cannot fall out).
 2. Slide the whole stack into the front shell from behind, knob first. The shell's bezel ring pushes the light guide back until it sits flat on the reSpeaker, lip over the LED ring. Push on until the carrier rim sits on the three lugs.
 3. Fit 3 × M3 × 6 through the carrier rim into the lug inserts.
 

@@ -86,7 +86,7 @@ Illustrated, step-by-step guide: [`../docs/assembly`](../docs/assembly/ASSEMBLY.
 4. Set the 3 M2 inserts into the spider's underside and the 3 printed spacers on the reSpeaker's front holes.
 5. Place the reSpeaker on the spacers, then the carrier behind it, then 3 × M2 × 20 from the back into the spider inserts. Plug in the speaker lead before the carrier goes on.
 6. Fit the light guide over the display ring, with its notch at the CrowPanel cable. Fit the mic foam gaskets.
-7. Put the mute plunger in the front shell. Slide the stack in from behind (the knob goes through the face). Screw the carrier rim (3 × M3 × 6 socket head).
+7. Click the mute plunger into the front shell from outside (snap-fit barb captures it). Slide the stack in from behind (the knob goes through the face). Screw the carrier rim (3 × M3 × 6 socket head).
 8. Fit the rear shell (3 × M3 × 8 through the ribs via the open back).
 9. Stick the foam ring around the speaker's diaphragm face. Screw the speaker to the back plate, diaphragm toward the round grille and lead toward the top (M2 × 10 through TPU washers). Epoxy the USB-C breakout into its cage and zip-tie the lead. Close up with 3 × M3 × 8 button head.
 

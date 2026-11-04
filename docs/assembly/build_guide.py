@@ -72,7 +72,7 @@ STEPS = [
       "Fit 3 × M2 × 20 from the back of the carrier, through the board and spacers, into the spider inserts. Tighten in turn until snug."],
      "The board doesn't rock and no wire is pinched."),
     ("step_06", "Into the front shell",
-     ["Drop the mute button into the hole at the top of the front shell, cap outside.",
+     ["Click the mute button plunger into the hole at the top of the front shell from the outside (its snap-fit barb and flexure slot capture it so it cannot fall out).",
       "Slide the whole stack into the front shell from behind, knob first. The shell's bezel ring pushes the light guide back until it sits flat on the reSpeaker, lip over the LED ring. Push on until the carrier rim sits on the three lugs.",
       "Fit 3 × M3 × 6 through the carrier rim into the lug inserts."],
      "Pressing the mute button clicks the reSpeaker's mute switch. The knob stands about 7 mm proud of the face and still presses."),

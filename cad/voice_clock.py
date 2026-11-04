@@ -108,7 +108,7 @@ MIC_CH_Z      = 3.0
 BACK_LUG_ANG  = [90.0, 210.0, 330.0]
 BACK_SCREW_R  = 37.5
 # speaker: 4428 3 W 8 ohm, from ../decive files/speaker_4428_3W8R.step
-SPK_STEP      = Path(__file__).parent / "vendor" / "speaker_4428_3W8R.step"
+SPK_STEP      = Path(__file__).parent.parent / "decive files" / "speaker_4428_3W8R.step"
 SPK_BODY      = (28.2, 31.0, 15.3)             # body x (ear axis), y, z (back -> diaphragm face)
 SPK_EAR_PITCH = 36.7                           # ear hole c-c, holes d2.4 -> M2
 SPK_EAR_T     = 2.4
@@ -174,6 +174,13 @@ def radial_cyl(r, ang, r0, r1, z):
     """Cylinder along the radial direction `ang` (deg) at height z."""
     c = Cylinder(r, r1 - r0, align=(Align.CENTER, Align.CENTER, Align.MIN))
     c = Rot(0, 90, 0) * c                       # axis now +X
+    return Rot(0, 0, ang) * (Pos(r0, 0, z) * c)
+
+
+def radial_cone(r1, r2, ang, r0, r1_pos, z):
+    """Truncated cone along radial direction `ang` (deg) at height z."""
+    c = Cone(r1, r2, r1_pos - r0, align=(Align.CENTER, Align.CENTER, Align.MIN))
+    c = Rot(0, 90, 0) * c
     return Rot(0, 0, ang) * (Pos(r0, 0, z) * c)
 
 
@@ -488,12 +495,16 @@ def tpu_washers():
 
 
 def plunger():
-    """Mute button plunger. Modelled in D frame at 12 o'clock."""
+    """Mute button plunger with snap-fit barb and flexure slot. Modelled in D frame at 12 o'clock."""
     r_btn = RS_EDGE_R + 0.15
     r_out = SPHERE_R + 0.6
     rod = radial_cyl(2.0, 90, r_btn, r_out - 1.2, RS_BTN_Z)
     cap = radial_cyl(3.5, 90, r_out - 1.2 - 0.6, r_out, RS_BTN_Z)   # 0.6 mm travel
-    return rod + cap
+    ramp = radial_cone(1.95, 2.35, 90, 55.4, 56.6, RS_BTN_Z)
+    back = radial_cone(2.35, 2.0, 90, 56.6, 57.0, RS_BTN_Z)
+    barb = ramp + back
+    slot = Pos(0, (r_btn - 0.5 + 57.5) / 2, RS_BTN_Z) * Box(0.8, 57.5 - (r_btn - 0.5), 6.0)
+    return rod + cap + barb - slot
 
 
 # ---------------------------------------------------------------- proxies (render/check only)
