@@ -2,6 +2,21 @@
 
 *Written 31 Oct 2026 from the vendor documentation and STEP models measured in code. The CAD in [`cad/`](../cad) is the source of truth where this plan and the model differ.*
 
+> **v1 update (5 Nov 2026), after the first full print.** The CAD is the source of truth. What changed from the plan below:
+>
+> | | v0 (below) | v1 |
+> |---|---|---|
+> | Sphere | Ø120 | **Ø116**, 109 mm tall, 88 mm deep incl. knob |
+> | Flat base | Ø42 | **Ø54** (limited by the reSpeaker's reset button at 6 o'clock, which pokes out to r 51.6) |
+> | Shell split | 14.5 mm behind the board; the stack slid into the front shell past the floor | **1 mm in front of the board.** The stack drops into the rear shell onto 4 cradle ribs (centring face r 50.15, pads under the PCB back), then the front shell snaps on over the knob |
+> | Shell joints | 3 × M3 × 6 carrier rim, 3 × M3 × 8 rear ribs, 3 × M3 × 8 back plate, 9 M3 inserts | **Snap hooks:** 4 front↔rear (keyed by the mic boots), 3 back plate (keyed at 6 o'clock). 45° faces, so both pull apart by hand. No M3 inserts left |
+> | Board clamping | Carrier screwed to the front shell | Front shell → light guide → board front; cradle pads on the board back. The carrier now hangs on the 3 M2 clamp screws only (bulkhead + wire organiser) |
+> | Mute plunger | Front shell, stopped at r 53.75, z −0.6 (3.5 mm short, 2.4 mm high) | **Rear shell**, on the measured BUTA nub (r 50.23, z −3.75 to −2.2), 0.25 mm rest gap, 1 mm travel, 5 mm guide boss |
+> | Knob gap | 0.75 mm | **0.45 mm**; the light guide centres on the CrowPanel's fixed housing (land Ø78.4 on Ø77.9) |
+> | Cable notch | 195° (on an LED, over the 3.5 mm jack) | **120°** (10 o'clock from the front, between LEDs 105/135) |
+>
+> Hardware is now 3 × M3 × 12, 3 × M2 × 20, 4 × M2 × 10 and 5 M2 inserts. Sections 4 and 4b below describe v0's screws and are kept for the reasoning; the wiring is unchanged apart from the notch position.
+
 **Start here (10 min with calipers):**
 
 1. Measure the speaker: length, width, depth, and where the sound opening is.
@@ -157,7 +172,7 @@ An open-source Home Assistant voice clock shaped like the reference photo: a sph
 
 ## 4b. Mounting, power and cable routing
 
-### How each part is held
+### How each part is held (v0; v1 snaps together, see the top of this plan)
 
 | Part | Method | Anti-rattle |
 |---|---|---|

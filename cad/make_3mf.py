@@ -15,10 +15,10 @@ OUT = Path(__file__).parent / "out"
 BED = 270.0
 
 EXTERNALS_PLA = [
-    ("front_shell", 2, 68, 68, 0),
-    ("back_plate", 2, 68, 205, 0),
-    ("rear_shell", 2, 202, 135, 0),
-    ("mute_plunger", 2, 202, 235, 0),
+    ("front_shell", 2, 67, 69, 0),
+    ("rear_shell", 2, 201, 69, 0),
+    ("back_plate", 2, 67, 205, 0),
+    ("mute_plunger", 2, 201, 205, 0),
 ]
 
 SHELLS_ONLY_PLA = [
@@ -37,12 +37,12 @@ PLATES = [
     # 4 = TPU (washers, optional). Slot 3 is unused.
     ("Externals - PLA slot 2", EXTERNALS_PLA),
     ("Internals and Light Guide - PETG slot 1", [
-        ("carrier", 1, 68, 72, 0),
-        ("light_guide", 1, 68, 195, 0),
-        ("spider", 1, 188, 72, 0),
-        ("board_spacers", 1, 188, 155, 0),
-        ("insert_coupon", 1, 188, 225, 0),
-        ("mute_plunger", 1, 135, 135, 0),
+        ("carrier", 1, 62, 62, 0),
+        ("light_guide", 1, 62, 200, 0),
+        ("spider", 1, 196, 42, 0),
+        ("board_spacers", 1, 196, 108, 0),
+        ("insert_coupon", 1, 196, 160, 0),
+        ("mute_plunger", 1, 196, 200, 0),
     ]),
     ("TPU washers - slot 4 (optional)", [
         ("tpu_washers", 4, 135, 135, 0),
@@ -50,12 +50,12 @@ PLATES = [
 ]
 
 SEVEN_PARTS_PETG = [
-    ("carrier", 1, 64, 64, 0),
-    ("back_plate", 1, 195, 60, 0),
-    ("light_guide", 1, 58, 195, 0),
-    ("spider", 1, 180, 155, 0),
-    ("board_spacers", 1, 185, 230, 0),
-    ("insert_coupon", 1, 115, 240, 0),
+    ("carrier", 1, 62, 62, 0),
+    ("back_plate", 1, 200, 52, 0),
+    ("light_guide", 1, 62, 200, 0),
+    ("spider", 1, 200, 130, 0),
+    ("board_spacers", 1, 200, 185, 0),
+    ("insert_coupon", 1, 140, 245, 0),
     ("mute_plunger", 1, 135, 135, 0),
 ]
 # object-level overrides (independent of the user's preset names)

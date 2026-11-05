@@ -12,17 +12,21 @@ import numpy as np
 import trimesh
 from math import pi
 
-from voice_clock import SPHERE_R, C_Z
+from voice_clock import SPHERE_R, C_Z, FACE_Z, BACK_Z
 
 TEXTURE = "knit"          # "knit" | "hex" | "none"
 DEPTH = 0.6               # mm carved into the 2.5 mm wall
-THETA0, THETA1 = np.radians(40.0), np.radians(137.0)   # textured band (polar angle from +Z)
 STEP = 0.28               # mm surface sampling in the band
+
+# polar angles (from +Z about the sphere centre) of the face rim and the back-plate seam
+FACE_RIM = np.degrees(np.arccos((FACE_Z - C_Z) / SPHERE_R))
+BACK_SEAM = np.degrees(np.arccos((BACK_Z - C_Z) / SPHERE_R))
+THETA0, THETA1 = np.radians(FACE_RIM - 2.8), np.radians(BACK_SEAM + 5.3)   # textured band
 
 # smooth "hem" bands: texture fades in/out over HEM_FADE next to the face rim and
 # the back-plate seam (cleaner edges, full first-layer contact on the face rim)
-HEM_FACE = np.radians(42.8 + 0.6)      # face rim is at 42.8 deg
-HEM_BACK = np.radians(131.7 - 0.8)     # rear-shell / back-plate seam at 131.7 deg
+HEM_FACE = np.radians(FACE_RIM + 0.6)
+HEM_BACK = np.radians(BACK_SEAM - 0.8)
 HEM_FADE = np.radians(2.4)
 
 

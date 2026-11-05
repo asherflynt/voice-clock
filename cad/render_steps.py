@@ -105,28 +105,7 @@ def hw_cp_screws():                      # spider -> CrowPanel hub (from the boa
 def hw_clamp_screws():                   # carrier back -> spider insert
     m = []
     for xy in rs_holes():
-        m += screw(xy, SPLIT_Z + CARRIER_CB, M2_CLAMP_LEN, **SHCS_M2)
-    return m
-
-
-def hw_rim_screws():
-    m = []
-    for a in SHELL_LUG_ANG:
-        m += screw(polar(SHELL_LUG_R, a), SPLIT_Z + RIM_CB[1], 6, **SHCS_M3)
-    return m
-
-
-def hw_rib_screws():
-    m = []
-    for a in REAR_RIB_ANG:
-        m += screw(polar(REAR_RIB_R, a), SPLIT_Z - 4.0, 8, **BTN_M3)
-    return m
-
-
-def hw_back_screws():
-    m = []
-    for a in BACK_LUG_ANG:
-        m += screw(polar(BACK_SCREW_R, a), BACK_Z - BACK_T, 8, **BTN_M3)
+        m += screw(xy, CARRIER_Z0 + CARRIER_CB, M2_CLAMP_LEN, **SHCS_M2)
     return m
 
 
@@ -155,15 +134,6 @@ def hw_spk_washers():
 
 def hw_inserts(which):
     m = []
-    if "front" in which:
-        for a in SHELL_LUG_ANG:
-            m += ins(polar(SHELL_LUG_R, a), CARRIER_FRONT, CARRIER_FRONT + M3_INS_L, M3_INS_OD)
-    if "carrier" in which:
-        for a in REAR_RIB_ANG:
-            m += ins(polar(REAR_RIB_R, a), SPLIT_Z, SPLIT_Z + M3_INS_L, M3_INS_OD)
-    if "rear" in which:
-        for a in BACK_LUG_ANG:
-            m += ins(polar(BACK_SCREW_R, a), BACK_Z, BACK_Z + M3_INS_L, M3_INS_OD)
     if "spider" in which:
         for xy in rs_holes():
             m += ins(xy, STANDOFF_L, STANDOFF_L + M2_INSERT_L, M2_INS_OD)
@@ -232,106 +202,7 @@ FRONT_VIEW = (-35, 14, 1.0)
 
 
 def main():
-    OUT_STEPS.mkdir(exist_ok=True)
-    g = tess_all()
-    z = lambda names, dz=0.0: [(n, dz) for n in names]
-    rh = rs_holes()
-
-    # 1 - heat-set inserts (exploded parts, inserts hovering over their holes)
-    E = 40
-    offs = {"front_shell": 2.0 * E, "spider": 0.5 * E, "carrier": -0.6 * E, "rear_shell": -1.3 * E, "back_plate": -2.2 * E}
-    lift = 9
-    scene(g, [], [(n, d) for n, d in offs.items()], [REAR_VIEW, (-30, 20, 1.0)],
-          "Step 1 - heat-set inserts: 3x M3 front-shell lugs, 3x M3 carrier, 3x M3 rear shell, 3x M2 spider underside, 2x M2 speaker bosses",
-          "step_01_inserts.png",
-          hw_new=[(hw_inserts("front"), BRASS, offs["front_shell"] - lift),
-                  (hw_inserts("spider"), BRASS, offs["spider"] - lift),
-                  (hw_inserts("carrier"), BRASS, offs["carrier"] - lift),
-                  (hw_inserts("rear"), BRASS, offs["rear_shell"] - lift),
-                  (hw_inserts("back"), BRASS, offs["back_plate"] + lift)])
-
-    # 2 - spider onto the CrowPanel hub (3x M3 x 12 from the board side)
-    d_sp, d_sc = -22, -40
-    scene(g, z(CP), [("spider", d_sp)], [REAR_VIEW],
-          "Step 2 - spider bracket onto the CrowPanel hub: remove the 3 stock rear screws, refit with 3x M3x12 through the spider",
-          "step_02_spider.png",
-          hw_base=[], hw_new=[(hw_inserts("spider"), BRASS, d_sp), (hw_cp_screws(), STEEL, d_sc)],
-          arrows=[((0, 0, d_sc - 2), (0, 0, d_sc + 14))])
-
-    # 3 - spacers + reSpeaker
-    d_spc, d_rs = -16, -42
-    scene(g, z(CP) + [("spider", 0)], [("board_spacers", d_spc)] + z(RS, d_rs), [(118, 24, 1.0)],
-          "Step 3 - 3 printed spacers on the reSpeaker's front mounting holes, then the reSpeaker (LEDs facing the display)",
-          "step_03_respeaker.png",
-          hw_base=[(hw_cp_screws(), STEEL, 0), (hw_inserts("spider"), BRASS, 0)],
-          arrows=[((x, y, d_rs - 14), (x, y, d_rs - 2)) for x, y in rh] +
-                 [((x, y, d_spc - 8), (x, y, d_spc - 1)) for x, y in rh])
-
-    # 4 - carrier + clamp screws
-    d_c, d_s = -26, -48
-    scene(g, z(CP) + [("spider", 0), ("board_spacers", 0)] + z(RS), [("carrier", d_c)], [REAR_VIEW],
-          "Step 4 - carrier behind the reSpeaker (plug the speaker lead in first), 3x M2x20 from the back into the spider inserts",
-          "step_04_carrier.png",
-          hw_base=[(hw_cp_screws(), STEEL, 0)],
-          hw_new=[(hw_inserts("carrier"), BRASS, d_c), (hw_clamp_screws(), STEEL, d_s)],
-          arrows=[((x, y, d_s - 8), (x, y, d_s + 10)) for x, y in rh])
-
-    # 5 - light guide + mic foam (from the front)
-    d_lg, d_f = 46, 14
-    core = z(CP) + [("spider", 0), ("board_spacers", 0), ("carrier", 0)] + z(RS)
-    scene(g, core, [("light_guide", d_lg)], [FRONT_VIEW],
-          "Step 5 - light guide over the display ring (notch at the CrowPanel cable), 4 foam mic gaskets on the diagonals",
-          "step_05_lightguide.png",
-          hw_base=[(hw_clamp_screws(), STEEL, 0)],
-          hw_new=[(hw_mic_foam(), FOAM, d_f)],
-          arrows=[((0, 46, d_lg + 30), (0, 46, d_lg + 8))])
-
-    # 6 - stack into the front shell, plunger, rim screws
-    core6 = core + [("light_guide", 0)]
-    d_fs = 70
-    scene(g, core6, [("front_shell", d_fs), ("mute_plunger", d_fs)], [(115, 16, 1.0), FRONT_VIEW],
-          "Step 6 - mute plunger into the top hole, slide the stack into the front shell (knob through the face), 3x M3x6 through the carrier rim",
-          "step_06_frontshell.png",
-          hw_base=[(hw_clamp_screws(), STEEL, 0)],
-          hw_new=[(hw_inserts("front"), BRASS, d_fs), (hw_rim_screws(), STEEL, -22)],
-          arrows=[((0, 0, d_fs + 70), (0, 0, d_fs + 50))] +
-                 [((*polar(SHELL_LUG_R, a), -45), (*polar(SHELL_LUG_R, a), -26)) for a in SHELL_LUG_ANG])
-
-    # 7 - rear shell + rib screws
-    core7 = core6 + [("front_shell", 0), ("mute_plunger", 0)]
-    d_r, d_rs7 = -36, -70
-    scene(g, core7, [("rear_shell", d_r)], [REAR_VIEW],
-          "Step 7 - rear shell onto the front shell, 3x M3x8 button head straight in through the open back into the carrier",
-          "step_07_rearshell.png",
-          hw_base=[(hw_rim_screws(), STEEL, 0)],
-          hw_new=[(hw_inserts("rear"), BRASS, d_r), (hw_rib_screws(), STEEL, d_rs7)],
-          arrows=[((*polar(REAR_RIB_R, a), d_rs7 - 30), (*polar(REAR_RIB_R, a), d_rs7 - 12)) for a in REAR_RIB_ANG])
-
-    # 8 - speaker + USB-C onto the back plate (back plate on its own, inside up)
-    d_sp8, d_w = 28, 48
-    scene(g, [("back_plate", 0)], [("speaker", d_sp8)], [(-62, 18, 1.0)],
-          "Step 8 - back plate: foam ring on the speaker face, speaker on its bosses with a TPU washer each side of each ear, 2x M2x10; epoxy the USB-C breakout into its cage",
-          "step_08_speaker.png",
-          hw_base=[(hw_inserts("back"), BRASS, 0)],
-          hw_new=[(hw_spk_foam(), FOAM, d_sp8 / 2), (hw_spk_washers(), TPU, d_sp8), (hw_spk_screws(), STEEL, d_w),
-                  (hw_usb(), "#2f7d4f", 5)],
-          arrows=[((sx * SPK_EAR_PITCH / 2, SPK_CY, EAR_TOP + d_w + 8), (sx * SPK_EAR_PITCH / 2, SPK_CY, EAR_TOP + d_w - 6))
-                  for sx in (-1, 1)])
-
-    # 9 - close up
-    core9 = core7 + [("rear_shell", 0)]
-    d_b, d_bs = -40, -70
-    scene(g, core9, [("back_plate", d_b), ("speaker", d_b)], [REAR_VIEW],
-          "Step 9 - plug the inlet into the harness, then the back plate onto the rear shell with 3x M3x8 button head",
-          "step_09_backplate.png",
-          hw_base=[(hw_rib_screws(), STEEL, 0)],
-          hw_new=[(hw_spk_washers(), TPU, d_b), (hw_spk_screws(), STEEL, d_b), (hw_usb(), "#2f7d4f", d_b),
-                  (hw_back_screws(), STEEL, d_bs)],
-          arrows=[((*polar(BACK_SCREW_R, a), d_bs - 30), (*polar(BACK_SCREW_R, a), d_bs - 12)) for a in BACK_LUG_ANG])
-
-    # 10 - done
-    scene(g, [], core9 + [("back_plate", 0), ("speaker", 0)], [(-32, 12, 1.0), REAR_VIEW],
-          "Step 10 - assembled", "step_10_done.png")
+    raise SystemExit("The assembly images come from the Blender pipeline now: see blender/export_scene.py")
 
 
 if __name__ == "__main__":

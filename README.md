@@ -26,8 +26,8 @@ An open-source bedside clock and Home Assistant voice satellite: a knit-textured
 | 1 | Seeed reSpeaker XVF3800 4-mic array with XIAO ESP32-S3 |
 | 1 | 4428 3 W 8 Ω speaker with JST-PH lead (its STEP model is in `cad/vendor/`) |
 | 1 | USB-C breakout with 5.1 kΩ CC resistors, and a 5 V 3 A USB-C charger |
-| 17 | Screws: M2 × 10 / × 20 and M3 × 6 / × 8 / × 12 (socket and button head) |
-| 14 | Brass heat-set inserts: 9 × M3 (4 × 4.2 mm), 5 × M2 (3 × 3.2 mm) |
+| 10 | Screws: 3 × M3 × 12, 3 × M2 × 20, 4 × M2 × 10 (socket head) |
+| 5 | Brass M2 heat-set inserts (3 × 3.2 mm) |
 | | 1/16" adhesive closed-cell foam, 22 and 24 AWG wire, 2-pin JST-SM or JST-XH pair, MX1.25 4-pin pigtail, heat shrink, epoxy |
 
 The [build plan](docs/build-plan.md) explains the design decisions: mic-channel acoustics, speaker isolation, power, why the boards are clamped the way they are, and the known risks.
@@ -36,13 +36,21 @@ The [build plan](docs/build-plan.md) explains the design decisions: mic-channel 
 
 ## Status
 
-Version 0: the CAD passes its automated checks (no part overlaps, board and light-guide insertion paths clear, screw engagement 2.5–4 mm, every M3 insert hole fully enclosed), but the full enclosure has not been printed and assembled yet. Confirmed on hardware: the reSpeaker's mute button is the one marked **A** (at 9 o'clock seen from the LED side with the XIAO at the top), so the board is rotated −90° to put it under the plunger. Things to confirm on your hardware, all single parameters in `cad/voice_clock.py`:
+Version 1 (5 Nov 2026), after the first full print of v0:
 
-- Heat-set insert hole size: print `insert_coupon` first (`M2_INSERT_D`, `M3_INSERT_D`).
+- **Snap-fit shell.** The front shell snaps onto the rear shell (4 hooks) and the back plate snaps in (3 hooks, keyed). Both pull apart by hand. That removed 9 M3 screws and 9 M3 inserts.
+- **Smaller, steadier.** The sphere went from 120 to 116 mm, 109 mm tall (was 116), on a 54 mm flat base (was 42).
+- **Tighter around the reSpeaker.** Four cradle ribs centre the board to 0.15 mm and carry its back face. The shell split is now 1 mm in front of the board, so the board never slides past the floor.
+- **Mute button that reaches.** The plunger is on the measured BUTA actuator (r 50.23, z −3.0) with a 0.25 mm rest gap. In v0 it stopped 3.5 mm short and 2.4 mm too high.
+- **Tighter knob gap.** 0.45 mm (was 0.75). The light guide now centres on the CrowPanel's fixed housing, so the knob can't rub.
+- **Cable notch moved to 10 o'clock.** At 195° it sat on an LED and over the audio jack.
+
+`cad/check.py` checks every part against Seeed's reSpeaker STEP (put it in `cad/vendor/`), and sweeps the three assembly moves for collisions. Still to confirm on hardware, all single parameters in `cad/voice_clock.py`:
+
+- Heat-set insert hole size: print `insert_coupon` first (`M2_INSERT_D`).
+- The knob ring diameter (`CP_KNOB_R`, 79.0 from Elecrow's STEP), since the gap is now only 0.45 mm.
+- Snap-hook feel: `SNAP_ENG` (0.5 mm) sets how hard the shells click and pull apart.
 - The CrowPanel's display orientation (also fixable in firmware).
-- That the light guide's cable notch (`NOTCH_ANG`) falls between two LEDs on your reSpeaker, so the bezel glows evenly.
-
-Vendor CAD for the CrowPanel and reSpeaker is not redistributed here; the model uses measured proxies. Download Seeed's and Elecrow's STEP files from their product pages if you want them for your own checks.
 
 ## License
 

@@ -8,65 +8,35 @@
   },
   {
    "n": 2,
-   "key": "scr_back",
-   "label": "3x M3x8 button head"
-  },
-  {
-   "n": 3,
    "key": "back_plate",
    "label": "Back plate"
   },
   {
-   "n": 4,
+   "n": 3,
    "key": "usb",
    "label": "USB-C breakout (5.1k)"
+  },
+  {
+   "n": 4,
+   "key": "rear_shell",
+   "label": "Rear shell"
   }
  ],
  "step_01": [
   {
    "n": 1,
-   "key": "ins_rear",
-   "label": "3x M3 insert"
-  },
-  {
-   "n": 2,
-   "key": "rear_shell",
-   "label": "Rear shell"
-  },
-  {
-   "n": 3,
-   "key": "ins_carrier",
-   "label": "3x M3 insert"
-  },
-  {
-   "n": 4,
    "key": "back_plate",
    "label": "Back plate"
   },
   {
-   "n": 5,
-   "key": "ins_front",
-   "label": "3x M3 insert"
-  },
-  {
-   "n": 6,
-   "key": "front_shell",
-   "label": "Front shell"
-  },
-  {
-   "n": 7,
+   "n": 2,
    "key": "spider",
    "label": "Spider bracket"
   },
   {
-   "n": 8,
+   "n": 3,
    "key": "ins_spider",
    "label": "3x M2 insert"
-  },
-  {
-   "n": 9,
-   "key": "carrier",
-   "label": "Carrier"
   }
  ],
  "step_02": [
@@ -82,55 +52,16 @@
   },
   {
    "n": 3,
-   "key": "cp_knob",
-   "label": "CrowPanel 2.1\" display"
+   "key": "ins_spider",
+   "label": "3x M2 insert"
   },
   {
    "n": 4,
-   "key": "ins_spider",
-   "label": "3x M2 insert"
+   "key": "cp_knob",
+   "label": "CrowPanel 2.1\" display"
   }
  ],
  "step_03": [
-  {
-   "n": 1,
-   "key": "board_spacers",
-   "label": "3x printed spacer"
-  },
-  {
-   "n": 2,
-   "key": "rs_pcb",
-   "label": "reSpeaker XVF3800"
-  },
-  {
-   "n": 3,
-   "key": "light_guide",
-   "label": "Light guide (PETG)"
-  }
- ],
- "step_04": [
-  {
-   "n": 1,
-   "key": "carrier",
-   "label": "Carrier"
-  },
-  {
-   "n": 2,
-   "key": "scr_clamp",
-   "label": "3x M2x20 SHCS"
-  },
-  {
-   "n": 3,
-   "key": "ins_carrier",
-   "label": "3x M3 insert"
-  },
-  {
-   "n": 4,
-   "key": "rs_pcb",
-   "label": "reSpeaker XVF3800"
-  }
- ],
- "step_05": [
   {
    "n": 1,
    "key": "light_guide",
@@ -147,6 +78,45 @@
    "label": "Spider bracket"
   }
  ],
+ "step_04": [
+  {
+   "n": 1,
+   "key": "foam_mic",
+   "label": "4x foam mic gasket"
+  },
+  {
+   "n": 2,
+   "key": "board_spacers",
+   "label": "3x printed spacer"
+  },
+  {
+   "n": 3,
+   "key": "rs_pcb",
+   "label": "reSpeaker XVF3800"
+  },
+  {
+   "n": 4,
+   "key": "light_guide",
+   "label": "Light guide (PETG)"
+  }
+ ],
+ "step_05": [
+  {
+   "n": 1,
+   "key": "carrier",
+   "label": "Carrier"
+  },
+  {
+   "n": 2,
+   "key": "scr_clamp",
+   "label": "3x M2x20 SHCS"
+  },
+  {
+   "n": 3,
+   "key": "rs_pcb",
+   "label": "reSpeaker XVF3800"
+  }
+ ],
  "step_06": [
   {
    "n": 1,
@@ -155,8 +125,8 @@
   },
   {
    "n": 2,
-   "key": "scr_rim",
-   "label": "3x M3x6 SHCS"
+   "key": "rs_pcb",
+   "label": "reSpeaker XVF3800"
   },
   {
    "n": 3,
@@ -165,30 +135,30 @@
   },
   {
    "n": 4,
-   "key": "front_shell",
-   "label": "Front shell"
+   "key": "rear_shell",
+   "label": "Rear shell"
   }
  ],
  "step_07": [
   {
    "n": 1,
-   "key": "ins_rear",
-   "label": "3x M3 insert"
+   "key": "front_shell",
+   "label": "Front shell"
   },
   {
    "n": 2,
-   "key": "rear_shell",
-   "label": "Rear shell"
+   "key": "mute_plunger",
+   "label": "Mute button"
   },
   {
    "n": 3,
-   "key": "scr_rib",
-   "label": "3x M3x8 button head"
+   "key": "cp_knob",
+   "label": "CrowPanel 2.1\" display"
   },
   {
    "n": 4,
-   "key": "front_shell",
-   "label": "Front shell"
+   "key": "rear_shell",
+   "label": "Rear shell"
   }
  ],
  "step_08": [
@@ -226,21 +196,16 @@
  "step_09": [
   {
    "n": 1,
-   "key": "scr_back",
-   "label": "3x M3x8 button head"
-  },
-  {
-   "n": 2,
    "key": "back_plate",
    "label": "Back plate"
   },
   {
-   "n": 3,
+   "n": 2,
    "key": "usb",
    "label": "USB-C breakout (5.1k)"
   },
   {
-   "n": 4,
+   "n": 3,
    "key": "rear_shell",
    "label": "Rear shell"
   }
