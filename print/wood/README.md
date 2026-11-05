@@ -20,7 +20,7 @@ Made for the JAYO Wood PLA 4-pack (walnut, "logs"/oak, cherry, maple; 250 g each
 | 2 (T1) | Walnut | growth rings, mute button | 212 (drifts 210–217) | 16 g |
 | 3, 4 | Maple, oak | not used (presets included for your own variations) | — | — |
 
-The print takes about 8 h 40 min on one plate (both shells, back plate, button), with 254 layers at 0.2 mm and 223 tool changes.
+The print takes about 8 h 40 min on one plate (both shells, back plate, button), with 254 layers at 0.2 mm and 224 tool changes. Supports are on as tree (manual), so only the small painted area on the back plate gets support (about 0.1 g, in the first 1.5 mm).
 
 ## Files
 
