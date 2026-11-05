@@ -25,18 +25,13 @@
  "step_01": [
   {
    "n": 1,
-   "key": "back_plate",
-   "label": "Back plate"
+   "key": "ins_spider",
+   "label": "3x M2 insert"
   },
   {
    "n": 2,
    "key": "spider",
    "label": "Spider bracket"
-  },
-  {
-   "n": 3,
-   "key": "ins_spider",
-   "label": "3x M2 insert"
   }
  ],
  "step_02": [
@@ -208,6 +203,18 @@
    "n": 3,
    "key": "rear_shell",
    "label": "Rear shell"
+  }
+ ],
+ "step_01b": [
+  {
+   "n": 1,
+   "key": "ins_back",
+   "label": "2x M2 insert"
+  },
+  {
+   "n": 2,
+   "key": "back_plate",
+   "label": "Back plate"
   }
  ]
 }

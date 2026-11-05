@@ -34,10 +34,11 @@ ELECTRONICS = ["Elecrow CrowPanel 2.1\" rotary display (ESP32-S3)", "Seeed reSpe
 
 # guide step -> (render id or None, title, instructions, check)
 STEPS = [
-    ("step_01", "Heat-set inserts",
+    (("step_01", "step_01b"), "Heat-set inserts",
      ["Print the insert test block from plate 2 first. Set one insert in each hole and note which hole (1, 2 or 3 dots) holds best. The middle one is the default; if another fits better, change <code>M2_INSERT_D</code> in <code>cad/voice_clock.py</code> and reprint.",
       "Set the iron to 230–240 °C for PETG (190–200 °C for PLA). Press each insert straight in until it is flush, then hold a flat tool on it for a few seconds while it cools.",
-      "Spider: 3 × M2 in the underside at the end of each arm. Back plate: 2 × M2 in the speaker bosses.",
+      "Spider (first picture): 3 × M2 in the underside at the end of each arm.",
+      "Back plate (second picture): 2 × M2 in the two round speaker bosses on the inside face, either side of the grille. Don't skip these: the speaker screws into them in step 9.",
       "That's all of them. The shells and back plate snap together, so they have no inserts."],
      "Run a screw into each insert by hand. It should start straight and stop on the thread, not on a blob of plastic."),
     (None, "Power harness",
@@ -212,13 +213,14 @@ def page(img_prefix="img/"):
     hw = "".join(f'<tr><td class="q">{q}</td><td>{esc(a)}</td><td>{esc(b)}</td></tr>' for q, a, b in HARDWARE)
     steps = []
     for i, (rid, title, todo, check) in enumerate(STEPS, 1):
-        fig = (f'<figure><img src="{img_prefix}{rid}.jpg" alt="Step {i}: {esc(title)}" loading="lazy" width="1800" height="1350"></figure>'
-               if rid else WIRING_SVG)
+        rids = (rid,) if isinstance(rid, str) else (rid or ())
+        fig = ("".join(f'<figure><img src="{img_prefix}{r}.jpg" alt="Step {i}: {esc(title)}" loading="lazy" width="1800" height="1350"></figure>'
+                       for r in rids) if rids else WIRING_SVG)
         lis = "".join(f"<li>{esc(t)}</li>" for t in todo)
         steps.append(f'''<section class="step" id="step-{i}">
   <header><span class="num">{i:02d}</span><h2>{esc(title)}</h2></header>
   {fig}
-  <div class="body">{legend_html(rid) if rid else '<div><h3 class="eyebrow">Parts</h3><ul class="plain"><li>USB-C breakout</li><li>22 and 24 AWG wire</li><li>2-pin JST-SM or JST-XH pair</li><li>MX1.25 4-pin pigtail</li><li>Heat shrink</li></ul></div>'}
+  <div class="body">{"".join(legend_html(r) for r in rids) if rids else '<div><h3 class="eyebrow">Parts</h3><ul class="plain"><li>USB-C breakout</li><li>22 and 24 AWG wire</li><li>2-pin JST-SM or JST-XH pair</li><li>MX1.25 4-pin pigtail</li><li>Heat shrink</li></ul></div>'}
     <div><ol class="do">{lis}</ol><div class="check"><strong>Check before moving on</strong>{esc(check)}</div></div>
   </div>
 </section>''')
@@ -266,9 +268,10 @@ def markdown():
     for i, (rid, title, todo, check) in enumerate(STEPS, 1):
         out += ["", f"## {i}. {title}", ""]
         if rid:
-            out += [f"![Step {i}](img/{rid}.jpg)", ""]
-            if LEG.get(rid):
-                out += ["In this picture: " + ", ".join(f"**{it['n']}** {it['label']}" for it in LEG[rid]), ""]
+            for r in ((rid,) if isinstance(rid, str) else rid):
+                out += [f"![Step {i}](img/{r}.jpg)", ""]
+                if LEG.get(r):
+                    out += ["In this picture: " + ", ".join(f"**{it['n']}** {it['label']}" for it in LEG[r]), ""]
         else:
             out += ["```mermaid", "flowchart LR", "  A[USB-C inlet, 5.1k CC] -- 22 AWG --> B[2-pin SM/XH disconnect]",
                     "  B -- 22 AWG --> C[reSpeaker header 5V + GND]", "  B -- 24 AWG + MX1.25 pigtail --> D[CrowPanel power port]", "```", ""]

@@ -28,7 +28,7 @@ ORANGE = (255, 106, 19, 255)
 INK = (40, 36, 33, 255)
 SS = 2                                            # supersample for clean lines
 # render id -> step number in the assembly guide (guide step 2 is wiring, no render)
-GUIDE_STEP = {"step_01": 1, "step_02": 3, "step_03": 4, "step_04": 5, "step_05": 6,
+GUIDE_STEP = {"step_01": 1, "step_01b": 1, "step_02": 3, "step_03": 4, "step_04": 5, "step_05": 6,
               "step_06": 7, "step_07": 8, "step_08": 9, "step_09": 10}
 
 

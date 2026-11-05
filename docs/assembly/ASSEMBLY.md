@@ -28,12 +28,17 @@
 
 ![Step 1](img/step_01.jpg)
 
-In this picture: **1** Back plate, **2** Spider bracket, **3** 3x M2 insert
+In this picture: **1** 3x M2 insert, **2** Spider bracket
+
+![Step 1](img/step_01b.jpg)
+
+In this picture: **1** 2x M2 insert, **2** Back plate
 
 1. Print the insert test block from plate 2 first. Set one insert in each hole and note which hole (1, 2 or 3 dots) holds best. The middle one is the default; if another fits better, change `M2_INSERT_D` in `cad/voice_clock.py` and reprint.
 2. Set the iron to 230–240 °C for PETG (190–200 °C for PLA). Press each insert straight in until it is flush, then hold a flat tool on it for a few seconds while it cools.
-3. Spider: 3 × M2 in the underside at the end of each arm. Back plate: 2 × M2 in the speaker bosses.
-4. That's all of them. The shells and back plate snap together, so they have no inserts.
+3. Spider (first picture): 3 × M2 in the underside at the end of each arm.
+4. Back plate (second picture): 2 × M2 in the two round speaker bosses on the inside face, either side of the grille. Don't skip these: the speaker screws into them in step 9.
+5. That's all of them. The shells and back plate snap together, so they have no inserts.
 
 > **Check:** Run a screw into each insert by hand. It should start straight and stop on the thread, not on a blob of plastic.
 

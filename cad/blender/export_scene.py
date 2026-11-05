@@ -120,9 +120,14 @@ def main():
         dict(id="hero_back", title="Back", view=(148, 14), items=items(
             core + ["light_guide", "front_shell", "mute_plunger", "rear_shell", "back_plate", "usb"], []),
              callouts=["back_plate", "usb", "mute_plunger", "rear_shell"], ground=True),
-        dict(id="step_01", title="Heat-set inserts", view=REAR, items=items(
-            [], [("spider", 20), ("ins_spider", 20 - lift), ("back_plate", -30), ("ins_back", -30 + lift)]),
-             callouts=["spider", "ins_spider", "back_plate", "ins_back"]),
+        dict(id="step_01", title="Heat-set inserts: spider (3)", view=REAR, items=items(
+            [], [("spider", 0), ("ins_spider", -lift)]),
+             callouts=["spider", "ins_spider"]),
+        # the back plate's speaker bosses face into the clock: look at its inside face
+        dict(id="step_01b", title="Heat-set inserts: back plate (2)", view=(-25, 38), items=items(
+            [], [("back_plate", 0), ("ins_back", 12)]),
+             callouts=["back_plate", "ins_back"],
+             arrows=[[(x, 0, -26.8), (x, 0, -34.6)] for x in (-18.35, 18.35)]),
         dict(id="step_02", title="Spider bracket onto the CrowPanel", view=REAR, items=items(
             CP, [("spider", -22), ("ins_spider", -22), ("scr_cp", -40)]),
              callouts=["cp_knob", "spider", "ins_spider", "scr_cp"],
