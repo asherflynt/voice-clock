@@ -177,6 +177,38 @@ def materials(hero):
     nt.links.new(img.outputs["Color"], b.inputs["Emission Color"])
     nt.links.new(img.outputs["Color"], b.inputs["Base Color"])
     M["display"] = m
+    # wood PLA (turned-wood variant): matte, 0.2 mm layer lines, fine fibre speckle + tone drift
+    for key, hexc in (("wood_cherry", "#6A3527"), ("wood_walnut", "#36221A"),
+                      ("wood_maple", "#C6AA80"), ("wood_oak", "#8E6B47")):
+        m, nt, b = principled(key, hexlin(hexc), 0.74, **{"Specular IOR Level": 0.3})
+        tc = nt.nodes.new("ShaderNodeTexCoord")
+        speck = nt.nodes.new("ShaderNodeTexNoise")
+        speck.inputs["Scale"].default_value = 3.5          # object units are mm -> ~0.3 mm fibres
+        speck.inputs["Detail"].default_value = 8
+        drift = nt.nodes.new("ShaderNodeTexNoise")
+        drift.inputs["Scale"].default_value = 0.04          # slow tone drift (the temperature script)
+        mix = nt.nodes.new("ShaderNodeMix")
+        mix.data_type = "RGBA"
+        mix.blend_type = "MULTIPLY"
+        mix.inputs[6].default_value = hexlin(hexc)        # colour A
+        ramp = nt.nodes.new("ShaderNodeValToRGB")
+        ramp.color_ramp.elements[0].position = 0.35
+        ramp.color_ramp.elements[0].color = (0.50, 0.48, 0.47, 1)
+        ramp.color_ramp.elements[1].position = 0.68
+        ramp.color_ramp.elements[1].color = (0.70, 0.69, 0.68, 1)
+        add = nt.nodes.new("ShaderNodeMath")
+        add.operation = "MULTIPLY_ADD"
+        add.inputs[1].default_value = 0.5
+        nt.links.new(tc.outputs["Object"], speck.inputs["Vector"])
+        nt.links.new(tc.outputs["Object"], drift.inputs["Vector"])
+        nt.links.new(speck.outputs["Fac"], add.inputs[0])
+        nt.links.new(drift.outputs["Fac"], add.inputs[2])
+        nt.links.new(add.outputs["Value"], ramp.inputs["Fac"])
+        nt.links.new(ramp.outputs["Color"], mix.inputs[7])     # colour B
+        mix.inputs["Factor"].default_value = 1.0
+        nt.links.new(mix.outputs[2], b.inputs["Base Color"])  # colour result
+        add_bump(nt, b, "layers", 0.05, 0.314 / 0.2)
+        M[key] = m
     return M
 
 

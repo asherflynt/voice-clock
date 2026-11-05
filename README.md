@@ -34,6 +34,12 @@ The [build plan](docs/build-plan.md) explains the design decisions: mic-channel 
 
 ![Side section](docs/img/section-concept.png)
 
+## Variants
+
+| | |
+|---|---|
+| [![Turned cherry](docs/img/wood/wood_front.jpg)](print/wood/README.md) | **Turned cherry** ([`print/wood`](print/wood/README.md)): the same enclosure printed in JAYO wood PLA on the Snapmaker U1, with a continuous 3D growth-ring grain painted onto every outside surface (cherry with walnut rings), a faint open-pore relief, and a post-processing script that drifts each head's temperature so the wood shades naturally. Snapmaker Orca project, presets and the scripts that generate them. |
+
 ## Status
 
 Version 1 (5 Nov 2026), after the first full print of v0:

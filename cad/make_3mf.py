@@ -121,8 +121,19 @@ def place(items, ox=0.0, oy=0.0):
     return meshes
 
 
-def write(path, plates):
-    """plates: list of (plate_name, meshes)."""
+def paint_code(state):
+    """Orca/Bambu TriangleSelector leaf code for an extruder state (1-based), "" = unpainted."""
+    if state <= 0:
+        return ""
+    if state < 3:
+        return "%X" % (state * 4)
+    n = state - 3
+    return "%X" % n + "C"
+
+
+def write(path, plates, paints=None):
+    """plates: list of (plate_name, meshes). paints: {object name: per-triangle extruder state}."""
+    paints = paints or {}
     meshes = [m for _, ms in plates for m in ms]
     plate = path.stem
 
@@ -139,8 +150,14 @@ def write(path, plates):
             for v in m.vertices - [cx, cy, 0.0]:
                 f.write(f'<vertex x="{v[0]:.6f}" y="{v[1]:.6f}" z="{v[2]:.6f}"/>\n')
             f.write('</vertices><triangles>\n')
-            for t in m.faces:
-                f.write(f'<triangle v1="{t[0]}" v2="{t[1]}" v3="{t[2]}"/>\n')
+            pt = paints.get(name)
+            codes = [paint_code(int(x)) for x in range(6)]
+            for i, t in enumerate(m.faces):
+                pc = codes[int(pt[i])] if pt is not None else ""
+                if pc:
+                    f.write(f'<triangle v1="{t[0]}" v2="{t[1]}" v3="{t[2]}" paint_color="{pc}"/>\n')
+                else:
+                    f.write(f'<triangle v1="{t[0]}" v2="{t[1]}" v3="{t[2]}"/>\n')
             f.write('</triangles></mesh></object>\n')
         f.write('</resources>\n<build/>\n</model>\n')
 

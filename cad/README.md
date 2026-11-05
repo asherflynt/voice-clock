@@ -26,6 +26,15 @@ Released print files are in [`../print`](../print); the scripts above regenerate
 
 Every dimension is a named constant at the top of `voice_clock.py`. Values marked **VERIFY** come from vendor CAD or drawings, not calipers.
 
+### Turned-wood variant
+
+```bash
+.venv/bin/python wood.py            # painted, textured wood shells -> out/wood/
+.venv/bin/python wood_project.py    # Snapmaker Orca presets + project 3MF + sliced, post-processed G-code
+```
+
+See [`../print/wood/README.md`](../print/wood/README.md) for how it works and how to tune the grain.
+
 ## Parts and how they print (all without supports)
 
 | Part | Plate | Orientation | Notes |
