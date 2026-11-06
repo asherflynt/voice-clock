@@ -385,7 +385,12 @@ time:
   - platform: homeassistant
     id: ha_time
     on_time:
+      # Timer countdown / alarm label every second; hands only once a minute
+      # (each hand move re-renders the trimmed face, which is slow).
       - seconds: /1
+        then:
+          - script.execute: update_overlays
+      - seconds: 0
         then:
           - script.execute: update_hands
     on_time_sync:
@@ -431,12 +436,6 @@ script:
             lv_obj_set_style_line_color(t->obj, c(tick), LV_PART_MAIN);
           lv_obj_set_style_line_color(id(hour_hand)->obj, c(n ? 0x7A1A26 : 0xF08090), LV_PART_MAIN);
           lv_obj_set_style_line_color(id(minute_hand)->obj, c(n ? 0xA02234 : 0xD8404F), LV_PART_MAIN);
-          // No ticking seconds hand at night. Hidden (not just transparent) so it
-          // stops triggering a redraw every second.
-          if (n)
-            lv_obj_add_flag(id(second_hand)->obj, LV_OBJ_FLAG_HIDDEN);
-          else
-            lv_obj_remove_flag(id(second_hand)->obj, LV_OBJ_FLAG_HIDDEN);
           for (auto *l : {id(lbl_name), id(lbl_value)})
             lv_obj_set_style_text_color(l, c(n ? 0x8A1E2A : 0x6E0A1E), LV_PART_MAIN);
           lv_obj_set_style_text_color(id(lbl_status), c(n ? 0x5A1018 : 0x9A4A5A), LV_PART_MAIN);
@@ -656,7 +655,7 @@ script:
             lv_obj_add_flag(id(timer_arc), LV_OBJ_FLAG_HIDDEN);
           }
 
-  # Face Trim -> LVGL transform_rotation (0.1° units) on both page containers.
+  # Face Trim -> LVGL transform_rotation (0.1° units) on the clock face container.
   # Done in C rather than YAML: the YAML property takes 0-360 only, no negatives.
   - id: apply_trim
     then:
@@ -665,12 +664,12 @@ script:
           if (std::isnan(deg))
             deg = 0.0f;
           int32_t r = (int32_t) lroundf(deg * 10.0f);
-          for (lv_obj_t *root : {id(clock_root), id(control_root)})
-            lv_obj_set_style_transform_rotation(root, r, LV_PART_MAIN);
+          // Clock face only: the control page is buttons and text, and keeping it
+          // untransformed keeps touch and the knob responsive there.
+          lv_obj_set_style_transform_rotation(id(clock_root), r, LV_PART_MAIN);
 
   - id: update_hands
     then:
-      - script.execute: update_overlays
       - if:
           condition:
             lambda: 'return id(ha_time).now().is_valid();'
@@ -684,10 +683,7 @@ script:
                 id: minute_hand
                 value: !lambda |-
                   auto t = id(ha_time).now();
-                  return t.minute * 60 + t.second;
-            - lvgl.indicator.update:
-                id: second_hand
-                value: !lambda 'return id(ha_time).now().second;'
+                  return t.minute * 60;
 
 font:
   - file:
@@ -1007,17 +1003,6 @@ lvgl:
                             color: ${c_minute}
                             length: 180
                             rounded: true
-                    - range_from: 0
-                      range_to: 60
-                      angle_range: 360
-                      rotation: 270
-                      indicators:
-                        - line:
-                            id: second_hand
-                            width: 3
-                            color: ${c_second}
-                            length: 200
-                            rounded: true
               # Invisible layer on top: tap anywhere on the clock to open controls.
               - obj:
                   align: CENTER
@@ -1031,186 +1016,178 @@ lvgl:
     - id: control_page
       bg_color: ${c_dial}
       widgets:
-        # Same transparent trim container as clock_root (see the note there).
-        - container:
-            id: control_root
+        - arc:
+            id: arc_level
+            align: CENTER
+            width: 440
+            height: 440
+            start_angle: 135
+            end_angle: 45
+            min_value: 0
+            max_value: 100
+            value: 0
+            adjustable: true
+            arc_color: 0xF3D3D6
+            arc_width: 26
+            arc_rounded: true
+            indicator:
+              arc_color: ${c_minute}
+              arc_width: 26
+              arc_rounded: true
+            knob:
+              bg_color: ${c_numeral}
+              pad_all: 6
+            on_change:
+              - lambda: |-
+                  int i = id(dev_idx);
+                  int v = (int) x;
+                  if (i == vc::SCREEN_IDX && v < 5) v = 5;
+                  id(levels)[i] = v;
+                  id(last_local_ms)[i] = millis();
+                  lv_label_set_text(id(lbl_value), (std::to_string(v) + "%").c_str());
+              - script.execute: idle_timer
+            on_release:
+              - script.execute:
+                  id: apply_level
+                  idx: !lambda 'return id(dev_idx);'
+                  level: !lambda 'return id(levels)[id(dev_idx)];'
+        - label:
+            id: lbl_name
+            align: CENTER
+            y: -100
+            text_font: font_name
+            text_color: ${c_numeral}
+            text: ""
+        - label:
+            id: lbl_value
+            align: CENTER
+            y: -10
+            text_font: font_value
+            text_color: ${c_numeral}
+            text: ""
+        - label:
+            id: lbl_status
+            align: CENTER
+            y: 68
+            text_font: font_small
+            text_color: 0x9A4A5A
+            text: ""
+        # Centre tap target (select / toggle).
+        - obj:
+            align: CENTER
+            width: 220
+            height: 200
+            y: -20
             bg_opa: TRANSP
-            scrollable: false
-            transform_pivot_x: 50%
-            transform_pivot_y: 50%
+            border_width: 0
+            on_click:
+              - script.execute: center_tap
+        - button:
+            id: btn_prev
+            align: CENTER
+            x: -158
+            width: 56
+            height: 56
+            radius: 28
+            bg_color: 0xF3D3D6
+            shadow_width: 0
             widgets:
-              - arc:
-                  id: arc_level
-                  align: CENTER
-                  width: 440
-                  height: 440
-                  start_angle: 135
-                  end_angle: 45
-                  min_value: 0
-                  max_value: 100
-                  value: 0
-                  adjustable: true
-                  arc_color: 0xF3D3D6
-                  arc_width: 26
-                  arc_rounded: true
-                  indicator:
-                    arc_color: ${c_minute}
-                    arc_width: 26
-                    arc_rounded: true
-                  knob:
-                    bg_color: ${c_numeral}
-                    pad_all: 6
-                  on_change:
-                    - lambda: |-
-                        int i = id(dev_idx);
-                        int v = (int) x;
-                        if (i == vc::SCREEN_IDX && v < 5) v = 5;
-                        id(levels)[i] = v;
-                        id(last_local_ms)[i] = millis();
-                        lv_label_set_text(id(lbl_value), (std::to_string(v) + "%").c_str());
-                    - script.execute: idle_timer
-                  on_release:
-                    - script.execute:
-                        id: apply_level
-                        idx: !lambda 'return id(dev_idx);'
-                        level: !lambda 'return id(levels)[id(dev_idx)];'
               - label:
-                  id: lbl_name
                   align: CENTER
-                  y: -100
-                  text_font: font_name
+                  text_font: montserrat_28
                   text_color: ${c_numeral}
-                  text: ""
+                  text: "\uF053"
+            on_click:
+              - script.execute:
+                  id: knob_step
+                  dir: -1
+        - button:
+            id: btn_next
+            align: CENTER
+            x: 158
+            width: 56
+            height: 56
+            radius: 28
+            bg_color: 0xF3D3D6
+            shadow_width: 0
+            widgets:
               - label:
-                  id: lbl_value
                   align: CENTER
-                  y: -10
-                  text_font: font_value
+                  text_font: montserrat_28
                   text_color: ${c_numeral}
-                  text: ""
+                  text: "\uF054"
+            on_click:
+              - script.execute:
+                  id: knob_step
+                  dir: 1
+        - obj:
+            id: dot0
+            align: CENTER
+            x: -40
+            y: 156
+            width: 12
+            height: 12
+            radius: 6
+            bg_color: 0xEBC2C7
+            border_width: 0
+            clickable: false
+        - obj:
+            id: dot1
+            align: CENTER
+            x: -20
+            y: 156
+            width: 12
+            height: 12
+            radius: 6
+            bg_color: 0xEBC2C7
+            border_width: 0
+            clickable: false
+        - obj:
+            id: dot2
+            align: CENTER
+            x: 0
+            y: 156
+            width: 12
+            height: 12
+            radius: 6
+            bg_color: 0xEBC2C7
+            border_width: 0
+            clickable: false
+        - obj:
+            id: dot3
+            align: CENTER
+            x: 20
+            y: 156
+            width: 12
+            height: 12
+            radius: 6
+            bg_color: 0xEBC2C7
+            border_width: 0
+            clickable: false
+        - obj:
+            id: dot4
+            align: CENTER
+            x: 40
+            y: 156
+            width: 12
+            height: 12
+            radius: 6
+            bg_color: 0xEBC2C7
+            border_width: 0
+            clickable: false
+        - button:
+            align: CENTER
+            y: 196
+            width: 64
+            height: 44
+            radius: 22
+            bg_color: 0xF3D3D6
+            shadow_width: 0
+            widgets:
               - label:
-                  id: lbl_status
                   align: CENTER
-                  y: 68
-                  text_font: font_small
-                  text_color: 0x9A4A5A
-                  text: ""
-              # Centre tap target (select / toggle).
-              - obj:
-                  align: CENTER
-                  width: 220
-                  height: 200
-                  y: -20
-                  bg_opa: TRANSP
-                  border_width: 0
-                  on_click:
-                    - script.execute: center_tap
-              - button:
-                  id: btn_prev
-                  align: CENTER
-                  x: -158
-                  width: 56
-                  height: 56
-                  radius: 28
-                  bg_color: 0xF3D3D6
-                  shadow_width: 0
-                  widgets:
-                    - label:
-                        align: CENTER
-                        text_font: montserrat_28
-                        text_color: ${c_numeral}
-                        text: "\uF053"
-                  on_click:
-                    - script.execute:
-                        id: knob_step
-                        dir: -1
-              - button:
-                  id: btn_next
-                  align: CENTER
-                  x: 158
-                  width: 56
-                  height: 56
-                  radius: 28
-                  bg_color: 0xF3D3D6
-                  shadow_width: 0
-                  widgets:
-                    - label:
-                        align: CENTER
-                        text_font: montserrat_28
-                        text_color: ${c_numeral}
-                        text: "\uF054"
-                  on_click:
-                    - script.execute:
-                        id: knob_step
-                        dir: 1
-              - obj:
-                  id: dot0
-                  align: CENTER
-                  x: -40
-                  y: 156
-                  width: 12
-                  height: 12
-                  radius: 6
-                  bg_color: 0xEBC2C7
-                  border_width: 0
-                  clickable: false
-              - obj:
-                  id: dot1
-                  align: CENTER
-                  x: -20
-                  y: 156
-                  width: 12
-                  height: 12
-                  radius: 6
-                  bg_color: 0xEBC2C7
-                  border_width: 0
-                  clickable: false
-              - obj:
-                  id: dot2
-                  align: CENTER
-                  x: 0
-                  y: 156
-                  width: 12
-                  height: 12
-                  radius: 6
-                  bg_color: 0xEBC2C7
-                  border_width: 0
-                  clickable: false
-              - obj:
-                  id: dot3
-                  align: CENTER
-                  x: 20
-                  y: 156
-                  width: 12
-                  height: 12
-                  radius: 6
-                  bg_color: 0xEBC2C7
-                  border_width: 0
-                  clickable: false
-              - obj:
-                  id: dot4
-                  align: CENTER
-                  x: 40
-                  y: 156
-                  width: 12
-                  height: 12
-                  radius: 6
-                  bg_color: 0xEBC2C7
-                  border_width: 0
-                  clickable: false
-              - button:
-                  align: CENTER
-                  y: 196
-                  width: 64
-                  height: 44
-                  radius: 22
-                  bg_color: 0xF3D3D6
-                  shadow_width: 0
-                  widgets:
-                    - label:
-                        align: CENTER
-                        text_font: montserrat_28
-                        text_color: ${c_numeral}
-                        text: "\uF015"
-                  on_click:
-                    - script.execute: show_clock
+                  text_font: montserrat_28
+                  text_color: ${c_numeral}
+                  text: "\uF015"
+            on_click:
+              - script.execute: show_clock

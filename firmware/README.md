@@ -2,7 +2,7 @@
 
 Analog clock face + device control page for the **Elecrow CrowPanel 2.1" rotary display** (ESP32-S3, 480×480 round IPS, knob + touch).
 
-- `voice-clock.yaml`: ESPHome config (LVGL clock face, knob / touch, night mode, timer ring, alarm, mic-muted icon, light + media control page)
+- `voice-clock.yaml`: ESPHome config (LVGL clock face without a second hand, knob / touch, night mode, timer ring, alarm, mic-muted icon, light + media control page)
 - `ha_light.yaml`: package that mirrors one Home Assistant light onto the control page
 - `voice_clock.h`: device table for the control page (names + entity IDs, in knob order)
 - `secrets.example.yaml`: copy to `secrets.yaml`
@@ -40,9 +40,11 @@ faces right). The config fixes that in two steps:
   Adjust it live until 12 is straight up; it's saved on the device. 0 turns the trim off entirely.
   It defaults to 5°, measured on the first build, so check yours.
 
-The trim works by wrapping each page's widgets in a transparent `container` (`clock_root`,
-`control_root`) and setting LVGL's `transform_rotation` on it. Keep those containers transparent:
-this build has no RGB565 transform path, so an opaque transformed object draws garbage on partial
-redraws. Any trim other than 0 costs some render time and softens 1 px detail slightly.
-Dragging the control-page arc by finger lands the knob trim° clockwise of the finger (LVGL
-uses the raw touch angle); the rotary knob is unaffected.
+The trim applies to the clock face only. The face's widgets sit in a transparent `container`
+(`clock_root`) with LVGL's `transform_rotation` set on it. Keep it transparent: this build has no
+RGB565 transform path, so an opaque transformed object draws garbage on partial redraws.
+
+A trimmed redraw is slow on the ESP32-S3 (about 200-250 ms for the hands), so the face has no
+second hand and the hands move once a minute. A per-second second hand made every frame take
+150-600 ms, which made touch and the knob laggy and once tripped the watchdog. The control page
+is not trimmed, so it stays fast.
