@@ -24,11 +24,6 @@ esphome:
         - light.turn_on:
             id: display_backlight
             brightness: 0.6
-    # The restored Face Trim is also applied from its on_value during setup;
-    # this re-applies it once everything (LVGL included) is up.
-    - priority: -100
-      then:
-        - script.execute: apply_trim
 
 esp32:
   board: esp32-s3-devkitc-1
@@ -296,25 +291,6 @@ number:
                 id: display_backlight
                 brightness: !lambda 'return x / 100.0f;'
 
-  # Turns the whole UI by a few degrees to cancel the panel's small mounting
-  # error, on top of the 90° turn in the lvgl block. Positive = clockwise on the
-  # glass. 5° measured from a photo on 6 Nov 2026; adjust live from HA.
-  - platform: template
-    id: face_trim
-    name: "Face Trim"
-    icon: mdi:rotate-right
-    unit_of_measurement: "°"
-    min_value: -10
-    max_value: 10
-    step: 0.1
-    mode: slider
-    initial_value: 5
-    restore_value: true
-    optimistic: true
-    entity_category: config
-    on_value:
-      - script.execute: apply_trim
-
 switch:
   - platform: template
     id: force_night
@@ -385,8 +361,7 @@ time:
   - platform: homeassistant
     id: ha_time
     on_time:
-      # Timer countdown / alarm label every second; hands only once a minute
-      # (each hand move re-renders the trimmed face, which is slow).
+      # Timer countdown / alarm label every second; hands once a minute (no second hand).
       - seconds: /1
         then:
           - script.execute: update_overlays
@@ -622,7 +597,7 @@ script:
           bool alarm = id(alarm_enabled) && sscanf(id(alarm_time_str).c_str(), "%d:%d", &h, &m) == 2;
           if (alarm) {
             snprintf(buf, sizeof(buf), "\uF0F3 %d:%02d %s", (h % 12) ? h % 12 : 12, m, h < 12 ? "AM" : "PM");
-            // Only on change: every set_text redraws the label, which is costly on the trimmed face.
+            // Only on change: every set_text redraws the label.
             if (strcmp(lv_label_get_text(id(lbl_alarm)), buf) != 0)
               lv_label_set_text(id(lbl_alarm), buf);
             lv_obj_remove_flag(id(lbl_alarm), LV_OBJ_FLAG_HIDDEN);
@@ -654,19 +629,6 @@ script:
             lv_obj_add_flag(id(lbl_timer), LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(id(timer_arc), LV_OBJ_FLAG_HIDDEN);
           }
-
-  # Face Trim -> LVGL transform_rotation (0.1° units) on the clock face container.
-  # Done in C rather than YAML: the YAML property takes 0-360 only, no negatives.
-  - id: apply_trim
-    then:
-      - lambda: |-
-          float deg = id(face_trim).state;
-          if (std::isnan(deg))
-            deg = 0.0f;
-          int32_t r = (int32_t) lroundf(deg * 10.0f);
-          // Clock face only: the control page is buttons and text, and keeping it
-          // untransformed keeps touch and the knob responsive there.
-          lv_obj_set_style_transform_rotation(id(clock_root), r, LV_PART_MAIN);
 
   - id: update_hands
     then:
@@ -822,196 +784,184 @@ lvgl:
     - id: clock_page
       bg_color: ${c_dial}
       widgets:
-        # Every clock widget sits in one transparent container so the Face Trim number
-        # can turn the whole face a few degrees (LVGL transform_rotation, see apply_trim).
-        # Keep this container transparent and never put the trim on the page itself:
-        # this build has no RGB565 transform path, so an opaque transformed object
-        # draws garbage on partial redraws.
-        - container:
-            id: clock_root
+        # Hour ticks where there is no numeral.
+        - line:
+            id: tick0
+            align: TOP_LEFT
+            points: ["339,69", "352,46"]
+            line_width: 8
+            line_color: ${c_numeral}
+            line_rounded: true
+        - line:
+            id: tick1
+            align: TOP_LEFT
+            points: ["411,141", "434,128"]
+            line_width: 8
+            line_color: ${c_numeral}
+            line_rounded: true
+        - line:
+            id: tick2
+            align: TOP_LEFT
+            points: ["411,339", "434,352"]
+            line_width: 8
+            line_color: ${c_numeral}
+            line_rounded: true
+        - line:
+            id: tick3
+            align: TOP_LEFT
+            points: ["339,411", "352,434"]
+            line_width: 8
+            line_color: ${c_numeral}
+            line_rounded: true
+        - line:
+            id: tick4
+            align: TOP_LEFT
+            points: ["141,411", "128,434"]
+            line_width: 8
+            line_color: ${c_numeral}
+            line_rounded: true
+        - line:
+            id: tick5
+            align: TOP_LEFT
+            points: ["69,339", "46,352"]
+            line_width: 8
+            line_color: ${c_numeral}
+            line_rounded: true
+        - line:
+            id: tick6
+            align: TOP_LEFT
+            points: ["69,141", "46,128"]
+            line_width: 8
+            line_color: ${c_numeral}
+            line_rounded: true
+        - line:
+            id: tick7
+            align: TOP_LEFT
+            points: ["141,69", "128,46"]
+            line_width: 8
+            line_color: ${c_numeral}
+            line_rounded: true
+        - label:
+            id: num12
+            align: CENTER
+            y: -150
+            text_font: font_numerals
+            text_color: ${c_numeral}
+            text: "12"
+        - label:
+            id: num3
+            align: CENTER
+            x: 162
+            text_font: font_numerals
+            text_color: ${c_numeral}
+            text: "3"
+        - label:
+            id: num6
+            align: CENTER
+            y: 156
+            text_font: font_numerals
+            text_color: ${c_numeral}
+            text: "6"
+        - label:
+            id: num9
+            align: CENTER
+            x: -162
+            text_font: font_numerals
+            text_color: ${c_numeral}
+            text: "9"
+        # Timer ring at the very edge, and countdown text above the 6.
+        - arc:
+            id: timer_arc
+            align: CENTER
+            width: 476
+            height: 476
+            rotation: 270
+            start_angle: 0
+            end_angle: 360
+            min_value: 0
+            max_value: 1000
+            value: 1000
+            adjustable: false
+            clickable: false
+            hidden: true
+            arc_opa: TRANSP
+            indicator:
+              arc_color: ${c_second}
+              arc_width: 8
+              arc_rounded: true
+            knob:
+              opa: TRANSP
+        - label:
+            id: lbl_timer
+            align: CENTER
+            y: 76
+            text_font: font_name
+            text_color: ${c_second}
+            hidden: true
+            text: ""
+        - label:
+            id: lbl_alarm
+            align: CENTER
+            y: -82
+            text_font: montserrat_24
+            text_color: 0x9A4A5A
+            hidden: true
+            text: ""
+        # Mic muted: red mic-off icon inside the 9.
+        - label:
+            id: lbl_mute
+            align: CENTER
+            x: -98
+            text_font: font_icons
+            text_color: ${c_minute}
+            hidden: true
+            text: "\U000F036D"
+        # Hands. Transparent meter laid over the dial; 0 is at 12 o'clock.
+        - meter:
+            id: clock_meter
+            align: CENTER
+            width: 480
+            height: 480
             bg_opa: TRANSP
+            border_width: 0
+            pad_all: 0
             scrollable: false
-            transform_pivot_x: 50%
-            transform_pivot_y: 50%
-            widgets:
-              # Hour ticks where there is no numeral.
-              - line:
-                  id: tick0
-                  align: TOP_LEFT
-                  points: ["339,69", "352,46"]
-                  line_width: 8
-                  line_color: ${c_numeral}
-                  line_rounded: true
-              - line:
-                  id: tick1
-                  align: TOP_LEFT
-                  points: ["411,141", "434,128"]
-                  line_width: 8
-                  line_color: ${c_numeral}
-                  line_rounded: true
-              - line:
-                  id: tick2
-                  align: TOP_LEFT
-                  points: ["411,339", "434,352"]
-                  line_width: 8
-                  line_color: ${c_numeral}
-                  line_rounded: true
-              - line:
-                  id: tick3
-                  align: TOP_LEFT
-                  points: ["339,411", "352,434"]
-                  line_width: 8
-                  line_color: ${c_numeral}
-                  line_rounded: true
-              - line:
-                  id: tick4
-                  align: TOP_LEFT
-                  points: ["141,411", "128,434"]
-                  line_width: 8
-                  line_color: ${c_numeral}
-                  line_rounded: true
-              - line:
-                  id: tick5
-                  align: TOP_LEFT
-                  points: ["69,339", "46,352"]
-                  line_width: 8
-                  line_color: ${c_numeral}
-                  line_rounded: true
-              - line:
-                  id: tick6
-                  align: TOP_LEFT
-                  points: ["69,141", "46,128"]
-                  line_width: 8
-                  line_color: ${c_numeral}
-                  line_rounded: true
-              - line:
-                  id: tick7
-                  align: TOP_LEFT
-                  points: ["141,69", "128,46"]
-                  line_width: 8
-                  line_color: ${c_numeral}
-                  line_rounded: true
-              - label:
-                  id: num12
-                  align: CENTER
-                  y: -150
-                  text_font: font_numerals
-                  text_color: ${c_numeral}
-                  text: "12"
-              - label:
-                  id: num3
-                  align: CENTER
-                  x: 162
-                  text_font: font_numerals
-                  text_color: ${c_numeral}
-                  text: "3"
-              - label:
-                  id: num6
-                  align: CENTER
-                  y: 156
-                  text_font: font_numerals
-                  text_color: ${c_numeral}
-                  text: "6"
-              - label:
-                  id: num9
-                  align: CENTER
-                  x: -162
-                  text_font: font_numerals
-                  text_color: ${c_numeral}
-                  text: "9"
-              # Timer ring at the very edge, and countdown text above the 6.
-              - arc:
-                  id: timer_arc
-                  align: CENTER
-                  width: 476
-                  height: 476
-                  rotation: 270
-                  start_angle: 0
-                  end_angle: 360
-                  min_value: 0
-                  max_value: 1000
-                  value: 1000
-                  adjustable: false
-                  clickable: false
-                  hidden: true
-                  arc_opa: TRANSP
-                  indicator:
-                    arc_color: ${c_second}
-                    arc_width: 8
-                    arc_rounded: true
-                  knob:
-                    opa: TRANSP
-              - label:
-                  id: lbl_timer
-                  align: CENTER
-                  y: 76
-                  text_font: font_name
-                  text_color: ${c_second}
-                  hidden: true
-                  text: ""
-              - label:
-                  id: lbl_alarm
-                  align: CENTER
-                  y: -82
-                  text_font: montserrat_24
-                  text_color: 0x9A4A5A
-                  hidden: true
-                  text: ""
-              # Mic muted: red mic-off icon inside the 9.
-              - label:
-                  id: lbl_mute
-                  align: CENTER
-                  x: -98
-                  text_font: font_icons
-                  text_color: ${c_minute}
-                  hidden: true
-                  text: "\U000F036D"
-              # Hands. Transparent meter laid over the dial; 0 is at 12 o'clock.
-              - meter:
-                  id: clock_meter
-                  align: CENTER
-                  width: 480
-                  height: 480
-                  bg_opa: TRANSP
-                  border_width: 0
-                  pad_all: 0
-                  scrollable: false
-                  pivot:
-                    bg_color: ${c_minute}
-                    width: 26
-                    height: 26
-                  scales:
-                    - range_from: 0
-                      range_to: 720
-                      angle_range: 360
-                      rotation: 270
-                      indicators:
-                        - line:
-                            id: hour_hand
-                            width: 22
-                            color: ${c_hour}
-                            length: 115
-                            rounded: true
-                    - range_from: 0
-                      range_to: 3600
-                      angle_range: 360
-                      rotation: 270
-                      indicators:
-                        - line:
-                            id: minute_hand
-                            width: 18
-                            color: ${c_minute}
-                            length: 180
-                            rounded: true
-              # Invisible layer on top: tap anywhere on the clock to open controls.
-              - obj:
-                  align: CENTER
-                  width: 480
-                  height: 480
-                  bg_opa: TRANSP
-                  border_width: 0
-                  on_click:
-                    - script.execute: open_control
+            pivot:
+              bg_color: ${c_minute}
+              width: 26
+              height: 26
+            scales:
+              - range_from: 0
+                range_to: 720
+                angle_range: 360
+                rotation: 270
+                indicators:
+                  - line:
+                      id: hour_hand
+                      width: 22
+                      color: ${c_hour}
+                      length: 115
+                      rounded: true
+              - range_from: 0
+                range_to: 3600
+                angle_range: 360
+                rotation: 270
+                indicators:
+                  - line:
+                      id: minute_hand
+                      width: 18
+                      color: ${c_minute}
+                      length: 180
+                      rounded: true
+        # Invisible layer on top: tap anywhere on the clock to open controls.
+        - obj:
+            align: CENTER
+            width: 480
+            height: 480
+            bg_opa: TRANSP
+            border_width: 0
+            on_click:
+              - script.execute: open_control
 
     - id: control_page
       bg_color: ${c_dial}

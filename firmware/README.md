@@ -32,19 +32,12 @@ touch CST816 (unrotated), display ST7701S with the Lesson 05 init sequence.
 ## Screen orientation in the enclosure
 
 The enclosure mounts the CrowPanel with its native display top pointing left (its ribbon-cable side
-faces right). The config fixes that in two steps:
+faces right). `lvgl: rotation: 90` turns the UI a quarter turn clockwise in software at almost no
+cost, and LVGL remaps touch to match.
 
-- `lvgl: rotation: 90` turns the UI a quarter turn clockwise in software. LVGL remaps touch to match.
-- **Face Trim** (a number entity in Home Assistant, -10° to +10°, positive = clockwise) turns the
-  whole UI a few more degrees to cancel the small mounting error from screw-hole and seat play.
-  Adjust it live until 12 is straight up; it's saved on the device. 0 turns the trim off entirely.
-  It defaults to 5°, measured on the first build, so check yours.
+Any smaller angle has to be fixed in the enclosure, not the firmware. A non-90° turn in LVGL
+re-renders the face through a transform, which takes 200-600 ms per redraw on the ESP32-S3 and
+makes touch and the knob lag. The CAD's `CP_ROT_TRIM_DEG` turns the CrowPanel's screw pattern in
+the spider to level the dial: if 12 sits X° counter-clockwise, rotate it by -X°.
 
-The trim applies to the clock face only. The face's widgets sit in a transparent `container`
-(`clock_root`) with LVGL's `transform_rotation` set on it. Keep it transparent: this build has no
-RGB565 transform path, so an opaque transformed object draws garbage on partial redraws.
-
-A trimmed redraw is slow on the ESP32-S3 (about 200-250 ms for the hands), so the face has no
-second hand and the hands move once a minute. A per-second second hand made every frame take
-150-600 ms, which made touch and the knob laggy and once tripped the watchdog. The control page
-is not trimmed, so it stays fast.
+The face has no second hand, and the hands move once a minute.
