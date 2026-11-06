@@ -2,7 +2,7 @@
 
 Analog clock face + device control page for the **Elecrow CrowPanel 2.1" rotary display** (ESP32-S3, 480×480 round IPS, knob + touch).
 
-- `voice-clock.yaml`: ESPHome config (LVGL clock face, knob / touch, night mode, timer ring, alarm, light + media control page)
+- `voice-clock.yaml`: ESPHome config (LVGL clock face, knob / touch, night mode, timer ring, alarm, mic-muted icon, light + media control page)
 - `ha_light.yaml`: package that mirrors one Home Assistant light onto the control page
 - `voice_clock.h`: device table for the control page (names + entity IDs, in knob order)
 - `secrets.example.yaml`: copy to `secrets.yaml`

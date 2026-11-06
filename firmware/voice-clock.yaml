@@ -328,6 +328,14 @@ switch:
       - script.execute: eval_night
 
 binary_sensor:
+  # reSpeaker microphone mute (the plunger on top). Shown as an icon on the clock face.
+  - platform: homeassistant
+    id: mic_muted
+    entity_id: switch.${voice_sat}_microphone_mute
+    internal: true
+    on_state:
+      - script.execute: update_overlays
+
   - platform: template
     id: night_mode
     name: "Night Mode"
@@ -433,6 +441,7 @@ script:
             lv_obj_set_style_text_color(l, c(n ? 0x8A1E2A : 0x6E0A1E), LV_PART_MAIN);
           lv_obj_set_style_text_color(id(lbl_status), c(n ? 0x5A1018 : 0x9A4A5A), LV_PART_MAIN);
           lv_obj_set_style_text_color(id(lbl_alarm), c(n ? 0x5A1018 : 0x9A4A5A), LV_PART_MAIN);
+          lv_obj_set_style_text_color(id(lbl_mute), c(n ? 0x7A1A26 : 0xD8404F), LV_PART_MAIN);
           lv_obj_set_style_text_color(id(lbl_timer), c(n ? 0x1E4A66 : 0x3BA7DC), LV_PART_MAIN);
           lv_obj_set_style_arc_color(id(timer_arc), c(n ? 0x1E4A66 : 0x3BA7DC), LV_PART_INDICATOR);
 
@@ -621,6 +630,14 @@ script:
           } else {
             lv_obj_add_flag(id(lbl_alarm), LV_OBJ_FLAG_HIDDEN);
           }
+          // Mic mute
+          bool muted = id(mic_muted).has_state() && id(mic_muted).state;
+          if (muted != !lv_obj_has_flag(id(lbl_mute), LV_OBJ_FLAG_HIDDEN)) {
+            if (muted)
+              lv_obj_remove_flag(id(lbl_mute), LV_OBJ_FLAG_HIDDEN);
+            else
+              lv_obj_add_flag(id(lbl_mute), LV_OBJ_FLAG_HIDDEN);
+          }
           // Timer
           if (id(timer_active)) {
             int32_t left_ms = (int32_t) (id(timer_end_ms) - millis());
@@ -699,6 +716,11 @@ font:
       weight: 400
     id: font_small
     size: 22
+  # Material Design Icons, only the mic-off glyph.
+  - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf"
+    id: font_icons
+    size: 48
+    glyphs: ["\U000F036D"]
 
 spi:
   clk_pin: 2
@@ -939,6 +961,15 @@ lvgl:
                   text_color: 0x9A4A5A
                   hidden: true
                   text: ""
+              # Mic muted: red mic-off icon inside the 9.
+              - label:
+                  id: lbl_mute
+                  align: CENTER
+                  x: -98
+                  text_font: font_icons
+                  text_color: ${c_minute}
+                  hidden: true
+                  text: "\U000F036D"
               # Hands. Transparent meter laid over the dial; 0 is at 12 o'clock.
               - meter:
                   id: clock_meter
