@@ -28,3 +28,21 @@ The voice satellite side runs on the reSpeaker XVF3800 + XIAO ESP32-S3 with the
 
 Hardware notes: knob A/B on GPIO4/42 (swapped so clockwise counts up), knob button on PCF8574 P5,
 touch CST816 (unrotated), display ST7701S with the Lesson 05 init sequence.
+
+## Screen orientation in the enclosure
+
+The enclosure mounts the CrowPanel with its native display top pointing left (its ribbon-cable side
+faces right). The config fixes that in two steps:
+
+- `lvgl: rotation: 90` turns the UI a quarter turn clockwise in software. LVGL remaps touch to match.
+- **Face Trim** (a number entity in Home Assistant, -10° to +10°, positive = clockwise) turns the
+  whole UI a few more degrees to cancel the small mounting error from screw-hole and seat play.
+  Adjust it live until 12 is straight up; it's saved on the device. 0 turns the trim off entirely.
+  It defaults to 5°, measured on the first build, so check yours.
+
+The trim works by wrapping each page's widgets in a transparent `container` (`clock_root`,
+`control_root`) and setting LVGL's `transform_rotation` on it. Keep those containers transparent:
+this build has no RGB565 transform path, so an opaque transformed object draws garbage on partial
+redraws. Any trim other than 0 costs some render time and softens 1 px detail slightly.
+Dragging the control-page arc by finger lands the knob trim° clockwise of the finger (LVGL
+uses the raw touch angle); the rotary knob is unaffected.

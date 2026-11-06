@@ -56,7 +56,7 @@ Version 1 (5 Nov 2026), after the first full print of v0:
 - Heat-set insert hole size: print `insert_coupon` first (`M2_INSERT_D`).
 - The knob ring diameter (`CP_KNOB_R`, 79.0 from Elecrow's STEP), since the gap is now only 0.45 mm.
 - Snap-hook feel: `SNAP_ENG` (0.5 mm) sets how hard the shells click and pull apart.
-- The CrowPanel's display orientation (also fixable in firmware).
+- ~~The CrowPanel's display orientation~~ Confirmed: its native top points left, fixed in firmware (`lvgl: rotation: 90` plus a Face Trim, see `firmware/README.md`).
 
 ## License
 
