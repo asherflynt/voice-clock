@@ -192,7 +192,8 @@ sensor:
       mode:
         input: true
         pullup: true
-    resolution: 1
+    # One count per detent click (this encoder clicks twice per quadrature cycle).
+    resolution: 2
     filters:
       - debounce: 20ms
     on_clockwise:
@@ -278,7 +279,7 @@ number:
     min_value: 1
     max_value: 50
     step: 1
-    initial_value: 12
+    initial_value: 22
     restore_value: true
     optimistic: true
     entity_category: config
@@ -467,7 +468,8 @@ script:
       - lvgl.page.show: control_page
       - script.execute: idle_timer
 
-  # One knob detent (or arrow tap). On the clock it opens the control page.
+  # One knob detent (or arrow tap). On the clock the same click also opens the
+  # control page, so no turn is wasted.
   - id: knob_step
     parameters:
       dir: int
@@ -477,24 +479,23 @@ script:
             lambda: 'return id(on_clock);'
           then:
             - script.execute: open_control
+      - script.execute: idle_timer
+      - if:
+          condition:
+            lambda: 'return id(ui_mode) == 0;'
+          then:
+            - lambda: 'id(dev_idx) = (id(dev_idx) + dir + vc::DEVICE_COUNT) % vc::DEVICE_COUNT;'
           else:
-            - script.execute: idle_timer
-            - if:
-                condition:
-                  lambda: 'return id(ui_mode) == 0;'
-                then:
-                  - lambda: 'id(dev_idx) = (id(dev_idx) + dir + vc::DEVICE_COUNT) % vc::DEVICE_COUNT;'
-                else:
-                  - lambda: |-
-                      int i = id(dev_idx);
-                      int v = std::max(i == vc::SCREEN_IDX ? 5 : 0, std::min(100, id(levels)[i] + dir * 5));
-                      id(levels)[i] = v;
-                      id(last_local_ms)[i] = millis();
-                  - script.execute:
-                      id: apply_level
-                      idx: !lambda 'return id(dev_idx);'
-                      level: !lambda 'return id(levels)[id(dev_idx)];'
-            - script.execute: refresh_ui
+            - lambda: |-
+                int i = id(dev_idx);
+                int v = std::max(i == vc::SCREEN_IDX ? 5 : 0, std::min(100, id(levels)[i] + dir * 5));
+                id(levels)[i] = v;
+                id(last_local_ms)[i] = millis();
+            - script.execute:
+                id: apply_level
+                idx: !lambda 'return id(dev_idx);'
+                level: !lambda 'return id(levels)[id(dev_idx)];'
+      - script.execute: refresh_ui
 
   - id: knob_press
     then:
