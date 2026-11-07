@@ -213,13 +213,19 @@ for t in BP_PAWLS:
     hit = vol(best[1] - rootzone, wall)
     flag(hit < 0.01, f"pawl at {t:.0f} deg bent {abs(best[0]):.2f} deg (tooth {need:.2f} mm in) clears its slot wall ({hit:.3f} mm3)")
     bp_bent = bp_bent + best[1]
-usb_y_top, usb_y_bot = usb_pcb_y()
+usb_y_top, usb_y_back = usb_pcb_y()
 tips = None
-for sx in (-1, 1):                                 # M2 x 10 screw tips poking out behind the USB wall
+for sx in (-1, 1):                                 # M2 x 10 from the board's back (rim side) toward the speaker
     hx = sx * USB_HOLE_PITCH / 2
-    tip = Pos(hx, usb_y_top, BACK_Z + USB_HOLE_Z) * Rot(90, 0, 0) * Cylinder(1.0, USB_SCREW_L,
-                                                                             align=(Align.CENTER, Align.CENTER, Align.MIN))
-    tips = tip if tips is None else tips + tip
+    scr = Pos(hx, usb_y_back, BACK_Z + USB_HOLE_Z) * Rot(-90, 0, 0) * Cylinder(1.0, USB_SCREW_L,
+                                                                               align=(Align.CENTER, Align.CENTER, Align.MIN))
+    scr = scr + Pos(hx, usb_y_back - 2.0, BACK_Z + USB_HOLE_Z) * Rot(-90, 0, 0) * Cylinder(1.9, 2.0,
+                                                                                       align=(Align.CENTER, Align.CENTER, Align.MIN))
+    tips = scr if tips is None else tips + scr
+scr_all = tips
+L_, H_, T_ = USB_PCB                               # the board itself (PCB + socket) turns with the plate too
+tips = tips + Pos(0, usb_y_back + T_ / 2, BACK_Z + H_ / 2) * Box(L_, T_, H_) \
+            + Pos(0, USB_CY, BACK_Z - 1.48 + 7.3 / 2) * Box(8.94, USB_SOCKET_H, 7.3)
 moving = [bp_bent, spk, tips]
 worst = 0.0
 entry = Rot(0, 0, -BP_TWIST)
@@ -233,7 +239,7 @@ for phi in (-BP_TWIST, -24, -16, -8, -4, -1, 0):
     for m in moving:
         worst = max(worst, vol(t * m, rear))
     worst = max(worst, vol(t * spk, parts["carrier"]))
-flag(worst < 0.01, f"twist sweep (plate, speaker, USB screw tips) vs rear shell + carrier: max overlap {worst:.3f}")
+flag(worst < 0.01, f"twist sweep (plate, speaker, USB-C board + screws) vs rear shell + carrier: max overlap {worst:.3f}")
 v_lock = vol(bp, rear)
 flag(v_lock < 0.05, f"locked: back plate x rear shell {v_lock:.3f} mm3 (teeth sit in their notches)")
 flag(vol(Rot(0, 0, 0.6) * bp_rigid, rear) > 0.05, "hard stop blocks over-travel")
@@ -389,12 +395,27 @@ spk_tip = boss_top + stack_spk - SPK_SCREW_L
 flag(spk_tip - hole_bottom >= SCREW_MARGIN, f"speaker M2x{SPK_SCREW_L:.0f}: {spk_tip - hole_bottom:.1f} mm of hole below the tip "
      f"(was 0.9), engaged {min(SPK_SCREW_L - stack_spk, M2_INSERT_L):.1f} mm")
 flag(SPK_HOLE_SKIN >= 1.0, f"speaker insert hole leaves {SPK_HOLE_SKIN:.1f} mm on the outer face")
-wall_wd = (USB_PCB[0] + 2 * 2.2) / 2 - (USB_HOLE_PITCH / 2 + M2_INSERT_D / 2)
-flag(wall_wd >= 1.3, f"USB-C insert: wall beside the insert {wall_wd:.1f} mm, below it {USB_HOLE_Z - M2_INSERT_D / 2 + BACK_T:.1f} mm")
-usb_in = USB_SCREW_L - USB_PCB[2] - 0.15
-flag(usb_in - M2_INSERT_L >= 2.0 and USB_WALL_T + 10 > usb_in, f"USB-C M2x{USB_SCREW_L:.0f}: {usb_in:.1f} mm into the wall, through hole, "
-     f"tip {usb_in - USB_WALL_T:.1f} mm past the wall")
-print(f"  inserts: M2 (hole d{M2_INSERT_D}, {INSERT_CHAMFER} mm lead-in): spider 3 (through), speaker bosses 2, USB-C wall 2 (pressed in from the wall's outer face)")
+hxp = USB_HOLE_PITCH / 2
+wall_wd = min(hxp - M2_INSERT_D / 2 - USB_PAD_X[0], USB_PAD_X[1] - hxp - M2_INSERT_D / 2)
+flag(wall_wd >= 1.3, f"USB-C insert: pad wall beside the insert {wall_wd:.2f} mm, below it {USB_HOLE_Z - M2_INSERT_D / 2 + BACK_T:.1f} mm")
+flag(hxp - USB_BOSS_D / 2 - 0.5 > 8.94 / 2, f"USB-C pads clear the socket body (boss edge |x| {hxp - USB_BOSS_D / 2:.2f} vs 4.47)")
+usb_in = USB_SCREW_L - USB_PCB[2]
+flag(usb_in - (USB_WALL_T - M2_INSERT_L) >= M2_INSERT_L and usb_in > USB_WALL_T, f"USB-C M2x{USB_SCREW_L:.0f}: {usb_in:.1f} mm through the pad, "
+     f"full {M2_INSERT_L:.0f} mm insert engaged, tip {usb_in - USB_WALL_T:.1f} mm past it")
+d_spk = scr_all.distance_to(spk)
+flag(d_spk >= 1.0, f"USB-C screw tips -> speaker: {d_spk:.2f} mm")
+bp_only = parts["back_plate"]
+key = None
+for sx in (-1, 1):                                 # bench: plate on its own, hex key and screw come in from the rim
+    hx = sx * hxp
+    k = Pos(hx, usb_y_back - 2.0, BACK_Z + USB_HOLE_Z) * Rot(90, 0, 0) * Cylinder(1.1, 60.0, align=(Align.CENTER, Align.CENTER, Align.MIN))
+    feed = Pos(hx, usb_y_back - 0.01, BACK_Z + USB_HOLE_Z) * Rot(90, 0, 0) * Cylinder(2.1, USB_SCREW_L + 6.0,
+                                                                                      align=(Align.CENTER, Align.CENTER, Align.MIN))
+    key = (k + feed) if key is None else key + k + feed
+v_key = vol(key, bp_only)
+flag(v_key < 0.01, f"hex key and screw reach both USB-C screws straight in from the plate's rim ({v_key:.3f} mm3)")
+print(f"  inserts: M2 (hole d{M2_INSERT_D}, {INSERT_CHAMFER} mm lead-in): spider 3 (through), speaker bosses 2, "
+      f"USB-C pads 2 (pressed in from the pads' speaker-side face)")
 
 print(flush=True); print("== CrowPanel cable path at the notch")
 lane = radial_box(NOTCH_ANG, RS_R + 0.5, SPHERE_R, 3.0, CARRIER_Z0, 0.0) & sphere_in(-0.3)

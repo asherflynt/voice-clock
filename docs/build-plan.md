@@ -12,7 +12,7 @@
 > | Dial angle | v1 dial sat ~5° anticlockwise (one photo, ±2°): a fixed offset in Elecrow's panel or the print, not play (the CAD chain is exact) | The spider turns the CrowPanel pattern −5° (`CP_ROT_TRIM_DEG`). The firmware has no trim; judge by eye and adjust that one number |
 > | Front face | Flat bezel; shell printed face-down (rough) | **No flat face.** The sphere runs to the ring and the front shell prints **face-up** |
 > | Light ring | Solid PETG tube at 100 % infill | **Foil-tape-lined hollow channel.** The inner wall carries the 3 board spacers on the clamp screws; the sleeve and diffuser cap stand 2.35 mm proud of the sphere. Modelled at roughly 50–80 × brighter |
-> | USB-C board | Self-tapping into a 4 mm wall | **2 horizontal M2 heat-set inserts** in a 6 mm wall |
+> | USB-C board | Self-tapping into a 4 mm wall | **2 horizontal M2 heat-set inserts** in 2 pads on the socket side. The screws go in from the rim side, where a short hex key reaches them |
 > | Speaker | 0.9 mm below the screw tip | **4.4 mm below the tip** (the hole runs into the plate) |
 > | Wood variant | Per-layer ±9 °C drift; all wood PLA | **Fixed temperatures**: cool and hot cherry heads plus walnut cores, on a **plain-PLA core**; new ring model; no relief |
 >

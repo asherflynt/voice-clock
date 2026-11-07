@@ -22,7 +22,7 @@
 | 3 | M3 × 12 socket head | Spider to the CrowPanel hub (replaces its 3 rear screws) |
 | 3 | M2 × 20 socket head | Carrier, through the reSpeaker and the ring base's spacers, into the spider |
 | 4 | M2 × 10 socket head | Speaker (2), USB-C breakout (2) |
-| 7 | M2 heat-set insert (3 × 3.2 mm) | Spider 3, speaker bosses 2, USB-C wall 2 |
+| 7 | M2 heat-set insert (3 × 3.2 mm) | Spider 3, speaker bosses 2, USB-C pads 2 |
 | 1 | USB-C breakout with 5.1 kΩ CC resistors | Power inlet on the back plate |
 | — | Aluminium foil tape, about 50 mm wide, non-conductive adhesive | Lines the light channel |
 | — | 1/16" adhesive closed-cell foam | 4 mic gaskets, 1 speaker ring |
@@ -38,12 +38,12 @@ In this picture: **1** 3x M2 insert, **2** Spider bracket
 
 ![Step 1](img/step_01b.jpg)
 
-In this picture: **1** Back plate, **2** 4x M2 insert (2 speaker, 2 USB-C wall)
+In this picture: **1** Back plate, **2** 4x M2 insert (2 speaker, 2 USB-C pads)
 
 1. The M2 insert holes are Ø2.9, the size already confirmed on this printer. All 7 inserts go into PLA, so set the iron to about 190–200 °C.
 2. Spider (first picture): 3 inserts in the underside at the end of each arm.
 3. Back plate, speaker bosses (second picture): 2 inserts in the round bosses either side of the grille. The holes run deep on purpose: there is room below the screw tip for the plastic the insert pushes down.
-4. Back plate, USB-C wall: 2 inserts pressed in **horizontally from the wall's outer face** (the side toward the plate's rim; there is a lead-in chamfer there), flush with that face. Support the wall from the board side while you press.
+4. Back plate, USB-C pads: the two small blocks either side of the USB-C slot. Press 1 insert into each **horizontally from the side facing the speaker bosses** (the face with the lead-in chamfer), flush with that face. The holes sit only 2.9 mm above the plate, so use a slim insert tip and tilt the iron a few degrees up off the plate, or prop the plate on a wedge. Support the pad from the slot side while you press.
 
 > **Check:** Run an M2 screw into each insert by hand. It should start straight and stop on the thread, not on plastic.
 
@@ -151,7 +151,7 @@ In this picture: **1** Front shell, **2** 4x foam mic gasket, **3** Rear shell
 
 > **Check:** The seam is closed all the way round, the flat bases line up, and the shells don't turn or pull apart by hand.
 
-## 10. USB-C and speaker on the back plate (in this order)
+## 10. USB-C and speaker on the back plate
 
 ![Step 10](img/step_10.jpg)
 
@@ -161,10 +161,11 @@ In this picture: **1** USB-C breakout (5.1k), **2** Back plate, **3** 2x M2x10 S
 
 In this picture: **1** Speaker 4428 3 W, **2** 2x M2x10 SHCS (speaker), **3** 4x TPU washer, **4** Foam ring
 
-1. Stand the USB-C breakout on its USB edge with the socket in the slot and its back against the wall. Fit 2 × M2 × 10 through its holes into the wall's inserts. Do this first: once the speaker is on, a hex key can't reach these screws.
-2. Stick a foam ring round the speaker's face. Washer, ear, washer on each boss, then 2 × M2 × 10, snug only.
-3. Zip-tie the speaker lead to the anchor.
-4. To remove the USB-C board later, take the speaker off first.
+1. Stand the USB-C breakout on its USB edge with the socket down through the slot, socket side against the two pads (the socket sits between them). Its plain back faces the plate's rim.
+2. Fit 2 × M2 × 10 from the **rim side**: through the board's holes into the pads' inserts. The hex key comes straight in over the plate from its edge, so a short key is easiest. The first picture shows the plate turned round, with the rim at the top.
+3. Stick a foam ring round the speaker's face. Washer, ear, washer on each boss, then 2 × M2 × 10, snug only.
+4. Zip-tie the speaker lead to the anchor.
+5. The USB-C screws stay reachable from the rim, so the board can come off later without removing the speaker.
 
 > **Check:** A USB-C cable plugs in fully from outside, and the speaker touches the plate only through the foam and washers.
 

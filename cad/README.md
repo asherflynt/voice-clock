@@ -42,7 +42,7 @@ Every dimension is a named constant at the top of `voice_clock.py`. Values marke
 |---|---|---|---|
 | front_shell | 1 → slot 2 (PLA) | **Face up** (seam on the bed) | Sphere runs up to the light-ring bore. 7 bayonet blocks and the 4 mic boots print on the bed. The mic channels (`mic_channel()`) have pointed roofs (a cone up the vertical leg, a 55° ridge on the radial leg), so no ceiling is flatter than 45° and nothing bridges. 5 mm brim |
 | rear_shell | 1 → slot 2 (PLA) | Back rim down | Bayonet collar and 7 lugs at the top, 4 full-height key ribs, **ballast pocket** (about 30 cm³, low behind the carrier), grip-pad recess, mute guide boss, back-plate lip at the bed. 5 mm brim |
-| back_plate | 1 → slot 2 (PLA) | Outer face down | 3 bayonet lugs, 2 flexure pawls, coin slot, 4 M2 inserts (speaker 2, USB-C 2, the latter pressed in from the wall's outer face) |
+| back_plate | 1 → slot 2 (PLA) | Outer face down | 3 bayonet lugs, 2 flexure pawls, coin slot, 4 M2 inserts (speaker 2, USB-C 2). The USB-C board's socket side bears on 2 pads (bosses round its holes only); its screws go in from the rim side, where a hex key comes straight in over the plate |
 | mute_plunger | 1 (PLA) or 3 (PETG) | Cap down | 100% infill. Use the PETG one if you have it: its snap barb is tougher |
 | ring_base | 3 → slot 1 (natural PETG) | Spacers down | Light-channel inner wall plus the 3 board spacers on the clamp screws |
 | ring_shell | 3 → slot 1 (natural/clear PETG) | Cap down | Channel sleeve plus a 1.4 mm diffuser cap (frosted by the textured PEI) |
@@ -65,11 +65,11 @@ Every dimension is a named constant at the top of `voice_clock.py`. Values marke
 | 3 | M3 × 12 socket head | Spider → CrowPanel hub (replaces the 3 stock screws) | 1.8 mm, same depth as Elecrow's own screws |
 | 3 | M2 × 20 socket head | Carrier → reSpeaker → ring_base spacer → M2 insert in the spider | 2.5 mm |
 | 2 | M2 × 10 socket head | Speaker ears: head, TPU washer, ear, TPU washer, boss insert | 3.0 mm; 4.4 mm of hole below the tip |
-| 2 | M2 × 10 socket head | USB-C breakout → M2 inserts in its backing wall (through holes) | 3 mm insert, tip 2.2 mm past the wall |
+| 2 | M2 × 10 socket head | USB-C breakout, from the rim side → M2 inserts at the far face of its 2 pads (through holes) | 3 mm insert, tip 2.4 mm past the pad and 1.7 mm short of the speaker |
 
 | Qty | Insert (M2 × 3 × Ø3.2, hole Ø2.9) | Where |
 |---|---|---|
-| 7 | | Spider underside 3, speaker bosses 2, USB-C wall 2 (pressed in horizontally from the wall's outer face, the side toward the plate's rim) |
+| 7 | | Spider underside 3, speaker bosses 2, USB-C pads 2 (pressed in horizontally from the pads' speaker-side face) |
 
 **Also needed:**
 - 1/16" adhesive closed-cell foam: 4 mic gaskets Ø5 with a Ø2 hole, stuck **to the front shell's mic boots**, plus a speaker-face ring.
@@ -97,7 +97,7 @@ Full steps are in [`../docs/assembly/ASSEMBLY.md`](../docs/assembly/ASSEMBLY.md)
    - Stick the 4 mic gaskets onto the boots.
    - Set the shell on turned 10° anticlockwise (seen from the front), so the base flats are offset by a finger's width.
    - Press it down and turn it **clockwise** until the 4 detent fingers click and the flats line up.
-10. USB-C board first, then the speaker, onto the back plate (the speaker blocks the USB-C screws).
+10. USB-C board and speaker onto the back plate, in either order: the USB-C screws go in from the rim side.
 11. **Back plate.** Set it in with the USB-C at about 5 o'clock and turn it **clockwise (seen from the back)** about 1/11 of a turn until both pawls click and the USB-C sits at 6 o'clock.
 
 **To open:**

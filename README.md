@@ -49,7 +49,7 @@ Version 2 (6 Nov 2026), after the v1 print fell apart:
 - **Keyed stack.** The cradle ribs run down the shell wall into notches in the carrier, so the electronics stack can't turn.
 - **Light ring that works.** A hollow channel lined with aluminium foil tape (ring base + ring shell, PETG) carries the LED light to a diffuser cap standing 2.35 mm proud of the sphere. v1's solid printed guide passed an estimated 0.4 % of the light.
 - **Front shell prints face-up.** The sphere runs right up to the light ring, with no flat face, and no textured face sits on the bed.
-- **Inserts everywhere a screw goes.** The USB-C breakout screws into 2 horizontal heat-set inserts; the speaker bosses have room below the screw tips.
+- **Inserts everywhere a screw goes.** The USB-C breakout screws into 2 horizontal heat-set inserts, from the plate's rim side where a short hex key reaches; the speaker bosses have room below the screw tips.
 - **Weight.** A 30 cm³ ballast pocket in the rear shell (about 160 g of steel shot in epoxy, or 300 g of tungsten putty) and TPU grip pads on the base: about 479 g in all, with the centre of mass 12 mm lower than v1.
 
 `cad/check.py` checks every part against Seeed's reSpeaker STEP (put it in `cad/vendor/`), sweeps both twist locks with the detent fingers and pawls bent, and drops the stack in. v2 has not been printed yet; the tolerances to confirm on the first print are all single parameters in `cad/voice_clock.py` (`BLK_TOP`, `FING_BUMP_R`, `BP_TOOTH_RO`, `CARRIER_KEY_CLR`, `RING_BORE_R`).

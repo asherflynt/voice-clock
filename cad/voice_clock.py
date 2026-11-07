@@ -179,7 +179,7 @@ BP_LUG_H      = 2.4
 BP_LUGS       = [(90.0, 30.0), (210.0, 22.0), (330.0, 22.0)]   # (lock angle, span): wide lug keys it
 BP_TWIST      = 32.0      # plate turns CCW about +Z (= clockwise seen from the back) to lock
 BP_NOTCH_RO   = 36.6
-BP_SPIG_GAP   = (238.0, 302.0)                 # no spigot round the USB-C wall
+BP_SPIG_GAP   = (238.0, 302.0)                 # no spigot round the USB-C board (hex-key path to its screws)
 BP_PAWLS      = [10.0, 130.0]                  # free-end (tooth) angles of the 2 flexure pawls
 BP_PAWL_LEN   = 24.0      # deg (about 14 mm)
 BP_PAWL_R     = (33.2, 34.4)                    # arm 1.2 thick; 1.5 mm of room inside it in the slot
@@ -192,7 +192,7 @@ BAL_ARC       = (200.0, 340.0)
 BAL_T         = 1.2
 BAL_TOP       = CARRIER_Z0 - 2.0                # -16.5: 2 mm below the carrier
 BAL_R_LOW     = 37.5                           # skin radius near the back (clears the back plate's lugs,
-BAL_R_HIGH    = 30.0                           # USB-C wall and screw tips while it turns), then 45 deg in
+BAL_R_HIGH    = 30.0                           # USB-C board and screw heads while it turns), then 45 deg in
 BAL_Z_STEP    = -36.2                          # to r 30 (clear of the speaker and the USB-C board's top)
 
 # grip pads: TPU pads in shallow recesses in the flat base (both shells)
@@ -239,7 +239,7 @@ TPU_WASHER_T  = 1.0
 SPK_SCREW_L   = 10.0      # M2 x 10 (the shortest in the kit)
 SPK_HOLE_SKIN = 1.0       # insert hole runs into the plate, leaving this much on the outer face
 # USB-C inlet: 6-pin breakout with 5.1k CC resistors (measured 3 Nov 2026)
-USB_CY        = -22.0     # moved 5 mm up from v1 so the wall clears the bayonet lip
+USB_CY        = -24.0     # screws now point at the speaker: tips 1.7 mm clear of it (v1 -27, v2a -22)
 USB_SLOT      = (9.4, 3.6)
 USB_RECESS    = (13.5, 8.0, 1.6)
 USB_PCB       = (21.96, 13.11, 1.61)
@@ -247,8 +247,11 @@ USB_SOCKET_H  = 3.30
 USB_HOLE_D    = 2.5                            # estimate
 USB_HOLE_PITCH= 18.95 - USB_HOLE_D
 USB_HOLE_Z    = 1.61 + USB_HOLE_D / 2
-USB_WALL_T    = 6.0       # backing wall with 2 horizontal M2 inserts (through holes)
-USB_WALL_H    = 10.0
+USB_WALL_T    = 6.0       # backing pads on the SOCKET side (through holes, M2 inserts at their far face)
+USB_WALL_H    = 7.5
+USB_PAD_X     = (5.2, 11.6)  # |x| span of each pad: clear of the socket (|x| 4.47) and the board ends
+USB_BOSS_D    = 5.0       # the board touches only these bosses round its holes (0.8 mm relief elsewhere)
+USB_BOSS_H    = 0.8
 USB_SCREW_L   = 10.0
 
 # ---------------------------------------------------------------- derived
@@ -699,33 +702,38 @@ def back_plate():
         plate = plate - Pos(bx, SPK_CY, boss_top - INSERT_CHAMFER) * Cone(
             M2_INSERT_D / 2, M2_INSERT_D / 2 + INSERT_CHAMFER + 0.01, INSERT_CHAMFER + 0.01,
             align=(Align.CENTER, Align.CENTER, Align.MIN))
-    # USB-C inlet: slot + outside overmould recess; board stands on edge against a backing wall with
-    # 2 horizontal M2 heat-set inserts (through holes, so the screw tip has room)
+    # USB-C inlet: slot + outside overmould recess. The board stands on its USB edge with its SOCKET
+    # side against two pads (one each side of the socket); 2 x M2 x 10 go in from the board's back,
+    # i.e. from the plate's rim side, where a hex key comes straight in over the plate (the spigot has a
+    # gap here). Inserts sit at the pads' far face (pressed in from there, through holes), so the screw
+    # pulls them deeper; the tips stop short of the speaker.
     rx, ry, rd = USB_RECESS
     plate = plate - Pos(0, USB_CY, BACK_Z - 2) * Box(*USB_SLOT, 6)
     plate = plate - Pos(0, USB_CY, BACK_Z - BACK_T - 0.01) * Box(rx, ry, rd, align=(Align.CENTER, Align.CENTER, Align.MIN))
     L, Hb, T = USB_PCB
-    y_top, y_bot = usb_pcb_y()
-    wall_l = L + 2 * 2.2
-    wall = Pos(0, y_bot - USB_WALL_T / 2, BACK_Z) * Box(wall_l, USB_WALL_T, USB_WALL_H,
-                                                       align=(Align.CENTER, Align.CENTER, Align.MIN))
-    plate = plate + wall
-    for sx in (-1, 1):                                 # end stops locate the board's length
-        xs = sx * (L / 2 + 0.2 + 1.0)
-        plate = plate + Pos(xs, (y_bot + y_top) / 2 + 0.5, BACK_Z) * Box(2.0, T + 1.2, 6.0,
-                                                                        align=(Align.CENTER, Align.CENTER, Align.MIN))
+    y_top, y_back = usb_pcb_y()
+    px0, px1 = USB_PAD_X
+    hz = BACK_Z + USB_HOLE_Z
     for sx in (-1, 1):
+        cx = sx * (px0 + px1) / 2
+        plate = plate + Pos(cx, y_top + USB_BOSS_H + (USB_WALL_T - USB_BOSS_H) / 2, BACK_Z) * Box(
+            px1 - px0, USB_WALL_T - USB_BOSS_H, USB_WALL_H, align=(Align.CENTER, Align.CENTER, Align.MIN))
         hx = sx * USB_HOLE_PITCH / 2
-        hz = BACK_Z + USB_HOLE_Z
-        hole = Pos(hx, y_bot + 0.5, hz) * Rot(90, 0, 0) * Cylinder(M2_INSERT_D / 2, USB_WALL_T + 1.5,
+        plate = plate + Pos(hx, y_top, hz) * Rot(-90, 0, 0) * Cylinder(USB_BOSS_D / 2, USB_BOSS_H + 0.01,
+                                                                     align=(Align.CENTER, Align.CENTER, Align.MIN))
+        plate = plate + Pos(hx, y_top + USB_BOSS_H / 2, BACK_Z + (hz - BACK_Z) / 2) * Box(
+            USB_BOSS_D, USB_BOSS_H, hz - BACK_Z)                    # boss foot down to the plate (no overhang)
+        xs = sx * (L / 2 + 0.2 + 1.0)                    # end stops locate the board's length
+        plate = plate + Pos(xs, y_back + (y_top + USB_BOSS_H - y_back) / 2 - 0.3, BACK_Z) * Box(
+            2.0, y_top + USB_BOSS_H - y_back + 0.6, 6.0, align=(Align.CENTER, Align.CENTER, Align.MIN))
+        hole = Pos(hx, y_top - 0.5, hz) * Rot(-90, 0, 0) * Cylinder(M2_INSERT_D / 2, USB_WALL_T + 1.0,
                                                                    align=(Align.CENTER, Align.CENTER, Align.MIN))
-        mouth = Pos(hx, y_bot + 0.01, hz) * Rot(90, 0, 0) * Cone(
+        mouth = Pos(hx, y_top + USB_WALL_T + 0.01, hz) * Rot(90, 0, 0) * Cone(
             M2_INSERT_D / 2 + INSERT_CHAMFER + 0.01, M2_INSERT_D / 2, INSERT_CHAMFER + 0.01,
-            align=(Align.CENTER, Align.CENTER, Align.MIN))
-        mouth2 = Pos(hx, y_bot - USB_WALL_T - 0.01, hz) * Rot(-90, 0, 0) * Cone(
-            M2_INSERT_D / 2 + INSERT_CHAMFER + 0.01, M2_INSERT_D / 2, INSERT_CHAMFER + 0.01,
-            align=(Align.CENTER, Align.CENTER, Align.MIN))          # inserts go in from the wall's outer face
-        plate = plate - hole - mouth - mouth2
+            align=(Align.CENTER, Align.CENTER, Align.MIN))         # insert entry: the pads' far (speaker-side) face
+        start = Pos(hx, y_top - 0.01, hz) * Rot(-90, 0, 0) * Cone(
+            M2_INSERT_D / 2 + 0.3, M2_INSERT_D / 2, 0.31, align=(Align.CENTER, Align.CENTER, Align.MIN))
+        plate = plate - hole - mouth - start
     # zip-tie anchor for the speaker lead
     ay = SPK_CY + SPK_BODY[1] / 2 + 10.5
     plate = plate + Pos(0, ay, BACK_Z + 2) * Box(8, 4, 4)
@@ -771,8 +779,10 @@ def speaker_boss_top():
 
 
 def usb_pcb_y():
-    y_top = USB_CY - USB_SOCKET_H / 2                  # PCB face carrying the socket
-    return y_top, y_top - USB_PCB[2] - 0.15            # 0.15 mm fit clearance
+    """(socket-side face, back face) of the USB-C board, in y. The socket side bears on the pads'
+    bosses; the screw heads sit on the back face (rim side)."""
+    y_top = USB_CY - USB_SOCKET_H / 2
+    return y_top, y_top - USB_PCB[2]
 
 
 def ring_iw_pts():

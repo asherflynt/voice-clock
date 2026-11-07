@@ -29,7 +29,7 @@ Short, untextured bands of the shells at every interface, plus the small parts a
    - Hold it with the USB-C slot at about 5 o'clock (seen from the back). Push it in and turn it clockwise about 1/12 of a turn.
    - You should feel two pawl clicks, then a hard stop, with the USB-C slot at 6 o'clock.
    - A coin in the slot turns it back.
-   - Press the 4 M2 inserts in to check the bosses and the USB-C wall. The USB-C inserts go in from the wall's outer face.
+   - Press the 4 M2 inserts in to check the bosses and the USB-C pads. The USB-C inserts go in horizontally from the pads' speaker-side face.
 4. **Light ring.**
    - Press the ring shell onto the ring base. The tabs go in the slots, and the crush ribs should grip without forcing.
    - Set the ring-bore band over it: there should be an even gap of about 0.6 mm all round.

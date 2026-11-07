@@ -144,11 +144,11 @@ def hw_inserts(which):
         bt = BACK_Z + SPK_GASKET + SPK_EAR_FROM_FACE - TPU_WASHER_T
         for sx in (-1, 1):
             m += ins((sx * SPK_EAR_PITCH / 2, SPK_CY), bt - M2_INSERT_L, bt, M2_INS_OD)
-        y_top, y_bot = usb_pcb_y()                     # USB-C wall: pressed in from its outer face
-        y0 = y_bot - USB_WALL_T
+        y_top, _ = usb_pcb_y()                         # USB-C pads: pressed in from their speaker-side face
+        y1 = y_top + USB_WALL_T
         for sx in (-1, 1):
             x = sx * USB_HOLE_PITCH / 2
-            m.append(cylseg((x, y0, BACK_Z + USB_HOLE_Z), (x, y0 + M2_INSERT_L, BACK_Z + USB_HOLE_Z), M2_INS_OD / 2))
+            m.append(cylseg((x, y1 - M2_INSERT_L, BACK_Z + USB_HOLE_Z), (x, y1, BACK_Z + USB_HOLE_Z), M2_INS_OD / 2))
     return m
 
 

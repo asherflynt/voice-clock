@@ -74,14 +74,14 @@ def foil_meshes():
 
 
 def usb_screws():
-    """2 x M2 x 10 through the breakout into the wall's horizontal inserts (head on the socket side)."""
-    y_top, _ = usb_pcb_y()
+    """2 x M2 x 10 from the board's back (rim side) through it into the pads' inserts."""
+    _, y_back = usb_pcb_y()
     z = BACK_Z + USB_HOLE_Z
     m = []
     for sx in (-1, 1):
         x = sx * USB_HOLE_PITCH / 2
-        m.append(RS.cylseg((x, y_top, z), (x, y_top - 10.0, z), 1.0))
-        m.append(RS.cylseg((x, y_top, z), (x, y_top + 2.0, z), 1.9))
+        m.append(RS.cylseg((x, y_back, z), (x, y_back + 10.0, z), 1.0))
+        m.append(RS.cylseg((x, y_back - 2.0, z), (x, y_back, z), 1.9))
     return m
 
 
@@ -100,7 +100,7 @@ def main():
     # fastener / small-part groups (each one mesh + material + label)
     hw = {
         "ins_spider":  (RS.hw_inserts("spider"),  "brass",   "3x M2 insert"),
-        "ins_back":    (RS.hw_inserts("back"),    "brass",   "4x M2 insert (2 speaker, 2 USB-C wall)"),
+        "ins_back":    (RS.hw_inserts("back"),    "brass",   "4x M2 insert (2 speaker, 2 USB-C pads)"),
         "scr_cp":      (RS.hw_cp_screws(),        "steel_black", "3x M3x12 SHCS"),
         "scr_clamp":   (RS.hw_clamp_screws(),     "steel_black", "3x M2x20 SHCS"),
         "scr_spk":     (RS.hw_spk_screws(),       "steel_black", "2x M2x10 SHCS (speaker)"),
@@ -163,8 +163,8 @@ def main():
              callouts=["back_plate", "ins_back"],
              arrows=[[(sx * SPK_EAR_PITCH / 2, SPK_CY, RS.EAR_TOP + 16), (sx * SPK_EAR_PITCH / 2, SPK_CY, RS.EAR_TOP + 2)]
                      for sx in (-1, 1)] +
-                    [[(sx * USB_HOLE_PITCH / 2, usb_pcb_y()[1] - USB_WALL_T - 14, BACK_Z + USB_HOLE_Z),
-                      (sx * USB_HOLE_PITCH / 2, usb_pcb_y()[1] - USB_WALL_T - 1, BACK_Z + USB_HOLE_Z)] for sx in (-1, 1)]),
+                    [[(sx * USB_HOLE_PITCH / 2, usb_pcb_y()[0] + USB_WALL_T + 14, BACK_Z + USB_HOLE_Z),
+                      (sx * USB_HOLE_PITCH / 2, usb_pcb_y()[0] + USB_WALL_T + 1, BACK_Z + USB_HOLE_Z)] for sx in (-1, 1)]),
         # 3. spider
         dict(id="step_02", title="Spider bracket onto the CrowPanel", view=REAR, items=items(
             CP, [("spider", -22), ("ins_spider", -22), ("scr_cp", -40)]),
@@ -208,11 +208,14 @@ def main():
              callouts=["front_shell", "rear_shell", "foam_mic"],
              arrows=[[(*polar(70, 200), up + 30), (*polar(70, 200), up + 8)]],
              arcs=[arc(66, up + 14, 125, 75)]),
-        # 10. USB-C first, then the speaker
-        dict(id="step_10", title="USB-C breakout onto the back plate (first)", view=(-25, 38), items=items(
-            ["back_plate", "ins_back"], [("usb", 14), ("scr_usb", dict(off=(0, 14, 14)))]),
+        # 10. USB-C and speaker (either order; the USB-C screws go in from the rim)
+        # the plate lies loose on the bench: shown turned 180 deg so the rim-side screw heads face the camera
+        dict(id="step_10", title="USB-C breakout: screws in from the rim", view=(-25, 38), items=items(
+            [], [("back_plate", dict(rz=180)), ("ins_back", dict(rz=180)), ("usb", dict(rz=180)),
+                 ("scr_usb", dict(off=(0, 16, 0), rz=180))]),
              callouts=["back_plate", "usb", "scr_usb"],
-             arrows=[[(0, USB_CY + 4, BACK_Z + 30), (0, USB_CY + 4, BACK_Z + 16)]]),
+             arrows=[[(sx * (USB_HOLE_PITCH / 2 + 3.5), -(usb_pcb_y()[1] - 22), BACK_Z + USB_HOLE_Z),
+                      (sx * (USB_HOLE_PITCH / 2 + 3.5), -(usb_pcb_y()[1] - 6), BACK_Z + USB_HOLE_Z)] for sx in (-1, 1)]),
         dict(id="step_10b", title="Speaker on the back plate", view=(-62, 18), items=items(
             ["back_plate", "ins_back", "usb", "scr_usb"],
             [("speaker", 28), ("foam_spk", 14), ("tpu_wash", 28), ("scr_spk", 48)]),
