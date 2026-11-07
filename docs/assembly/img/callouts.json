@@ -34,6 +34,18 @@
    "label": "Spider bracket"
   }
  ],
+ "step_01b": [
+  {
+   "n": 1,
+   "key": "back_plate",
+   "label": "Back plate"
+  },
+  {
+   "n": 2,
+   "key": "ins_back",
+   "label": "4x M2 insert (2 speaker, 2 USB-C wall)"
+  }
+ ],
  "step_02": [
   {
    "n": 1,
@@ -47,28 +59,33 @@
   },
   {
    "n": 3,
-   "key": "ins_spider",
-   "label": "3x M2 insert"
+   "key": "cp_knob",
+   "label": "CrowPanel 2.1\" display"
   },
   {
    "n": 4,
-   "key": "cp_knob",
-   "label": "CrowPanel 2.1\" display"
+   "key": "ins_spider",
+   "label": "3x M2 insert"
   }
  ],
  "step_03": [
   {
    "n": 1,
-   "key": "light_guide",
-   "label": "Light guide (PETG)"
+   "key": "ring_base",
+   "label": "Ring base (PETG)"
   },
   {
    "n": 2,
+   "key": "foil_base",
+   "label": "Foil tape (outside)"
+  },
+  {
+   "n": 3,
    "key": "cp_knob",
    "label": "CrowPanel 2.1\" display"
   },
   {
-   "n": 3,
+   "n": 4,
    "key": "spider",
    "label": "Spider bracket"
   }
@@ -76,23 +93,18 @@
  "step_04": [
   {
    "n": 1,
-   "key": "foam_mic",
-   "label": "4x foam mic gasket"
-  },
-  {
-   "n": 2,
-   "key": "board_spacers",
-   "label": "3x printed spacer"
-  },
-  {
-   "n": 3,
    "key": "rs_pcb",
    "label": "reSpeaker XVF3800"
   },
   {
-   "n": 4,
-   "key": "light_guide",
-   "label": "Light guide (PETG)"
+   "n": 2,
+   "key": "ring_base",
+   "label": "Ring base (PETG)"
+  },
+  {
+   "n": 3,
+   "key": "spider",
+   "label": "Spider bracket"
   }
  ],
  "step_05": [
@@ -115,6 +127,40 @@
  "step_06": [
   {
    "n": 1,
+   "key": "foil_shell",
+   "label": "Foil tape (inside)"
+  },
+  {
+   "n": 2,
+   "key": "ring_shell",
+   "label": "Ring shell (PETG)"
+  },
+  {
+   "n": 3,
+   "key": "ring_base",
+   "label": "Ring base (PETG)"
+  }
+ ],
+ "step_07": [
+  {
+   "n": 1,
+   "key": "ballast_fill",
+   "label": "Ballast: steel shot in slow epoxy"
+  },
+  {
+   "n": 2,
+   "key": "foot_pad_rear",
+   "label": "TPU grip pad (large)"
+  },
+  {
+   "n": 3,
+   "key": "rear_shell",
+   "label": "Rear shell"
+  }
+ ],
+ "step_08": [
+  {
+   "n": 1,
    "key": "carrier",
    "label": "Carrier"
   },
@@ -134,7 +180,7 @@
    "label": "Rear shell"
   }
  ],
- "step_07": [
+ "step_09": [
   {
    "n": 1,
    "key": "front_shell",
@@ -142,21 +188,33 @@
   },
   {
    "n": 2,
-   "key": "mute_plunger",
-   "label": "Mute button"
+   "key": "foam_mic",
+   "label": "4x foam mic gasket"
   },
   {
    "n": 3,
-   "key": "cp_knob",
-   "label": "CrowPanel 2.1\" display"
-  },
-  {
-   "n": 4,
    "key": "rear_shell",
    "label": "Rear shell"
   }
  ],
- "step_08": [
+ "step_10": [
+  {
+   "n": 1,
+   "key": "usb",
+   "label": "USB-C breakout (5.1k)"
+  },
+  {
+   "n": 2,
+   "key": "back_plate",
+   "label": "Back plate"
+  },
+  {
+   "n": 3,
+   "key": "scr_usb",
+   "label": "2x M2x10 SHCS (USB-C)"
+  }
+ ],
+ "step_10b": [
   {
    "n": 1,
    "key": "speaker",
@@ -165,7 +223,7 @@
   {
    "n": 2,
    "key": "scr_spk",
-   "label": "2x M2x10 SHCS"
+   "label": "2x M2x10 SHCS (speaker)"
   },
   {
    "n": 3,
@@ -176,19 +234,9 @@
    "n": 4,
    "key": "foam_spk",
    "label": "Foam ring"
-  },
-  {
-   "n": 5,
-   "key": "back_plate",
-   "label": "Back plate"
-  },
-  {
-   "n": 6,
-   "key": "usb",
-   "label": "USB-C breakout (5.1k)"
   }
  ],
- "step_09": [
+ "step_11": [
   {
    "n": 1,
    "key": "back_plate",
@@ -203,18 +251,6 @@
    "n": 3,
    "key": "rear_shell",
    "label": "Rear shell"
-  }
- ],
- "step_01b": [
-  {
-   "n": 1,
-   "key": "ins_back",
-   "label": "2x M2 insert"
-  },
-  {
-   "n": 2,
-   "key": "back_plate",
-   "label": "Back plate"
   }
  ]
 }

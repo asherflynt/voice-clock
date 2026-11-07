@@ -1,60 +1,70 @@
-# Variant: turned cherry (wood PLA, Snapmaker U1)
+# Voice Clock: turned-wood shells, v2 (Snapmaker U1)
 
-![Turned cherry Voice Clock](../../docs/img/wood/wood_front.jpg)
+v2 (6 Nov 2026) rebuilds the wood look from research into how wood-grain prints are made. What changed:
 
-An alternate exterior for the same v1 enclosure. The front shell, rear shell and back plate look as if they were turned from a single piece of cherry heartwood. Fine walnut growth rings vary in weight from year to year, and the faintest years show only as pore texture. One procedural log runs through the whole clock, so the grain is continuous across all three parts. Every outside surface (sphere, flat base, back, face rim) also carries a faint 0.15 mm open-pore relief. The mute button prints in walnut.
+- **Tone follows the grain, not the layers.** v1 wandered the nozzle temperature per layer by ±9 °C, which stayed below the point where wood PLA darkens, so nothing showed. Per-layer changes can only ever make horizontal bands anyway. In v2 every head holds **one** temperature for the whole print, and the darker latewood is painted as its own region on a second, **hot** cherry head.
+- **Only the skin is wood.** The outer wall is wood PLA; everything under it (inner walls, bayonet lugs, collar, ribs, bosses) is **plain PLA**, so nothing that carries load is brittle.
+- **Realistic growth rings.**
+  - Ring widths vary from year to year, including runs of lean years.
+  - Each ring shades gradually into its latewood, then stops sharply.
+  - Walnut cores appear only in the strongest rings.
+  - There are broad heartwood streaks and darker end grain.
+  - The log runs front to back, so the layers cut across the grain instead of along it.
+- **No surface relief.** The back plate's face sits flat on the bed now.
 
-| ![Back](../../docs/img/wood/wood_back.jpg) | ![Top](../../docs/img/wood/wood_top.jpg) |
-|---|---|
-| ![Shells apart](../../docs/img/wood/wood_parts.jpg) | Renders use the exact per-head colour assignment from the print file. The colours are matched to the spools by eye. |
+## Load the heads like this
 
-Geometry, fit and assembly are identical to the standard version. Print the internals from [`../plates/VoiceClock_internals_PETG.3mf`](../plates/VoiceClock_internals_PETG.3mf) and follow [`docs/assembly`](../../docs/assembly/ASSEMBLY.md).
+| U1 head | Spool | Temperature | Used for |
+|---|---|---|---|
+| 1 (T0) | **Plain PLA, brown** (any brown close to cherry) | 215 °C | The core under the skin. It shows only at the seam edge and inside |
+| 2 (T1) | **JAYO cherry** | 205 °C | Earlywood (the main tone) |
+| 3 (T2) | **JAYO cherry, a second spool** | 230 °C, max 2.5 mm³/s | Latewood. The same wood, scorched a little darker. Set to 230 °C for the first full print (the plan's 235–240 °C is untested above JAYO's range); coupon C1 can raise it later |
+| 4 (T3) | JAYO walnut | 212 °C | Ring cores, one gum streak, the mute button |
 
-## Filament
+**Two cherry heads need two cherry spools.** One spool can't feed two heads, so either buy a second cherry spool or rewind about 35 g onto an empty spool. Per print: core PLA about 107 g, cherry 37 g + 30 g, walnut 13 g (about 187 g in total, including the prime tower).
 
-Made for the JAYO Wood PLA 4-pack (walnut, "logs"/oak, cherry, maple; 250 g each, 15 % wood fibre). This design uses two of them:
+## Optional coupons
 
-| U1 head | Spool | Used for | Nozzle °C | Used |
-|---|---|---|---|---|
-| 1 (T0) | Cherry | the wood, and all the hidden structure inside | 210 (drifts 202–217) | 105 g |
-| 2 (T1) | Walnut | growth rings, mute button | 212 (drifts 210–217) | 16 g |
-| 3, 4 | Maple, oak | not used (presets included for your own variations) | — | — |
+The hot-head step and the smallest printable details are measured, not assumed.
 
-The print takes about 8 h 40 min on one plate (both shells, back plate, button), with 254 layers at 0.2 mm and 224 tool changes. Supports are on as tree (manual), so only the small painted area on the back plate gets support (about 0.1 g, in the first 1.5 mm).
+1. **C1, tone vs temperature** (`coupons/C1_JAYO_Wood_Cherry_U1.3mf`, 1 h 12 min, cherry on head 1; the sliced `.gcode` sits beside it in the local print folder).
+   - **What it is:** three columns at 2.5, 4 and 8 mm³/s outer-wall flow, in four tiers at 205, 220, 235 and 245 °C. Each tier has a vertical wall, a 50° slope and the bed face.
+   - **What to do:** photograph it next to a grey card under fixed light.
+   - **Pass:** a tier that differs from the 205 °C tier by a clear but gentle step (ΔE00 3–10), with no clogging or rough surface. Use that temperature for head 3 next time (`FILAMENTS` in `CAD/wood_project.py`).
+   - **Fail:** if no tier gives a usable step, load walnut in head 3 as well, so the latewood prints in walnut (walnut-only rings).
+
 
 ## Files
 
-- [`VoiceClock_wood_U1.3mf`](VoiceClock_wood_U1.3mf): full Snapmaker Orca project with the printer, process, filaments and painted model. Open it with **File → Open Project**, slice and send. It points its post-processing script at `/home/asher/.local/share/voice-clock/wood_temps.py`. On another machine, run `cad/wood_project.py` once (below) to install the script and rebuild the project with your own path.
-- [`VoiceClock_wood_model.3mf`](VoiceClock_wood_model.3mf): the painted model only, for your own presets. The paint is per-triangle extruder painting (Orca's `paint_color`), extruders 1 and 2.
-- [`presets/`](presets): the `0.20mm Turned Wood` process and the four JAYO wood filament presets (based on Snapmaker's PLA Wood @U1 0.4 profile). Max flow is 12 mm³/s, the bed is at 60 °C, and the shells get a 5 mm brim.
+- **`VoiceClock_wood_U1.3mf`:** the full Snapmaker Orca project, with printer, process (`0.16mm Turned Wood v2`), the 4 filament presets and the painted model.
+- **`renders/`** (local print folder) and `docs/img/wood/` (repo): the v2 Blender renders, from the same paint data the slicer gets.
+- **`VoiceClock_wood_U1.gcode`:** sliced, about 16 h 50 min, 315 layers. It is in the local print folder only (46 MB, kept out of git); in the repo, open the 3MF in Snapmaker Orca and slice it. C1 is optional; at 230 °C the hot head stays close to JAYO's range.
+- **`VoiceClock_wood_model.3mf`:** the painted model only, for use with your own presets.
+- **`presets/`:** the 4 filament presets used (PLA core, cherry, cherry HOT, walnut), the process and the printer. Maple and oak are spare v1 tones, not used. They're also installed in Snapmaker Orca's user presets.
+- **`coupons/`:** C1.
 
-## How it works
+## Settings that matter
 
-1. **Grain → paint** ([`cad/wood.py`](../../cad/wood.py)). A 3D growth-ring field (a log axis across the face, the pith just below the base, Perlin-warped rings, uneven ring widths and faint years) decides the colour of every outside triangle. Orca then extends each painted region 1.2 mm into the wall (`mmu_segmented_region_max_width`) and gives each colour its own toolhead. The U1 is a toolchanger, so there's no purge between colours. The same field carves the relief: open earlywood pores sit 0.12 mm low, and fibre streaks run along the grain.
-2. **Tone drift** ([`cad/wood_temps.py`](../../cad/wood_temps.py), an Orca post-processing script). Wood PLA prints darker when it's hotter, so each head's printing temperature wanders slowly with height: ±9 °C at most, no more than 1 °C per layer, over a 14–29 mm wavelength. Each wood shades naturally instead of in stripes. Standby temperatures are left alone. The U1's ooze prevention drops idle heads to about 60 °C, so wood never sits hot in a nozzle and chars. It's pure Python (it runs inside the Orca flatpak) and skips files it has already processed.
-3. **Project** ([`cad/wood_project.py`](../../cad/wood_project.py)). Writes the presets, installs the script and the user presets for Snapmaker Orca, builds the painted 3MF, and slices it with Snapmaker Orca's own CLI. The CLI doesn't run post-processing scripts, so it then runs `wood_temps.py` inside the same sandbox.
+- **Layers:** 0.16 mm, first layer 0.2.
+- **Walls:** 4 walls. Outer wall 40 mm/s, so the cool and hot heads run at the same flow and the step comes from temperature alone.
+- **Paint depth 0.5 mm** (`mmu_segmented_region_max_width`). Only the outer wall is wood; the inner walls are core PLA.
+- **No post-processing script.** `wood_temps.py` is retired.
 
-```bash
-cd cad
-.venv/bin/python voice_clock.py       # shells (needs to run once)
-.venv/bin/python wood.py              # painted, textured wood meshes -> out/wood/
-.venv/bin/python wood_project.py      # presets, project 3MF, sliced + post-processed G-code -> out/wood/
-```
+## Finishing (recommended: light finish)
 
-Snapmaker Orca 2.4.1 CLI quirks the script works around: it segfaults on `wipe_tower_filament`, it doesn't resolve `inherits` for loaded preset files (so the process is flattened), and it re-arranges the plate unless you pass `--arrange 0`.
+1. Mask the bayonet lugs and blocks, the ring bore, the back-plate lip and the mic holes.
+2. Scuff the outside with a 320 foam pad along the grain.
+3. Wipe on 2–3 thin coats of **satin wipe-on polyurethane**, with 0000 wool or 400 grit between coats.
+4. Let it cure for 7 days before assembly.
 
-## Tuning the look (`cad/wood.py`)
+No stain: gel stain lodges in the layer grooves and makes stripes.
 
-| Constant | Effect |
-|---|---|
-| `RING` | ring spacing (3.6 mm) |
-| `LATE_MIN`, `LATE_MAX` | dark-line thickness as a share of a ring (keep `LATE_MIN × RING` ≥ 0.45 mm so each line is at least one extrusion wide) |
-| `FAINT` | higher = more years with no dark line |
-| `PITH`, `AXIS` | where the log was: moves the arches and ovals of the figure |
-| `SAPWOOD`, `HEART_R` | `True` brings back a maple/oak sapwood cap (heads 3 and 4) |
+## Decide: which way the log runs
 
-## Tips
+The default (`LOG = "front_back"` in `CAD/wood.py`) runs the log front to back:
+- **Front:** arches round a centre below the clock.
+- **Sides:** side grain.
+- **Top:** ellipses.
+- **Back plate:** a log slice.
 
-- Print the back plate on its own first to check the U1 handles wood PLA on two heads without clogging.
-- Wood PLA is a little less flexible than plain PLA. The snap hooks only flex 0.5 mm (0.7 % strain), but snap the shells together gently the first time.
-- A light sand (400 grit) and a wipe of oil or paste wax deepens the grain.
+The alternative, `LOG = "across"`, keeps v1's story with the log across the face, but puts more layer-aligned stripes on the front. Re-run `wood.py` and `wood_project.py` after changing it.

@@ -17,7 +17,7 @@ STEEL, BRASS, ARROW, FOAM, TPU = "#aeb4bd", "#c9a646", "#ff7a1a", "#2b2b2b", "#3
 
 # ------------------------------------------------------------ geometry (D frame)
 def tess_all():
-    parts = {n: f() for n, f in PRINT_PARTS.items() if n not in ("tpu_washers", "insert_coupon")}
+    parts = {n: f() for n, f in PRINT_PARTS.items() if n not in ("tpu_washers", "insert_coupon", "foot_pads")}
     prox = proxies()
     g = {}
     for n, s in {**parts, **prox}.items():
@@ -26,6 +26,9 @@ def tess_all():
             g[n] = (np.asarray(m.vertices), np.asarray(m.faces))
         else:
             g[n] = R.tess(s)
+    g["foot_pad_front"] = R.tess(foot_pad_placed("front"))
+    g["foot_pad_rear"] = R.tess(foot_pad_placed("rear"))
+    g["ballast_fill"] = R.tess(ballast_pocket())
     return g
 
 
@@ -97,7 +100,7 @@ M2_INS_OD = 3.2
 
 def hw_cp_screws():                      # spider -> CrowPanel hub (from the board side, toward +z)
     m = []
-    for xy in CP_SCREWS:
+    for xy in cp_screws():
         m += screw(xy, STANDOFF_L + 1.0, 12, **SHCS_M3)
     return m
 
@@ -141,6 +144,11 @@ def hw_inserts(which):
         bt = BACK_Z + SPK_GASKET + SPK_EAR_FROM_FACE - TPU_WASHER_T
         for sx in (-1, 1):
             m += ins((sx * SPK_EAR_PITCH / 2, SPK_CY), bt - M2_INSERT_L, bt, M2_INS_OD)
+        y_top, y_bot = usb_pcb_y()                     # USB-C wall: pressed in from its outer face
+        y0 = y_bot - USB_WALL_T
+        for sx in (-1, 1):
+            x = sx * USB_HOLE_PITCH / 2
+            m.append(cylseg((x, y0, BACK_Z + USB_HOLE_Z), (x, y0 + M2_INSERT_L, BACK_Z + USB_HOLE_Z), M2_INS_OD / 2))
     return m
 
 
@@ -195,7 +203,7 @@ def scene(g, base, new, views, title, fname, arrows=(), hw_base=(), hw_new=()):
     return out
 
 
-CP = ["cp_knob", "cp_glass", "cp_housing", "cp_pcb", "cp_conn"]
+CP = ["cp_knob", "cp_glass", "cp_pcb", "cp_conn"]
 RS = ["rs_pcb", "rs_leds", "rs_xiao"]
 REAR_VIEW = (150, 18, 1.0)
 FRONT_VIEW = (-35, 14, 1.0)

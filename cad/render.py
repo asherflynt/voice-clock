@@ -10,11 +10,11 @@ from voice_clock import *
 
 COL = {
     "front_shell": "#d8a29c", "rear_shell": "#d8a29c", "back_plate": "#c99590",
-    "light_guide": "#f2f0ea", "spider": "#5a6270", "carrier": "#5a6270",
+    "ring_base": "#c9ccd2", "ring_shell": "#f2f0ea", "spider": "#5a6270", "carrier": "#5a6270",
     "mute_plunger": "#c98f89", "cp_knob": "#3b3d42", "cp_glass": "#f7e9e8",
     "cp_housing": "#8e9196", "cp_pcb": "#2f7d4f", "cp_conn": "#e8e2d0",
     "rs_pcb": "#1d1f24", "rs_leds": "#ffffff", "rs_xiao": "#3466a8",
-    "board_spacers": "#cfa49f", "speaker": "#202020",
+    "speaker": "#202020",
 }
 BG = "#f4f1ec"
 
@@ -133,14 +133,14 @@ def render(items, yaw, pitch, fname, W=1400, H=1100, ss=2, zoom=1.0, focus=None,
     print("wrote", fname, flush=True)
 
 
-OFFS = {"front_shell": 2.6, "light_guide": 1.9, "cp_knob": 1.1, "cp_glass": 1.1, "cp_housing": 1.1,
-        "cp_pcb": 1.1, "cp_conn": 1.1, "spider": 0.5, "board_spacers": 0.22, "rs_pcb": 0, "rs_leds": 0,
+OFFS = {"front_shell": 2.6, "ring_shell": 2.0, "ring_base": 0.3, "cp_knob": 1.1, "cp_glass": 1.1,
+        "cp_pcb": 1.1, "cp_conn": 1.1, "spider": 0.5, "rs_pcb": 0, "rs_leds": 0,
         "rs_xiao": 0, "carrier": -0.5, "rear_shell": -1.1, "speaker": -1.6, "back_plate": -1.8,
         "mute_plunger": 2.6}
 
 
 def build(cut=False, explode=0.0):
-    parts = {n: f() for n, f in PRINT_PARTS.items() if n not in ("tpu_washers", "insert_coupon")}
+    parts = {n: f() for n, f in PRINT_PARTS.items() if n not in ("tpu_washers", "insert_coupon", "foot_pads")}
     prox = proxies()
     items = []
     for n, s in {**parts, **prox}.items():
@@ -172,7 +172,7 @@ if __name__ == "__main__":
     render(full, yaw=-32, pitch=12, fname=OUT / "render_exterior.png",
            title="Voice Clock - exterior, knit texture 0.6 mm")
     render(full, yaw=148, pitch=12, fname=OUT / "render_back.png",
-           title="Back: speaker grille, USB-C inlet, 3x M3")
+           title="Back: speaker grille, USB-C inlet, twist-lock back plate")
     # close-up of the texture on the upper left shoulder
     # point on the sphere facing the camera, upper-right of the body
     yc, pc = radians(-32), radians(12)

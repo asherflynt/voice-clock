@@ -76,9 +76,9 @@ Elecrow's schematic only brings 5 V into the CrowPanel's main board through its 
 
 ![Cable route](img/05_cable_route.svg)
 
-Keep the 5 mm gap between the spider and the reSpeaker, and the light guide's notch, clear of joints. Only the bare pigtail passes through them. Every splice sits behind the carrier.
+Keep the 5 mm gap between the spider and the reSpeaker, and the ring base's notch, clear of joints. Only the bare pigtail passes through them. Every splice sits behind the carrier.
 
-The light guide's notch and the carrier's notch are at **10 o'clock seen from the front** (between two LEDs, clear of the reSpeaker's USB-C and audio jack at 9 o'clock). From there the pigtail runs down the 4.6 mm gap between the board edge and the rear-shell wall. The whole electronics stack, with every lead plugged in, drops into the rear shell in one piece, and the front shell then snaps on with no wires attached to it, so it can come off without unplugging anything.
+The ring base's notch and the carrier's notch are at **11 o'clock seen from the front** (between two LEDs, clear of the reSpeaker's USB-C and audio jack at 9 o'clock). From there the pigtail runs down the 4.6 mm gap between the board edge and the rear-shell wall. The whole electronics stack, with every lead plugged in, drops into the rear shell in one piece (hold the pigtail at 11 o'clock as it goes in: the rear shell's collar has a gap for it only there), and the front shell then twist-locks on with no wires attached to it, so it can come off without unplugging anything.
 
 ---
 

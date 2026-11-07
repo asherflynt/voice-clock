@@ -28,8 +28,8 @@ ORANGE = (255, 106, 19, 255)
 INK = (40, 36, 33, 255)
 SS = 2                                            # supersample for clean lines
 # render id -> step number in the assembly guide (guide step 2 is wiring, no render)
-GUIDE_STEP = {"step_01": 1, "step_01b": 1, "step_02": 3, "step_03": 4, "step_04": 5, "step_05": 6,
-              "step_06": 7, "step_07": 8, "step_08": 9, "step_09": 10}
+GUIDE_STEP = {"step_01": 1, "step_01b": 1, "step_02": 3, "step_03": 4, "step_04": 5, "step_05": 5,
+              "step_06": 6, "step_07": 7, "step_08": 8, "step_09": 9, "step_10": 10, "step_10b": 10, "step_11": 11}
 
 
 def backdrop(w, h):
@@ -88,6 +88,12 @@ def compose(step, labels, title, number_from=1):
     for (a, b) in proj["arrows"]:
         if a[2] > 0 and b[2] > 0:
             arrow(d, (a[0] * SS, a[1] * SS), (b[0] * SS, b[1] * SS), 7 * SS)
+    for pts in proj.get("arcs", []):                     # curved "turn" arrows: polyline, head on the last chord
+        if len(pts) < 4 or min(p[2] for p in pts) <= 0:
+            continue
+        q = [(p[0] * SS, p[1] * SS) for p in pts]
+        d.line(q[:-3], fill=ORANGE, width=7 * SS, joint="curve")
+        arrow(d, q[-4], q[-1], 7 * SS)
 
     keys = [k for k in step["callouts"] if proj["anchors"].get(k, [0, 0, -1])[2] > 0]
     legend = []

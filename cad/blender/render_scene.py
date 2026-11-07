@@ -178,8 +178,9 @@ def materials(hero):
     nt.links.new(img.outputs["Color"], b.inputs["Base Color"])
     M["display"] = m
     # wood PLA (turned-wood variant): matte, 0.2 mm layer lines, fine fibre speckle + tone drift
-    for key, hexc in (("wood_cherry", "#6A3527"), ("wood_walnut", "#36221A"),
-                      ("wood_maple", "#C6AA80"), ("wood_oak", "#8E6B47")):
+    M["steel_shot"] = principled("steel_shot", (0.10, 0.10, 0.11, 1), 0.48, 0.85)[0]
+    for key, hexc in (("wood_cherry", "#6A3527"), ("wood_walnut", "#36221A"), ("wood_cherry_hot", "#552A1E"),
+                      ("pla_core", "#5A3B2A"), ("wood_maple", "#C6AA80"), ("wood_oak", "#8E6B47")):
         m, nt, b = principled(key, hexlin(hexc), 0.74, **{"Specular IOR Level": 0.3})
         tc = nt.nodes.new("ShaderNodeTexCoord")
         speck = nt.nodes.new("ShaderNodeTexNoise")
@@ -226,8 +227,10 @@ def load_meshes(names, mats, matkey):
     return objs
 
 
-def place(o, dz):
-    o.matrix_world = M_D @ Matrix.Translation((0, 0, dz))
+def place(o, it):
+    """Item offset (D frame, mm) and turn about the D z axis (deg, CCW seen from the front)."""
+    off = it.get("off", (0.0, 0.0, it.get("dz", 0.0)))
+    o.matrix_world = M_D @ Matrix.Translation(off) @ Matrix.Rotation(radians(it.get("rz", 0.0)), 4, "Z")
 
 
 def lights_and_camera(sc, center, radius, view, ground_z):
@@ -317,7 +320,7 @@ def render_step(step):
     names = [it["mesh"] for it in step["items"]]
     objs = load_meshes(names, mats, S["materials"])
     for it in step["items"]:
-        place(objs[it["mesh"]], it["dz"])
+        place(objs[it["mesh"]], it)
     bpy.context.view_layer.update()
     pts = [o.matrix_world @ Vector(c) for o in objs.values() for c in o.bound_box]
     lo = Vector((min(p.x for p in pts), min(p.y for p in pts), min(p.z for p in pts)))
@@ -340,6 +343,7 @@ def render_step(step):
         "size": [RES_X, RES_Y],
         "anchors": anchors,
         "arrows": [[project(sc, cam, to_b(a)), project(sc, cam, to_b(b))] for a, b in step["arrows"]],
+        "arcs": [[project(sc, cam, to_b(p)) for p in a] for a in step.get("arcs", [])],
     }
     (OUT / f"{step['id']}.json").write_text(json.dumps(proj))
     print("RENDERED", step["id"], flush=True)

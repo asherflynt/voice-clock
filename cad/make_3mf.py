@@ -33,30 +33,29 @@ BACK_PLATE_ONLY_PLA = [
 # name, extruder (1 = matte PLA body, 2 = clear/natural PETG light guide, 3 = TPU), bed x, y, rot-z
 # PLA and PETG never share a plate (different bed temperatures).
 PLATES = [
-    # filament slots match the U1 as loaded: 1 = PETG (internals & light guide), 2 = matte PLA (shells),
-    # 4 = TPU (washers, optional). Slot 3 is unused.
+    # filament slots match the U1 as loaded: 1 = PETG (internals; natural/clear for the light ring),
+    # 2 = matte PLA (shells), 4 = TPU (washers, optional). Slot 3 is unused.
     ("Externals - PLA slot 2", EXTERNALS_PLA),
-    ("Internals and Light Guide - PETG slot 1", [
+    ("Internals and Light Ring - PETG slot 1", [
         ("carrier", 1, 62, 62, 0),
-        ("light_guide", 1, 62, 200, 0),
-        ("spider", 1, 196, 42, 0),
-        ("board_spacers", 1, 196, 108, 0),
-        ("insert_coupon", 1, 196, 160, 0),
-        ("mute_plunger", 1, 196, 200, 0),
+        ("ring_shell", 1, 62, 205, 0),
+        ("ring_base", 1, 200, 205, 0),
+        ("spider", 1, 200, 45, 0),
+        ("mute_plunger", 1, 140, 135, 0),
     ]),
-    ("TPU washers - slot 4 (optional)", [
-        ("tpu_washers", 4, 135, 135, 0),
+    ("TPU - grip pads + speaker washers - slot 4", [
+        ("foot_pads", 4, 135, 95, 0),
+        ("tpu_washers", 4, 135, 200, 0),
     ]),
 ]
 
 SEVEN_PARTS_PETG = [
     ("carrier", 1, 62, 62, 0),
     ("back_plate", 1, 200, 52, 0),
-    ("light_guide", 1, 62, 200, 0),
-    ("spider", 1, 200, 130, 0),
-    ("board_spacers", 1, 200, 185, 0),
-    ("insert_coupon", 1, 140, 245, 0),
-    ("mute_plunger", 1, 135, 135, 0),
+    ("ring_shell", 1, 62, 205, 0),
+    ("ring_base", 1, 200, 205, 0),
+    ("spider", 1, 200, 128, 0),
+    ("mute_plunger", 1, 140, 160, 0),
 ]
 # object-level overrides (independent of the user's preset names)
 SETTINGS = {
@@ -65,10 +64,10 @@ SETTINGS = {
     "rear_shell": {"brim_type": "outer_only", "brim_width": "5"},
     "spider": {"sparse_infill_density": "100%"},
     "mute_plunger": {"sparse_infill_density": "100%"},
-    "light_guide": {"sparse_infill_density": "100%", "wall_loops": "3"},
-    "insert_coupon": {"sparse_infill_density": "100%"},
-    "board_spacers": {"sparse_infill_density": "100%", "wall_loops": "3"},
+    "ring_base": {"wall_loops": "3", "brim_type": "outer_only", "brim_width": "4"},
+    "ring_shell": {"wall_loops": "3", "brim_type": "outer_only", "brim_width": "4"},
     "tpu_washers": {"sparse_infill_density": "100%", "wall_loops": "2", "brim_type": "outer_only", "brim_width": "3"},
+    "foot_pads": {"sparse_infill_density": "100%", "wall_loops": "2"},
 }
 STRIDE = BED * 1.2          # Orca lays plates out on a grid: stride = bed * (1 + 1/5)
 
