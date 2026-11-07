@@ -9,8 +9,9 @@
 | Plate | Parts | Material | Notes |
 |---|---|---|---|
 | 1 | Front shell, rear shell, back plate, mute button | Matte PLA, or the wood variant (print/wood/) | 5 mm brim on the shells, no supports. Front shell face-up (seam on the bed), rear shell on its back rim. |
-| 2 | Carrier, spider bracket, ring base, ring shell, mute button | PETG; natural or clear for the two ring parts |  |
-| 3 | 2 grip pads, 4 speaker washers | TPU | The grip pads stop the clock turning when you turn the knob. |
+| 2 | Carrier, spider bracket | The same matte PLA | A little stiffer than PETG and more accurate for the key notches and insert holes. Spider at 100% infill. |
+| 3 | Ring base, ring shell, mute button | Natural or clear PETG | The ring cap must be translucent. Use this mute button rather than the PLA one: its snap barb is tougher in PETG. |
+| 4 | 2 grip pads, 4 speaker washers | TPU | The grip pads stop the clock turning when you turn the knob. |
 
 **Electronics:** Elecrow CrowPanel 2.1" rotary display; Seeed reSpeaker XVF3800 with XIAO ESP32-S3; 4428 3 W 8 Ω speaker; 5 V 3 A USB-C charger
 
@@ -39,7 +40,7 @@ In this picture: **1** 3x M2 insert, **2** Spider bracket
 
 In this picture: **1** Back plate, **2** 4x M2 insert (2 speaker, 2 USB-C wall)
 
-1. The M2 insert holes are Ø2.9, the size already confirmed on this printer.
+1. The M2 insert holes are Ø2.9, the size already confirmed on this printer. All 7 inserts go into PLA, so set the iron to about 190–200 °C.
 2. Spider (first picture): 3 inserts in the underside at the end of each arm.
 3. Back plate, speaker bosses (second picture): 2 inserts in the round bosses either side of the grille. The holes run deep on purpose: there is room below the screw tip for the plastic the insert pushes down.
 4. Back plate, USB-C wall: 2 inserts pressed in **horizontally from the wall's outer face** (the side toward the plate's rim; there is a lead-in chamfer there), flush with that face. Support the wall from the board side while you press.

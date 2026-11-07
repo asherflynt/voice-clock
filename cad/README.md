@@ -21,7 +21,7 @@ python3.12 -m venv .venv
 ```bash
 .venv/bin/python voice_clock.py   # builds every part -> out/*.stl, *.step, assembly_D.step (about 10 s)
 .venv/bin/python check.py         # clashes vs the vendor reSpeaker STEP, both twist locks stepped through, keys, screws (about 4 min)
-.venv/bin/python make_3mf.py      # Snapmaker U1 -> out/VoiceClock_U1.3mf (3 plates) + out/plates/ fallbacks
+.venv/bin/python make_3mf.py      # Snapmaker U1 -> out/VoiceClock_U1.3mf (4 plates) + out/plates/ fallbacks
 .venv/bin/python render.py        # quick numpy previews -> out/render_*.png
 .venv/bin/python fit_tests.py     # draft fit-test set (shell bands at every interface + small parts) -> out/fit_tests/
 ```
@@ -40,22 +40,23 @@ Every dimension is a named constant at the top of `voice_clock.py`. Values marke
 
 | Part | Plate / slot | Orientation | Notes |
 |---|---|---|---|
-| front_shell | 1 → slot 2 (PLA) | **Face up** (seam on the bed) | Sphere runs up to the light-ring bore. 7 bayonet blocks and the 4 mic boots print on the bed. 5 mm brim |
+| front_shell | 1 → slot 2 (PLA) | **Face up** (seam on the bed) | Sphere runs up to the light-ring bore. 7 bayonet blocks and the 4 mic boots print on the bed. The mic channels (`mic_channel()`) have pointed roofs (a cone up the vertical leg, a 55° ridge on the radial leg), so no ceiling is flatter than 45° and nothing bridges. 5 mm brim |
 | rear_shell | 1 → slot 2 (PLA) | Back rim down | Bayonet collar and 7 lugs at the top, 4 full-height key ribs, **ballast pocket** (about 30 cm³, low behind the carrier), grip-pad recess, mute guide boss, back-plate lip at the bed. 5 mm brim |
 | back_plate | 1 → slot 2 (PLA) | Outer face down | 3 bayonet lugs, 2 flexure pawls, coin slot, 4 M2 inserts (speaker 2, USB-C 2, the latter pressed in from the wall's outer face) |
-| mute_plunger | 1 or 2 | Cap down | 100% infill |
-| ring_base | 2 → slot 1 (natural PETG) | Spacers down | Light-channel inner wall plus the 3 board spacers on the clamp screws |
-| ring_shell | 2 → slot 1 (natural/clear PETG) | Cap down | Channel sleeve plus a 1.4 mm diffuser cap (frosted by the textured PEI) |
-| carrier | 2 → slot 1 (PETG) | Back face down | Bulkhead; its 4 notches key the stack on the rear shell's ribs |
-| spider | 2 → slot 1 (PETG) | Plate down | 100% infill. CrowPanel pattern turned by `CP_ROT_TRIM_DEG` |
-| foot_pads | 3 → slot 4 (TPU) | Flat | 2 grip pads for the recesses in the flat base (glue in with CA). They stand 0.4 mm proud |
-| tpu_washers | 3 → slot 4 (optional) | Flat | 4 speaker isolation washers |
+| mute_plunger | 1 (PLA) or 3 (PETG) | Cap down | 100% infill. Use the PETG one if you have it: its snap barb is tougher |
+| ring_base | 3 → slot 1 (natural PETG) | Spacers down | Light-channel inner wall plus the 3 board spacers on the clamp screws |
+| ring_shell | 3 → slot 1 (natural/clear PETG) | Cap down | Channel sleeve plus a 1.4 mm diffuser cap (frosted by the textured PEI) |
+| carrier | 2 → slot 2 (PLA) | Back face down | Bulkhead; its 4 notches key the stack on the rear shell's ribs |
+| spider | 2 → slot 2 (PLA) | Plate down | 100% infill. CrowPanel pattern turned by `CP_ROT_TRIM_DEG` |
+| foot_pads | 4 → slot 4 (TPU) | Flat | 2 grip pads for the recesses in the flat base (glue in with CA). They stand 0.4 mm proud |
+| tpu_washers | 4 → slot 4 (optional) | Flat | 4 speaker isolation washers |
 
 **Suggested U1 settings:**
 - **Shells:** matte PLA (or the wood variant). 0.2 mm layers, 4 walls, 20% gyroid.
-- **Internals and light ring:** natural/clear PETG. For the light-ring parts the walls do the work; no special infill is needed. **Not** 100% solid, like v1's ring: in v2 the light travels through air.
-- **Inserts:** set the M2 inserts at about 230–240 °C in PETG and 190–200 °C in PLA.
-- **Files:** `out/VoiceClock_U1.3mf` holds all 3 plates. The 3MFs are model-only, so your own printer, process and filament presets stay selected.
+- **Structural internals (carrier, spider):** the same matte PLA as the shells. PLA is somewhat stiffer than PETG (about 1.3× the tensile modulus) and, more usefully, prints the 0.2 mm key notches and the insert holes more accurately. Inside the sphere the boards should keep it well under PLA's softening point (about 55 °C), and the shells already rely on that.
+- **Light ring:** natural/clear PETG. The cap has to be translucent, and the crush-rib press fit likes PETG's give. The walls do the work; no special infill is needed. **Not** 100% solid, like v1's ring: in v2 the light travels through air.
+- **Inserts:** all 7 M2 inserts now go into PLA (spider and back plate): set the iron to about 190–200 °C.
+- **Files:** `out/VoiceClock_U1.3mf` holds all 4 plates (PLA externals, PLA internals, PETG light ring, TPU). The 3MFs are model-only, so your own printer, process and filament presets stay selected.
 
 ## Hardware
 

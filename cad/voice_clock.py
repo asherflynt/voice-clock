@@ -207,6 +207,9 @@ PAD_RESET_NOTCH = (7.5, -8.0)                  # |u| < 7.5, w < -8: the floor un
 MIC_BORE      = 2.0
 MIC_LUG_Z0    = SPLIT_Z   # boot underside (on the front shell's bed); 1/16" foam 1.6 -> 1.1
 MIC_CH_Z      = 3.0
+MIC_ROOF_TAN  = 1.42815   # tan 55 deg: radial bore roof slope (prints face-up, 35 deg from vertical)
+MIC_ROOF_H    = 1.71696   # ridge height / bore radius: the roof meets the circle exactly at its 45 deg point,
+                          # so no part of the ceiling is flatter than 45 deg from vertical
 BOOT_RI       = 44.5
 BOOT_SLIM_R   = 50.4      # beyond here the boot is a 5 mm bar below BOOT_SLIM_Z (collar gaps)
 BOOT_TUBE_W   = 5.0
@@ -324,6 +327,25 @@ def rz_profile(pts, ang, half_w):
     """Polygon in the (r, z) half-plane, extruded +-half_w tangentially, rotated to ang."""
     f = Plane.XZ * Polygon(*pts, align=None)
     return Rot(0, 0, ang) * extrude(f, amount=half_w, both=True)
+
+
+def mic_channel(ang, grow=0.0):
+    """Air path from the mic port to the outside (L-shaped: up from the board, then radial).
+    The front shell prints face-up (+z up), so both legs get pointed roofs instead of flat
+    bridges: a 45 deg cone on the vertical leg, a 55 deg (from horizontal) ridge on the radial leg
+    (+0.5 mm2 of area). The roof sides cross the bore circle (at its 45 deg and 65 deg points) rather
+    than touch it, which keeps the boolean clean. grow > 0 thickens it (for clearance checks);
+    grow < 0 gives a core probe."""
+    r = MIC_BORE / 2 + grow
+    x, y = polar(RS_MIC_R, ang)
+    rv = r + 0.05                                        # vertical leg d2.1: equal-radius crossed cylinders
+    path = cyl(rv, -1, MIC_CH_Z, x, y)                   # are a degenerate boolean (inexact volumes)
+    path = path + Pos(x, y, MIC_CH_Z) * Cone(rv, 0.0, rv, align=(Align.CENTER, Align.CENTER, Align.MIN))
+    r0 = RS_MIC_R - 0.2                                  # radial leg starts just past the vertical axis, so the
+    h, t = MIC_ROOF_H * r, 0.8 * r                       # cone tip is inside it, not on its end face
+    zt = MIC_CH_Z + h - t * MIC_ROOF_TAN                 # (h: ridge height; t: roof foot, inside the circle)
+    roof = [(0.0, MIC_CH_Z), (t, zt), (0.0, MIC_CH_Z + h), (-t, zt)]
+    return path + (radial_cyl(r, ang, r0, SPHERE_R + 5, MIC_CH_Z) + tz_prism(roof, ang, r0, SPHERE_R + 5))
 
 
 def tz_prism(pts, ang, r0, r1):
@@ -511,9 +533,7 @@ def front_shell():
             lug = lug - tz_prism(t if s > 0 else t[::-1], ang, BOOT_SLIM_R, SPHERE_R + 2)
         shell = shell + (lug & env)
     for ang in (45, 135, 225, 315):
-        x, y = polar(RS_MIC_R, ang)
-        shell = shell - cyl(MIC_BORE / 2, -1, MIC_CH_Z + MIC_BORE / 2, x, y)
-        shell = shell - radial_cyl(MIC_BORE / 2, ang, RS_MIC_R, SPHERE_R + 5, MIC_CH_Z)
+        shell = shell - mic_channel(ang)
     # bayonet blocks (built up from the bed); 4 of them carry a radial flexure finger whose bump
     # clicks into a V-groove in the collar at the locked angle (the detent has its own spring)
     for a, span in TW_LUGS:

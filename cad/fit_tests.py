@@ -38,7 +38,7 @@ PLATES = [
     ("Draft 2 - back plate, back opening, ring bore, plunger (PLA)",
      [("back_plate", 2, 52, 52, 0), ("fit_back_ring", 2, 52, 150, 0), ("fit_front_top", 2, 175, 80, 0),
       ("mute_plunger", 2, 175, 200, 0)]),
-    ("Draft 3 - light ring, carrier, spider (PETG or PLA)",
+    ("Draft 3 - light ring, carrier, spider (any PLA is fine for a fit check)",
      [("carrier", 1, 62, 62, 0), ("ring_shell", 1, 62, 205, 0), ("ring_base", 1, 200, 205, 0),
       ("spider", 1, 200, 45, 0)]),
 ]

@@ -1,6 +1,6 @@
 # v2 draft fit test (about 3 h 20 min in total)
 
-Short, untextured bands of the shells at every interface, plus the small parts at full size. Draft settings: 2 walls, 10 % infill, layer height left at your preset (0.2 mm), so the fits are representative. Print it in plain PLA; the internals plate can be PLA too for a fit check.
+Short, untextured bands of the shells at every interface, plus the small parts at full size. Draft settings: 2 walls, 10 % infill, layer height left at your preset (0.2 mm), so the fits are representative. Print it all in plain PLA, including the ring parts (in the real build only the two ring parts and the PETG mute button are PETG; the carrier and spider are PLA).
 
 | File | Contents | Time (0.2 mm, plain PLA) |
 |---|---|---|
@@ -9,7 +9,7 @@ Short, untextured bands of the shells at every interface, plus the small parts a
 | `VoiceClock_v2_fit_plate3` | ring base, ring shell, carrier, spider | 1 h 21 min |
 
 - **`.3mf`:** model only, with per-part draft settings, so your own U1 presets stay selected.
-- **`.gcode`:** sliced with a generic PLA preset, ready to send (local print folder only; in the repo, slice the 3MFs).
+- **G-code:** not included. Slice the 3MFs with a generic PLA preset (the earlier draft G-code predated the final tolerances and was retired).
 - **`VoiceClock_v2_fit_tests.3mf`:** all three plates in one project.
 
 ## What to check

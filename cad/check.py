@@ -404,6 +404,28 @@ over = radial_box(NOTCH_ANG, RING_IW_R0 - 0.5, RS_R + 1, 2.5, 0.05, 1.6)
 flag(vol(over, parts["ring_base"]) + vol(over, parts["ring_shell"]) + vol(over, rear) < 0.01,
      "lead passes under both light-ring walls and over the board edge")
 
+print(flush=True); print("== mic channels (port -> outside, all 4 diagonals)")
+fs = parts["front_shell"]
+others = [p for n, p in parts.items() if n != "front_shell"] + [prox["cp_knob"], prox["cp_pcb"]]
+rs_front = [s for s in rs_solids if s is not pcb and s.bounding_box().max.Z > 0.0]
+open_ok, wall_ok, voids = True, True, []
+for ang in (45, 135, 225, 315):
+    core = mic_channel(ang, -0.15) - zslab(-5, 0.02)            # air path from the PCB face outward
+    blocked = vol(core, fs) + sum(vol(core, p) for p in others) + sum(vol(core, q) for q in rs_front)
+    ring = (mic_channel(ang, 0.8) - mic_channel(ang)) & sector(
+        [(RS_MIC_R + 1.5, SPLIT_Z + 0.01), (R_IN - 0.5, SPLIT_Z + 0.01), (R_IN - 0.5, 20), (RS_MIC_R + 1.5, 20)],
+        ang - 12, ang + 12)                                     # inside the boot (below z SPLIT_Z is the gasket gap)
+    frac = vol(ring, fs) / ring.volume                          # boot material round the bore (no break-through)
+    voids.append(vol(mic_channel(ang, 0.5), fs))
+    print(f"  {ang:3d} deg: blocked {blocked:.3f} mm3, boot wall >= 0.8 mm over {frac * 100:.1f} % of the bore")
+    open_ok &= blocked < 0.01
+    wall_ok &= frac > 0.98
+flag(open_ok, "mic channels open from the port to the outside (front shell cut, no part or board component in the way)")
+flag(wall_ok, "boot wall at least 0.8 mm round each bore (no break-through into the cavity)")
+flag(max(voids) - min(voids) < 0.05, f"the 4 channels are identical (shell material round them: spread {max(voids) - min(voids):.3f} mm3)")
+L = MIC_CH_Z + r_out_at(MIC_CH_Z) - RS_MIC_R
+print(f"  centreline {L:.1f} mm (quarter-wave about {343e3 / (4 * (L + 0.85 * MIC_BORE / 2)) / 1000:.1f} kHz); "
+      f"pointed roofs (cone + {degrees(atan2(MIC_ROOF_TAN, 1)):.0f} deg ridge), ceiling >= 45 deg everywhere in the face-up print")
 print(flush=True); print("== mic channel length (mm):", round(r_out_at(MIC_CH_Z) - RS_MIC_R, 1))
 print("== depth: CrowPanel rear -> spider top:", round(CP_REAR_Z - (STANDOFF_L + SPIDER_T), 2), "mm")
 print(f"== size: d{2 * SPHERE_R:.0f} sphere, {SPHERE_R + CEN.dot(UP_D) - FOOT_H:.1f} mm tall, "
