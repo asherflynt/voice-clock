@@ -1,5 +1,10 @@
 # Voice Clock: turned-wood shells, v2 (Snapmaker U1)
 
+| | |
+|---|---|
+| ![front](../../docs/img/wood/wood_front.jpg) | ![back](../../docs/img/wood/wood_back.jpg) |
+| ![from above](../../docs/img/wood/wood_top.jpg) | ![shells apart](../../docs/img/wood/wood_parts.jpg) |
+
 v2 (6 Nov 2026) rebuilds the wood look from research into how wood-grain prints are made. What changed:
 
 - **Tone follows the grain, not the layers.** v1 wandered the nozzle temperature per layer by ±9 °C, which stayed below the point where wood PLA darkens, so nothing showed. Per-layer changes can only ever make horizontal bands anyway. In v2 every head holds **one** temperature for the whole print, and the darker latewood is painted as its own region on a second, **hot** cherry head.

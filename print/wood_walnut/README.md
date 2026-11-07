@@ -1,5 +1,10 @@
 # Voice Clock: turned walnut, Full Spectrum (Snapmaker U1)
 
+| | |
+|---|---|
+| ![front](../../docs/img/wood/walnut_front.jpg) | ![back](../../docs/img/wood/walnut_back.jpg) |
+| ![from above](../../docs/img/wood/walnut_top.jpg) | ![shells apart](../../docs/img/wood/walnut_parts.jpg) |
+
 A wood look made from a photo of a real turned walnut bowl. Snapmaker Orca's **Full Spectrum** colour mixing turns the U1's 4 heads into **8 tones**, so the grain carries real shading:
 - fine side-grain streaks whose depth fades along the grain
 - rippled end grain
