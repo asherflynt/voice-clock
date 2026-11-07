@@ -6,7 +6,7 @@
 Outputs (out/wood/):
   VoiceClock_wood_model.3mf    painted model only (your own presets stay selected)
   VoiceClock_wood_U1.3mf       full project: printer, process, 4 filaments, post-processing
-  VoiceClock_wood_U1.gcode     sliced + wood_temps.py applied, ready to send to the U1
+  VoiceClock_wood_U1.gcode     sliced (each head at one fixed temperature; no post-processing)
   presets/*.json               the 4 JAYO filament presets + process preset (also installed
                                into Snapmaker Orca's user preset folder)
 """
@@ -32,31 +32,37 @@ PRINTER = "Snapmaker U1 (0.4 nozzle)"
 PROCESS_BASE = "0.20mm Standard @Snapmaker U1 (0.4 nozzle)"
 FILAMENT_BASE = "Snapmaker PLA Wood @U1 0.4 nozzle"
 
-# head -> JAYO spool. Paint state = head + 1. Cherry is also the unpainted structure inside.
-FILAMENTS = [
-    ("JAYO Wood Cherry @U1", "#8A4A32", 210),   # T0 heartwood earlywood
-    ("JAYO Wood Walnut @U1", "#4A2A1C", 212),   # T1 heartwood latewood rings
-    ("JAYO Wood Maple @U1", "#DCC497", 204),    # T2 sapwood earlywood
-    ("JAYO Wood Oak @U1", "#A8804F", 206),      # T3 sapwood latewood ("logs" spool)
+# head -> spool, fixed temperature for the whole print (paint state = head + 1). v2: the unpainted
+# core is plain PLA (strong); only the outer skin is wood. No per-layer temperature post-processing.
+FILAMENT_BASE_PLAIN = "Snapmaker PLA Basic @U1"
+FILAMENTS = [  # (preset name, colour, nozzle C, base preset, max volumetric mm3/s)
+    ("PLA core (brown) @U1", "#6B4A35", 215, FILAMENT_BASE_PLAIN, 15),   # T0 structure under the skin
+    ("JAYO Wood Cherry @U1", "#8A4A32", 205, FILAMENT_BASE, 8),         # T1 earlywood (cool)
+    ("JAYO Wood Cherry HOT @U1", "#6E3A26", 230, FILAMENT_BASE, 2.5),   # T2 latewood: same spool, hotter.
+    # 230 C, not the plan's 235-240: untested above JAYO's range, so the first full print stays safe from
+    # clogs. Coupon C1 says whether 235-240 is worth it.
+    ("JAYO Wood Walnut @U1", "#3E2418", 212, FILAMENT_BASE, 8),         # T3 ring cores, gum streak, mute button
 ]
-PROCESS_NAME = "0.20mm Turned Wood @Snapmaker U1 (0.4 nozzle)"
+PROCESS_NAME = "0.16mm Turned Wood v2 @Snapmaker U1 (0.4 nozzle)"
 PROCESS_OVERRIDES = {
+    "layer_height": "0.16",
+    "initial_layer_print_height": "0.2",
     "wall_loops": "4",
     "sparse_infill_density": "20%",
     "sparse_infill_pattern": "gyroid",
     "enable_support": "0",
-    "mmu_segmented_region_max_width": "1.2",       # the wood colours go 1.2 mm deep, the core is cherry
+    "mmu_segmented_region_max_width": "0.5",       # wood skin = the outer wall only; inner walls are core PLA
     "mmu_segmented_region_interlocking_depth": "0",
-    "post_process": [str(POST)],
-    "outer_wall_speed": "80",                      # wood fibre likes a gentler outer wall
-    "inner_wall_speed": "150",
+    "outer_wall_speed": "40",                      # about 2.7 mm3/s at 0.42 x 0.16: cool and hot heads match
+    "inner_wall_speed": "100",
+    "gap_infill_speed": "40",
     "seam_position": "back",
-    "wipe_tower_x": ["150"],                       # prime tower in the free corner of the plate
+    "wipe_tower_x": ["150"],
     "wipe_tower_y": ["158"],
 }
 # plate layout (bed 270 x 270): shells side by side, back plate + walnut mute button below
 LAYOUT = [("front_shell", 1, 67, 69), ("rear_shell", 1, 201, 69), ("back_plate", 1, 67, 205),
-          ("mute_plunger", 2, 240, 245)]
+          ("mute_plunger", 4, 240, 245)]
 
 
 # ------------------------------------------------------------------ system profiles
@@ -92,13 +98,18 @@ def resolve(name):
     return out
 
 
-def filament_preset(name, colour, temp):
-    f = resolve(FILAMENT_BASE)
-    f.update({"name": name, "from": "User", "inherits": FILAMENT_BASE, "filament_vendor": ["JAYO"],
+def filament_preset(name, colour, temp, base=None, maxvol=8):
+    base = base or FILAMENT_BASE
+    try:
+        f = resolve(base)
+    except KeyError:
+        base = FILAMENT_BASE
+        f = resolve(base)
+    f.update({"name": name, "from": "User", "inherits": base, "filament_vendor": ["JAYO" if "JAYO" in name else "Generic"],
               "filament_settings_id": [name], "filament_colour": [colour], "default_filament_colour": [colour],
-              "nozzle_temperature": [str(temp)], "nozzle_temperature_initial_layer": [str(temp + 5)],
-              "nozzle_temperature_range_low": ["190"], "nozzle_temperature_range_high": ["230"],
-              "filament_max_volumetric_speed": ["12"],     # 15 % wood fibre through a 0.4 nozzle
+              "nozzle_temperature": [str(temp)], "nozzle_temperature_initial_layer": [str(min(temp + 5, 245))],
+              "nozzle_temperature_range_low": ["190"], "nozzle_temperature_range_high": ["245"],
+              "filament_max_volumetric_speed": [str(maxvol)],
               "hot_plate_temp": ["60"], "hot_plate_temp_initial_layer": ["60"],
               "textured_plate_temp": ["60"], "textured_plate_temp_initial_layer": ["60"],
               "compatible_printers": [PRINTER]})
@@ -124,12 +135,12 @@ def process_preset_full():
     return p
 
 
-def filament_user_preset(name, colour, temp):
+def filament_user_preset(name, colour, temp, base=None, maxvol=8):
     """Same filament as filament_preset(), stored the way the GUI saves user presets."""
-    full = filament_preset(name, colour, temp)
-    base = resolve(FILAMENT_BASE)
-    d = {k: v for k, v in full.items() if base.get(k) != v}
-    d.update({"type": "filament", "name": name, "from": "User", "inherits": FILAMENT_BASE, "version": "2.4.1.0"})
+    full = filament_preset(name, colour, temp, base, maxvol)
+    b = resolve(full["inherits"])
+    d = {k: v for k, v in full.items() if b.get(k) != v}
+    d.update({"type": "filament", "name": name, "from": "User", "inherits": full["inherits"], "version": "2.4.1.0"})
     return d
 
 
@@ -172,9 +183,9 @@ if __name__ == "__main__":
     pre = WOOD_OUT / "presets"
     pre.mkdir(parents=True, exist_ok=True)
     fil_files = []
-    for name, col, temp in FILAMENTS:
+    for name, col, temp, base, maxvol in FILAMENTS:
         fp = pre / f"{name}.json"
-        fp.write_text(json.dumps(filament_preset(name, col, temp), indent=4))
+        fp.write_text(json.dumps(filament_preset(name, col, temp, base, maxvol), indent=4))
         fil_files.append(fp)
     proc = pre / f"{PROCESS_NAME} - resolved.json"
     proc.write_text(json.dumps(process_preset_full(), indent=4))
@@ -186,19 +197,16 @@ if __name__ == "__main__":
     M3.SETTINGS["mute_plunger"] = {"sparse_infill_density": "100%"}
     meshes, paints = placed_meshes()
     model = WOOD_OUT / "VoiceClock_wood_model.3mf"
-    M3.write(model, [("Turned wood - 4x JAYO wood PLA", meshes)], paints=paints)
+    M3.write(model, [("Turned wood v2 - PLA core + cherry cool/hot + walnut", meshes)], paints=paints)
     print("model 3MF:", model, round(model.stat().st_size / 1e6, 1), "MB", flush=True)
 
-    # install the post-processing script where Orca (in its flatpak sandbox) can run it
-    POST.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy(Path(__file__).parent / "wood_temps.py", POST)
-    POST.chmod(0o755)
+    # v2: no post-processing (each head holds one temperature; wood_temps.py is retired)
 
     # install the presets for the GUI (Snapmaker Orca -> user presets)
     for sub in ("filament", "process"):
         (USER_PRESETS / sub).mkdir(parents=True, exist_ok=True)
-    for name, col, temp in FILAMENTS:
-        (USER_PRESETS / "filament" / f"{name}.json").write_text(json.dumps(filament_user_preset(name, col, temp), indent=4))
+    for name, col, temp, base, maxvol in FILAMENTS:
+        (USER_PRESETS / "filament" / f"{name}.json").write_text(json.dumps(filament_user_preset(name, col, temp, base, maxvol), indent=4))
     (USER_PRESETS / "process" / f"{PROCESS_NAME}.json").write_text(json.dumps(process_preset(), indent=4))
     print("installed user presets in", USER_PRESETS, flush=True)
 
@@ -211,13 +219,11 @@ if __name__ == "__main__":
     r = flatpak_cli(common + ["--export-3mf", str(proj), str(model)])
     print("export project rc", r.returncode, "->", proj if proj.exists() else "MISSING", flush=True)
     r = flatpak_cli(common + ["--slice", "0", "--outputdir", str(sliced_dir), str(model)])
+    if r.returncode != 0:
+        print("slicer stderr:", r.stderr[-3000:], "\nstdout:", r.stdout[-3000:], flush=True)
     res = (sliced_dir / "result.json").read_text() if (sliced_dir / "result.json").exists() else ""
     print("slice rc", r.returncode, res[:400], flush=True)
     g = sliced_dir / "plate_1.gcode"
     assert g.exists(), "slicing failed"
-    # the CLI doesn't run post-processing (the GUI does on export/send): run it in the same sandbox
-    r = subprocess.run(["flatpak", "run", "--command=python3", APP, str(POST), str(g)], capture_output=True, text=True,
-                       env={**os.environ, "HOME": str(REAL_HOME)})
-    print("post-process:", r.stdout.strip(), r.stderr.strip()[-500:], flush=True)
     shutil.copy(g, WOOD_OUT / "VoiceClock_wood_U1.gcode")
     print("gcode:", WOOD_OUT / "VoiceClock_wood_U1.gcode", flush=True)

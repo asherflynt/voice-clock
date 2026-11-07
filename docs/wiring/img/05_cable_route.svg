@@ -17,10 +17,10 @@
 <path d="M202.5 132 A270 270 0 0 1 565.65 128.4 L565.65 531.6 A270 270 0 0 1 202.5 528 Z" fill="#fbf6f4" stroke="#c9b8b3" stroke-width="10"/>
 <rect x="565.65" y="128.4" width="11.3" height="403.2" fill="#d9ccc8" stroke="#a99"/>
 <text x="571" y="122" class="part" text-anchor="middle">back plate</text>
-<!-- light guide -->
+<!-- light ring (ring base + ring shell) -->
 <rect x="202.5" y="132" width="150" height="17" fill="#cfe8f5" stroke="#7ab" opacity=".9"/>
 <path d="M202.5 511 H335 V519 H352.5 V528 H202.5 Z" fill="#cfe8f5" stroke="#7ab" opacity=".9"/>
-<text x="276" y="126" class="part" text-anchor="middle">light guide</text>
+<text x="276" y="126" class="part" text-anchor="middle">light ring</text>
 <!-- CrowPanel -->
 <rect x="171" y="152" width="63" height="356" rx="6" fill="#c4c8cc" stroke="#666"/>
 <rect x="234" y="155" width="43" height="350" fill="#aab0b6" stroke="#666"/>
@@ -95,7 +95,7 @@
     <text x="44" y="34">Pigtail plug in the CrowPanel power port.</text>
     <circle cx="24" cy="76" r="10" fill="#1b6ca8"/><text x="24" y="80" class="num" text-anchor="middle">2</text>
     <text x="44" y="72">Out through the spider, across the 5 mm gap and out</text>
-    <text x="44" y="88">through the light guide's notch (10 o'clock from the front).</text>
+    <text x="44" y="88">through the ring base's notch (11 o'clock from the front).</text>
     <circle cx="24" cy="126" r="10" fill="#1b6ca8"/><text x="24" y="130" class="num" text-anchor="middle">3</text>
     <text x="44" y="122">Over the reSpeaker's edge (4.6 mm to the shell wall)</text>
     <text x="44" y="138">and through the carrier's wire channel.</text>
@@ -120,7 +120,7 @@
     <circle cx="24" cy="480" r="10" fill="#d62728"/><text x="24" y="484" class="num" text-anchor="middle">!</text>
     <text x="44" y="476" font-weight="700">No joints, heat shrink or loops in the 5 mm gap</text>
     <text x="44" y="492">between the spider and the reSpeaker, or in the notch.</text>
-    <text x="44" y="508">Only the bare pigtail passes there (notch 4.5 × 4 mm).</text>
+    <text x="44" y="508">Only the bare pigtail passes there (notch 5 × 2 mm: wires side by side).</text>
     <text x="20" y="546" class="s">Leave about 2 cm of slack on lead D so the finished stack can</text>
     <text x="20" y="560" class="s">drop into the rear shell with every lead already plugged in.</text>
   </g>

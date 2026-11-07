@@ -14,87 +14,108 @@ HERE = Path(__file__).resolve().parent
 LEG = json.loads((HERE / "img" / "callouts.json").read_text())
 
 PLATES = [
-    ("1", "Front shell, rear shell, back plate, mute button", "Matte PLA", "5 mm brim on the shells, no supports. Front shell face-down, rear shell on its back rim."),
-    ("2", "Carrier, spider bracket, 3 spacers, light guide, mute button, insert test block", "PETG (clear or natural for the light guide)", "Spider, spacers and light guide at 100% infill. Print the insert test block first."),
-    ("3", "4 speaker washers (optional)", "TPU", "Or use M2 rubber washers."),
+    ("1", "Front shell, rear shell, back plate, mute button", "Matte PLA, or the wood variant (print/wood/)",
+     "5 mm brim on the shells, no supports. Front shell face-up (seam on the bed), rear shell on its back rim."),
+    ("2", "Carrier, spider bracket", "The same matte PLA", "A little stiffer than PETG and more accurate for the key notches and insert holes. Spider at 100% infill."),
+    ("3", "Ring base, ring shell, mute button", "Natural or clear PETG", "The ring cap must be translucent. Use this mute button rather than the PLA one: its snap barb is tougher in PETG."),
+    ("4", "2 grip pads, 4 speaker washers", "TPU", "The grip pads stop the clock turning when you turn the knob."),
 ]
 HARDWARE = [
     ("3", "M3 × 12 socket head", "Spider to the CrowPanel hub (replaces its 3 rear screws)"),
-    ("3", "M2 × 20 socket head", "Carrier through the reSpeaker into the spider"),
-    ("4", "M2 × 10 socket head", "Speaker (2), USB-C breakout into its backing wall (2)"),
-    ("5", "M2 heat-set insert (3 × 3.2 mm)", "Spider 3, back plate 2"),
+    ("3", "M2 × 20 socket head", "Carrier, through the reSpeaker and the ring base's spacers, into the spider"),
+    ("4", "M2 × 10 socket head", "Speaker (2), USB-C breakout (2)"),
+    ("7", "M2 heat-set insert (3 × 3.2 mm)", "Spider 3, speaker bosses 2, USB-C wall 2"),
     ("1", "USB-C breakout with 5.1 kΩ CC resistors", "Power inlet on the back plate"),
+    ("—", "Aluminium foil tape, about 50 mm wide, non-conductive adhesive", "Lines the light channel"),
     ("—", "1/16\" adhesive closed-cell foam", "4 mic gaskets, 1 speaker ring"),
-    ("—", "22 and 24 AWG silicone wire, 2-pin JST-SM or JST-XH pair, MX1.25 4-pin pigtail, heat shrink, zip tie", "Power harness (see docs/wiring/WIRING.md)"),
+    ("about 160 g", "Steel BBs or shot (4.5 mm airgun BBs) + slow-cure epoxy, or about 300 g tungsten putty", "Ballast pocket in the rear shell"),
+    ("—", "CA (superglue)", "Grip pads"),
+    ("—", "22/24 AWG silicone wire, 2-pin JST-SM or JST-XH pair, MX1.25 4-pin pigtail, heat shrink, zip tie", "Power harness (docs/wiring/WIRING.md)"),
 ]
-TOOLS = ["Soldering iron with an M2 heat-set tip and a 2 mm chisel tip", "Hex keys 1.5 and 2.5 mm",
-         "Multimeter", "Wire strippers, flush cutters, heat gun or lighter", "Tweezers, craft knife, 5 mm and 2 mm hole punch (or scissors)"]
-ELECTRONICS = ["Elecrow CrowPanel 2.1\" rotary display (ESP32-S3)", "Seeed reSpeaker XVF3800 4-mic array with XIAO ESP32-S3",
-               "4428 3 W 8 Ω speaker with JST-PH lead", "5 V 3 A USB-C charger"]
+TOOLS = ["Soldering iron with an M2 heat-set tip", "Hex keys 1.5 and 2.5 mm", "Multimeter",
+         "Wire strippers, flush cutters, heat gun", "Craft knife", "5 mm and 2 mm hole punch"]
+ELECTRONICS = ["Elecrow CrowPanel 2.1\" rotary display", "Seeed reSpeaker XVF3800 with XIAO ESP32-S3",
+               "4428 3 W 8 Ω speaker", "5 V 3 A USB-C charger"]
 
-# guide step -> (render id or None, title, instructions, check)
+# guide step -> (render id(s) or None, title, instructions, check)
 STEPS = [
     (("step_01", "step_01b"), "Heat-set inserts",
-     ["Print the insert test block from plate 2 first. Set one insert in each hole and note which hole (1, 2 or 3 dots) holds best. The middle one is the default; if another fits better, change <code>M2_INSERT_D</code> in <code>cad/voice_clock.py</code> and reprint.",
-      "Set the iron to 230–240 °C for PETG (190–200 °C for PLA). Press each insert straight in until it is flush, then hold a flat tool on it for a few seconds while it cools.",
-      "Spider (first picture): 3 × M2 in the underside at the end of each arm.",
-      "Back plate (second picture): 2 × M2 in the two round speaker bosses on the inside face, either side of the grille. Don't skip these: the speaker screws into them in step 9.",
-      "That's all of them. The shells and back plate snap together, so they have no inserts."],
-     "Run a screw into each insert by hand. It should start straight and stop on the thread, not on a blob of plastic."),
+     ["The M2 insert holes are Ø2.9, the size already confirmed on this printer. All 7 inserts go into PLA, so set the iron to about 190–200 °C.",
+      "Spider (first picture): 3 inserts in the underside at the end of each arm.",
+      "Back plate, speaker bosses (second picture): 2 inserts in the round bosses either side of the grille. The holes run deep on purpose: there is room below the screw tip for the plastic the insert pushes down.",
+      "Back plate, USB-C wall: 2 inserts pressed in <b>horizontally from the wall's outer face</b> (the side toward the plate's rim; there is a lead-in chamfer there), flush with that face. Support the wall from the board side while you press."],
+     "Run an M2 screw into each insert by hand. It should start straight and stop on the thread, not on plastic."),
     (None, "Power harness",
-     ["Follow the wiring sheets in <code>docs/wiring/WIRING.md</code> (printable PDF there too). Do their bench checks first.",
-      "Solder 10 cm of 22 AWG red and black from the USB-C breakout's VBUS and GND pads to the socket half of a 2-pin JST-SM or JST-XH pair. This lead stays with the back plate.",
-      "From the pin half, make a Y splice: one 22 AWG pair to the reSpeaker's 2×10 header (5V row 1 right, GND row 2 left, on the back), and one 24 AWG pair spliced to a spare MX1.25 4-pin pigtail for the CrowPanel's power port. Find the port's 5 V and GND positions with a meter on the supplied USB cable first.",
-      "Cover every joint with heat shrink and strain-relieve the solder joints so a tug never loads a pad.",
-      "Plug the speaker lead into the reSpeaker's speaker socket. It runs through the carrier's centre hole later."],
-     "With a multimeter, confirm 5 V and GND are not shorted. Power both boards on the bench and confirm they boot before anything goes into the case. Never plug a laptop into either board while the USB-C inlet is powered."),
+     ["Follow <code>docs/wiring/WIRING.md</code>.",
+      "Leave about 30 mm of slack in the USB-C lead and the speaker lead: the back plate turns 32° when it locks."],
+     "With a multimeter, confirm 5 V and GND are not shorted. Power both boards on the bench and confirm they boot before anything goes into the case."),
     ("step_02", "Spider bracket onto the CrowPanel",
      ["Remove the three M3 screws from the hub on the back of the CrowPanel.",
-      "Fit the spider so its hub sits on the CrowPanel hub. Turn it so its arms run between the three 4-pin connectors; only one of the three screw positions leaves all the connectors uncovered.",
-      "Fit 3 × M3 × 12 from the spider side into the hub. Tighten evenly until snug."],
-     "The knob still turns and still clicks when pressed, and nothing touches the connectors."),
-    ("step_03", "Light guide from behind",
-     ["Slide the light guide over the spider from behind and onto the display. Its inner land is smaller than the knob, so it only goes on this way. The land rides on the display's fixed housing (behind the knob ring) and keeps the guide centred on the knob.",
-      "Turn it so its cable notch sits over the CrowPanel power wires, at about 10 o'clock seen from the front (between two LEDs).",
-      "Punch four foam rings (5 mm across with a 2 mm hole) and stick one over each microphone hole on the front of the reSpeaker, on its four diagonals."],
-     "The light guide slides on with a light touch and the knob turns without touching it. The gap around the knob is about 0.45 mm and even all round."),
-    ("step_04", "Spacers and reSpeaker",
-     ["Set the three printed spacers on the spider's M2 inserts.",
-      "Lay the reSpeaker on the spacers with its LED ring and foam gaskets facing the display. The mute button (marked A) goes at 12 o'clock and the RST button at 6 o'clock; the XIAO module then sits at 3 o'clock seen from the front.",
-      "Keep the CrowPanel wires in the light guide's notch."],
-     "All three reSpeaker mounting holes line up with the spacers, and no wire is trapped under the light guide."),
-    ("step_05", "Carrier and clamp screws",
-     ["Feed the speaker lead and the reSpeaker power lead through the carrier's centre hole.",
-      "Set the carrier behind the reSpeaker with its cable notch lined up with the light guide's notch (10 o'clock seen from the front, 2 o'clock seen from the back).",
-      "Fit 3 × M2 × 20 from the back of the carrier, through the board and spacers, into the spider inserts. Tighten in turn until snug."],
-     "The board doesn't rock and no wire is pinched. This is the whole electronics stack; nothing else gets screwed in."),
-    ("step_06", "Mute button, then the stack into the rear shell",
-     ["Push the mute button into the hole at the top of the rear shell from the outside until its barb clicks past the inside of the guide boss. It should slide in and out about 1 mm and not fall out.",
-      "Stand the rear shell on its back opening. Pass the speaker and the power leads out through the opening first.",
-      "Lower the stack in, display up, with the reSpeaker's mute button (A) under the plunger at 12 o'clock. The board edge drops into the four cradle ribs and sits on their pads. The main USB-C and audio jack end up at 9 o'clock seen from the front, in the widest part of the shell.",
-      "Lay the CrowPanel lead down the gap between the board edge and the shell wall at 10 o'clock, then through the carrier notch."],
-     "The board sits flat on all four pads and can't shift sideways. Pressing the mute button clicks the reSpeaker's mute switch (once it's powered, the LED ring turns red)."),
-    ("step_07", "Snap on the front shell",
-     ["Lower the front shell over the knob. The four mic boots inside it only line up with the four gaps in the rear shell's rim lip one way round.",
-      "Press it down evenly. The four hooks in the rear shell click over the ridges inside the front shell, and the shell pushes the light guide down onto the reSpeaker's LED ring.",
-      "To open it again, hold both halves and pull them apart firmly. The hooks are angled to let go without a tool."],
-     "The seam is closed evenly all the way round and the flat base sits level. The knob stands about 7 mm proud of the face, turns and presses without rubbing, and the gap around it is even."),
-    ("step_08", "Speaker and USB-C on the back plate",
-     ["Stick a foam ring around the speaker's face.",
-      "The speaker stays plugged into the reSpeaker; work with the back plate next to the clock. Set a TPU washer on each speaker boss, place the speaker with its face toward the round grille and its lead toward the top, then add a washer on top of each ear.",
-      "Fit 2 × M2 × 10. Snug only: the washers do the isolation, so don't crush them.",
-      "Stand the USB-C breakout on its USB edge with the socket in the slot, board against the backing wall, and fit 2 × M2 × 10 through its holes into the wall. Zip-tie the speaker lead to the anchor."],
-     "A USB-C cable plugs in fully from outside, and the speaker doesn't touch the plate anywhere except the foam and washers."),
-    ("step_09", "Snap in the back plate",
-     ["Plug the inlet's JST lead into the harness and tuck the wires clear of the speaker.",
-      "Line up the key tab on the back plate with the slot at the bottom of the rear opening (USB-C port at the bottom).",
-      "Press the plate in until the three hooks click. To take it off, put a coin in the notch at the top edge and lever it out."],
-     "Plug in a 5 V 3 A charger. The clock face comes up and the LED ring lights. Then flash and set up the firmware."),
+      "Fit the spider so its arms run between the three 4-pin connectors. Only one position leaves all the connectors clear.",
+      "Fit 3 × M3 × 12 and tighten them evenly. The holes are a close fit (Ø3.1), so the screws may need a gentle turn to start."],
+     "The knob still turns and clicks, and nothing touches the connectors."),
+    ("step_03", "Light ring, part 1 (ring base)",
+     ["Wrap aluminium foil tape round the <b>outside</b> of the ring base's tall wall, from 1 mm above the bottom edge up to 2 mm below the top edge. Keep it smooth (it is the channel's mirror) and keep it off the top 2 mm, where the crush ribs and key slots are. Then cut the tape away over the cable notch (5 × 2 mm) with a craft knife. Use tape with non-conductive adhesive: the LED capacitors sit just below the bottom edge.",
+      "Plug the CrowPanel lead into its connector and lay it so it can leave through the notch at the ring base's foot.",
+      "Slide the ring base over the spider <b>from behind</b>, with the cable notch at <b>11 o'clock</b> seen from the front (one hour left of the mute button), until its three spacers sit under the spider's insert pads. Feed the lead out through the notch."],
+     "The ring base sits square on the spider pads and the foil is smooth, with no tape over the notch."),
+    (("step_04", "step_05"), "reSpeaker and carrier",
+     ["Lay the reSpeaker on the ring base's spacers, LED side toward the display, mute button (marked A) at 12 o'clock. The ring base's foot surrounds the LED ring; the CrowPanel lead runs across the board between two LEDs at 11 o'clock.",
+      "Feed the speaker lead and the reSpeaker power lead through the carrier's centre hole. Set the carrier behind the board with its cable notch at 11 o'clock seen from the front.",
+      "Fit 3 × M2 × 20 from the back of the carrier, through the board and the spacers, into the spider. <b>Snug only</b>: the screws pull the spider's inserts toward their mouths."],
+     "The board doesn't rock and no wire is pinched."),
+    ("step_06", "Light ring, part 2 (ring shell)",
+     ["Line the <b>inside</b> of the ring shell's sleeve with foil tape, from the bottom edge up to about 4 mm below the cap, and cut it away over the sleeve's cable notch. The part of the sleeve that stands out of the case stays bare so it glows.",
+      "Press the ring shell on over the knob, with its two tabs in the ring base's slots and its notch over the CrowPanel lead. The crush ribs hold it."],
+     "Power the boards on the bench and set the LED ring white. The whole ring should glow evenly, with no bright gap round the knob and no LED visible."),
+    ("step_07", "Ballast and grip pads",
+     ["Stand the rear shell on its back opening. Inside, along the bottom, a thin curved wall forms a pocket between itself and the shell, open at the top.",
+      "<b>Steel shot:</b> mix a small batch of <b>slow-cure</b> epoxy (30 minutes or longer), stir in steel BBs, and spoon it into the pocket. Fill to about 1 mm below the pocket's rim, in two layers a few hours apart. A thick pour of fast epoxy gets hot enough to soften PLA (about 55 °C). <b>Tungsten putty:</b> press it in, then skim the top with a little epoxy so it can't move.",
+      "Let it cure fully before the stack goes in: the carrier sits 2 mm above the rim.",
+      "Glue the two TPU grip pads into the shallow recesses in the flat base (the large one on the rear shell, the small one on the front shell) with a few drops of CA."],
+     "Nothing stands above the pocket's rim, and the pads sit flat in their recesses."),
+    ("step_08", "Into the rear shell",
+     ["Push the mute button into the hole at the top of the rear shell from outside until its barb clicks.",
+      "Stand the rear shell on its back opening and pass the speaker and power leads out through it.",
+      "Before lowering, dress the CrowPanel lead straight down the board edge at 11 o'clock and through the carrier notch, and hold it there: the collar at the top of the rear shell has a gap for it only at that spot.",
+      "Lower the stack in, display up, mute button (A) under the plunger. The carrier's 4 notches (with lead-in chamfers) slide down over the 4 ribs on the shell wall, and the board edge lands on the rib pads. It only goes in one way."],
+     "The stack can't turn at all."),
+    ("step_09", "Front shell (twist lock)",
+     ["Stick a foam gasket (Ø5 with a Ø2 hole) onto the underside of each of the 4 mic boots inside the front shell, hole over the channel. In v2 the gaskets ride on the shell, not on the board.",
+      "Hold the front shell over the knob turned about 10° <b>anticlockwise</b> (seen from the front) from its final position. The base flats are then a finger's width apart. Lower it until the rims meet; it only drops fully in that one position.",
+      "Turn it <b>clockwise</b> (seen from the front) about 10° until four small detent fingers click and it stops. The flat bases now line up.",
+      "To open it: turn the front shell anticlockwise about 10° (firmly, past the clicks) until the flat bases are offset by a finger's width, and lift it off."],
+     "The seam is closed all the way round, the flat bases line up, and the shells don't turn or pull apart by hand."),
+    (("step_10", "step_10b"), "USB-C and speaker on the back plate (in this order)",
+     ["Stand the USB-C breakout on its USB edge with the socket in the slot and its back against the wall. Fit 2 × M2 × 10 through its holes into the wall's inserts. Do this first: once the speaker is on, a hex key can't reach these screws.",
+      "Stick a foam ring round the speaker's face. Washer, ear, washer on each boss, then 2 × M2 × 10, snug only.",
+      "Zip-tie the speaker lead to the anchor.",
+      "To remove the USB-C board later, take the speaker off first."],
+     "A USB-C cable plugs in fully from outside, and the speaker touches the plate only through the foam and washers."),
+    ("step_11", "Back plate (twist lock)",
+     ["Plug the inlet's lead into the harness and tuck the wires clear of the speaker.",
+      "Hold the plate so the USB-C socket is at about 5 o'clock seen from the back. The three lugs only drop through the lip in that position (the top lug is the wide one).",
+      "Push it in and turn it <b>clockwise</b> (seen from the back) about one clock hour, until both pawls click and it stops with the USB-C at 6 o'clock.",
+      "To open it: put a coin in the slot on the back and turn it anticlockwise, seen from the back, past the two pawl clicks."],
+     "Plug in a 5 V 3 A charger. The clock face comes up and the LED ring lights."),
 ]
+
+FIRMWARE = ("Flash the clock face with the ESPHome config in <code>firmware/</code>, and the reSpeaker with the formatBCE "
+            "XVF3800 integration. Cap the speaker volume (the runaway follow-up loop seen on 6 Nov ran at 100 %). The v2 "
+            "spider turns the CrowPanel 5° clockwise to cancel the tilt seen on v1; the firmware has no trim, so check the "
+            "dial by eye. If 12 still sits X° anticlockwise, change <code>CP_ROT_TRIM_DEG</code> in "
+            "<code>cad/voice_clock.py</code> by -X° and reprint the spider.")
 
 
 def esc(s):
-    return html.escape(s, quote=False).replace("&lt;code&gt;", "<code>").replace("&lt;/code&gt;", "</code>")
+    s = html.escape(s, quote=False)
+    for t in ("code", "b"):
+        s = s.replace(f"&lt;{t}&gt;", f"<{t}>").replace(f"&lt;/{t}&gt;", f"</{t}>")
+    return s
+
+
+def md(s):
+    return s.replace("<code>", "`").replace("</code>", "`").replace("<b>", "**").replace("</b>", "**")
 
 
 WIRING_SVG = """<svg class="wiring" viewBox="0 0 720 300" role="img" aria-label="Power wiring: the USB-C inlet feeds a 2-pin disconnect, which splits to the reSpeaker header 5V pin and a pigtail into the CrowPanel power port.">
@@ -232,10 +253,10 @@ def page(img_prefix="img/"):
     <div>
       <p class="eyebrow">Open-source Home Assistant voice clock · assembly guide</p>
       <h1>Voice Clock assembly</h1>
-      <p class="lede">A knit-textured 116 mm sphere around a CrowPanel 2.1" knob display, a reSpeaker XVF3800 microphone array and a 3 W speaker. Ten steps. The shell snaps together: the only screws hold the electronics stack and the speaker.</p>
-      <div class="facts"><span><b>10</b>printed parts</span><span><b>10</b>screws</span><span><b>5</b>heat-set inserts</span><span><b>7</b>snap hooks</span></div>
+      <p class="lede">A knit-textured 116 mm sphere around a CrowPanel 2.1" knob display, a reSpeaker XVF3800 microphone array and a 3 W speaker. Eleven steps. v2: both shells twist-lock with detent clicks, the electronics stack is keyed so it can't turn, the light ring is a foil-lined channel, and a steel-shot ballast keeps it still when you turn the knob.</p>
+      <div class="facts"><span><b>10</b>printed parts</span><span><b>10</b>screws</span><span><b>7</b>heat-set inserts</span><span><b>2</b>twist locks</span></div>
     </div>
-    <img src="{img_prefix}hero_front.jpg" alt="The finished Voice Clock: a pink knit-textured sphere with a round clock display" width="1800" height="1350">
+    <img src="{img_prefix}hero_front.jpg" alt="The finished Voice Clock: a knit-textured sphere with a round clock display and a glowing light ring" width="1800" height="1350">
   </div>
   <div class="layout">
     <nav class="toc" aria-label="Steps"><p class="eyebrow">Steps</p><ol>{"".join(toc)}</ol></nav>
@@ -250,7 +271,7 @@ def page(img_prefix="img/"):
       {"".join(steps)}
       <section class="step" id="done"><header><span class="num">✓</span><h2>Finished</h2></header>
         <div class="done"><img src="{img_prefix}hero_front.jpg" alt="Finished clock, front" loading="lazy"><img src="{img_prefix}hero_back.jpg" alt="Finished clock, back, with the speaker grille and USB-C inlet" loading="lazy"></div>
-        <p style="margin-top:18px">Next: flash the clock face with the ESPHome config in <code>firmware/</code>, and the voice satellite on the reSpeaker with the formatBCE XVF3800 ESPHome integration. Cap the speaker volume in ESPHome; the amp can deliver more than the 3 W speaker is rated for.</p>
+        <p style="margin-top:18px">{esc(FIRMWARE)}</p>
       </section>
       <footer>Renders are generated from the parametric CAD in <code>cad/</code> with Blender Cycles; the numbered callouts are placed automatically on visible surfaces. Licensed MIT.</footer>
     </main>
@@ -259,7 +280,10 @@ def page(img_prefix="img/"):
 
 
 def markdown():
-    out = ["# Voice Clock assembly", "", "![Finished Voice Clock](img/hero_front.jpg)", "",
+    out = ["# Voice Clock assembly (v2)", "", "![Finished Voice Clock](img/hero_front.jpg)", "",
+           "> **v2, 6 Nov 2026.** The shells twist-lock, the stack is keyed, the light ring is a foil-lined channel, the "
+           "USB-C board and speaker screw into heat-set inserts, and a ballast pocket plus TPU grip pads keep the clock "
+           "still when you turn the knob. Pictures are rendered from `cad/`; this file is generated by `build_guide.py`.", "",
            "## Before you start", "", "| Plate | Parts | Material | Notes |", "|---|---|---|---|"]
     out += [f"| {p} | {a} | {b} | {c} |" for p, a, b, c in PLATES]
     out += ["", "**Electronics:** " + "; ".join(ELECTRONICS), "", "**Tools:** " + "; ".join(TOOLS), "",
@@ -275,10 +299,9 @@ def markdown():
         else:
             out += ["```mermaid", "flowchart LR", "  A[USB-C inlet, 5.1k CC] -- 22 AWG --> B[2-pin SM/XH disconnect]",
                     "  B -- 22 AWG --> C[reSpeaker header 5V + GND]", "  B -- 24 AWG + MX1.25 pigtail --> D[CrowPanel power port]", "```", ""]
-        out += [f"{k}. {t.replace('<code>', '`').replace('</code>', '`')}" for k, t in enumerate(todo, 1)]
-        out += ["", f"> **Check:** {check}"]
-    out += ["", "## Finished", "", "![Back](img/hero_back.jpg)", "",
-            "Flash the clock face with the ESPHome config in [`firmware/`](../../firmware), and the reSpeaker with the formatBCE XVF3800 ESPHome integration. Cap the speaker volume in ESPHome."]
+        out += [f"{k}. {md(t)}" for k, t in enumerate(todo, 1)]
+        out += ["", f"> **Check:** {md(check)}"]
+    out += ["", "## Finished", "", "![Back](img/hero_back.jpg)", "", "## Firmware", "", md(FIRMWARE)]
     return "\n".join(out) + "\n"
 
 

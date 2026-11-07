@@ -20,7 +20,7 @@ sys.path.insert(0, str(HERE.parent))
 from voice_clock import OUT, BACK_Z, SPLIT_Z  # noqa: E402
 
 MESH = HERE / "meshes"
-TONES = {1: "wood_cherry", 2: "wood_walnut", 3: "wood_maple", 4: "wood_oak"}
+TONES = {1: "pla_core", 2: "wood_cherry", 3: "wood_cherry_hot", 4: "wood_walnut"}   # v2 heads (paint state = head + 1)
 
 
 def main():
@@ -29,14 +29,14 @@ def main():
     for part in ("front_shell", "rear_shell", "back_plate"):
         m = trimesh.load(OUT / "wood" / f"{part}_D.ply", process=False)
         paint = np.load(OUT / "wood" / f"{part}_paint.npy")
-        paint = np.where(paint == 0, 1, paint)                  # unpainted = object default (cherry)
+        paint = np.where(paint == 0, 1, paint)                  # unpainted = object default (plain-PLA core)
         for state, mat in TONES.items():
             sel = paint == state
             if not sel.any():
                 continue
             sub = trimesh.Trimesh(m.vertices, m.faces[sel], process=False)
             sub.remove_unreferenced_vertices()
-            name = f"wd_{part}_{mat[5:]}"
+            name = f"wd_{part}_{mat}"
             sub.export(MESH / f"{name}.ply")
             S["materials"][name] = mat
             shells.append((part, name))
@@ -44,8 +44,9 @@ def main():
     S["materials"]["wd_plunger"] = "wood_walnut"
     S["labels"]["wd_plunger"] = "Mute button (walnut)"
 
-    CP = ["cp_knob", "cp_glass", "cp_housing", "cp_pcb", "cp_conn"]
-    core = CP + ["spider", "board_spacers", "rs_pcb", "rs_leds", "rs_xiao", "carrier", "light_guide"]
+    CP = ["cp_knob", "cp_glass", "cp_pcb", "cp_conn"]
+    core = CP + ["spider", "ring_base", "ring_shell", "rs_pcb", "rs_leds", "rs_xiao", "carrier", "foot_pad_front",
+                 "foot_pad_rear", "ballast_fill"]
     whole = [n for _, n in shells] + ["wd_plunger"]
 
     def items(names, dz=None):

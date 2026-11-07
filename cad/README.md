@@ -2,6 +2,14 @@
 
 A parametric [build123d](https://github.com/gumyr/build123d) model of the enclosure described in [`../docs/build-plan.md`](../docs/build-plan.md).
 
+**v2 (6 Nov 2026)** fixes everything the first wood print showed up:
+- **Shells twist-lock.** The front and rear shells use a 7-lug bayonet with 4 flexure detent fingers, and the back plate a 3-lug bayonet with two flexure pawls. v1's pull-apart snaps are gone.
+- **The board stack is keyed.** It can't turn in the case.
+- **New light ring.** It's a foil-lined hollow channel standing proud of the sphere.
+- **No flat front face.** The front shell prints face-up.
+- **Heat-set inserts** hold the USB-C board and the speaker.
+- **New wood-grain process** for the wood variant.
+
 ## Setup
 
 ```bash
@@ -11,97 +19,121 @@ python3.12 -m venv .venv
 ```
 
 ```bash
-.venv/bin/python voice_clock.py   # builds every part -> out/*.stl, *.step, assembly_D.step
-.venv/bin/python check.py         # clashes vs the vendor reSpeaker STEP, assembly sweeps, floor, plunger, snaps
-.venv/bin/python make_3mf.py      # Snapmaker U1 -> out/VoiceClock_U1.3mf (3 plates) + out/plates/ fallbacks
+.venv/bin/python voice_clock.py   # builds every part -> out/*.stl, *.step, assembly_D.step (about 10 s)
+.venv/bin/python check.py         # clashes vs the vendor reSpeaker STEP, both twist locks stepped through, keys, screws (about 4 min)
+.venv/bin/python make_3mf.py      # Snapmaker U1 -> out/VoiceClock_U1.3mf (4 plates) + out/plates/ fallbacks
 .venv/bin/python render.py        # quick numpy previews -> out/render_*.png
-
-# photoreal assembly renders (Blender 5.x, free/GPL; flatpak shown)
-.venv/bin/python blender/export_scene.py
-flatpak run --filesystem=home org.blender.Blender -b -P "$PWD/blender/render_scene.py" -- --samples 160 --res 1800
-.venv/bin/python blender/callouts.py ../docs/assembly/img
+.venv/bin/python fit_tests.py     # draft fit-test set (shell bands at every interface + small parts) -> out/fit_tests/
 ```
 
-Released print files are in [`../print`](../print); the scripts above regenerate them into `out/`.
+Turned-wood variant (Snapmaker Orca must be installed as a flatpak; set `VOICE_CLOCK_HOME` to your real home if `$HOME` isn't it):
+
+```bash
+.venv/bin/python wood.py            # painted wood skin -> out/wood/
+.venv/bin/python wood_project.py    # Orca presets + project 3MF + sliced G-code
+.venv/bin/python coupons.py         # test coupon C1 (wood tone vs temperature) -> out/wood/coupons/
+```
 
 Every dimension is a named constant at the top of `voice_clock.py`. Values marked **VERIFY** come from vendor CAD or drawings, not calipers.
 
-### Turned-wood variant
-
-```bash
-.venv/bin/python wood.py            # painted, textured wood shells -> out/wood/
-.venv/bin/python wood_project.py    # Snapmaker Orca presets + project 3MF + sliced, post-processed G-code
-```
-
-See [`../print/wood/README.md`](../print/wood/README.md) for how it works and how to tune the grain.
-
 ## Parts and how they print (all without supports)
 
-| Part | Plate | Orientation | Notes |
+| Part | Plate / slot | Orientation | Notes |
 |---|---|---|---|
-| front_shell | 1 → **slot 2 (PLA)** | Face down | Visible; 4 snap ridges inside (45° faces, no supports). 5 mm brim |
-| rear_shell | 1 → **slot 2 (PLA)** | Back rim down | Visible; 4 snap hooks rise from the top rim, cradle ribs, mute guide boss. 5 mm brim |
-| back_plate | 1 → **slot 2 (PLA)** | Outer face down | Faces the wall; 3 snap hooks, key tab, pry notch |
-| mute_plunger | 1 or 2 | Cap down | 100% infill |
-| carrier | 2 → **slot 1 (PETG)** | Back face down, bosses up | Internal bulkhead, hangs on the 3 clamp screws |
-| spider | 2 → **slot 1 (PETG)** | Plate down, hub boss up | 100% infill |
-| board_spacers | 2 → **slot 1 (PETG)** | Flat | 3 × Ø6.5 × 5 (100% infill) |
-| insert_coupon | 2 → **slot 1 (PETG)** | Flat | Print first; verifies the M2 insert hole size |
-| light_guide | 2 → **slot 1 (PETG)** | Bezel face down | Clear PETG light ring; 100% infill. 3 crush nubs on the back face |
-| tpu_washers | 3 → **slot 4 (optional)** | Flat | 4× speaker isolation washers in TPU |
+| front_shell | 1 → slot 2 (PLA) | **Face up** (seam on the bed) | Sphere runs up to the light-ring bore. 7 bayonet blocks and the 4 mic boots print on the bed. The mic channels (`mic_channel()`) have pointed roofs (a cone up the vertical leg, a 55° ridge on the radial leg), so no ceiling is flatter than 45° and nothing bridges. 5 mm brim |
+| rear_shell | 1 → slot 2 (PLA) | Back rim down | Bayonet collar and 7 lugs at the top, 4 full-height key ribs, **ballast pocket** (about 30 cm³, low behind the carrier), grip-pad recess, mute guide boss, back-plate lip at the bed. 5 mm brim |
+| back_plate | 1 → slot 2 (PLA) | Outer face down | 3 bayonet lugs, 2 flexure pawls, coin slot, 4 M2 inserts (speaker 2, USB-C 2, the latter pressed in from the wall's outer face) |
+| mute_plunger | 1 (PLA) or 3 (PETG) | Cap down | 100% infill. Use the PETG one if you have it: its snap barb is tougher |
+| ring_base | 3 → slot 1 (natural PETG) | Spacers down | Light-channel inner wall plus the 3 board spacers on the clamp screws |
+| ring_shell | 3 → slot 1 (natural/clear PETG) | Cap down | Channel sleeve plus a 1.4 mm diffuser cap (frosted by the textured PEI) |
+| carrier | 2 → slot 2 (PLA) | Back face down | Bulkhead; its 4 notches key the stack on the rear shell's ribs |
+| spider | 2 → slot 2 (PLA) | Plate down | 100% infill. CrowPanel pattern turned by `CP_ROT_TRIM_DEG` |
+| foot_pads | 4 → slot 4 (TPU) | Flat | 2 grip pads for the recesses in the flat base (glue in with CA). They stand 0.4 mm proud |
+| tpu_washers | 4 → slot 4 (optional) | Flat | 4 speaker isolation washers |
 
 **Suggested U1 settings:**
-- **Matte PLA** for the shells and back plate, **PETG** for the internals and the light ring (separate plates because the bed temperatures differ). 0.2 mm layers, 4 walls, 20% gyroid. Set the M2 inserts at about 230–240 °C in PETG. PLA is fine for a bedside clock, but keep it out of sunny windows and hot cars.
-- Textured PEI: the face-down bezel comes out with the plate texture.
-- `out/VoiceClock_U1.3mf` holds all 3 plates (Plate 1: all externals in PLA; Plate 2: all internals & light ring in PETG; Plate 3: TPU washers). Single-plate project and generic 3MFs are in `out/plates/`.
-- The 3MFs are **model-only**. Your own printer, process and filament presets stay selected. Each part is already assigned to a filament slot: 1 = PETG internals and light guide, 2 = matte PLA shells, 4 = TPU washers.
-
-**After opening a 3MF, check:**
-1. Printer is still your U1 (not `...(VoiceClock...3mf)`).
-2. Filament slots show your material.
-3. Plate 1 (shells, back plate) is on slot 2 (PLA), plate 2 (internals, light guide) on slot 1 (PETG), the TPU washers on slot 4.
+- **Shells:** matte PLA (or the wood variant). 0.2 mm layers, 4 walls, 20% gyroid.
+- **Structural internals (carrier, spider):** the same matte PLA as the shells. PLA is somewhat stiffer than PETG (about 1.3× the tensile modulus) and, more usefully, prints the 0.2 mm key notches and the insert holes more accurately. Inside the sphere the boards should keep it well under PLA's softening point (about 55 °C), and the shells already rely on that.
+- **Light ring:** natural/clear PETG. The cap has to be translucent, and the crush-rib press fit likes PETG's give. The walls do the work; no special infill is needed. **Not** 100% solid, like v1's ring: in v2 the light travels through air.
+- **Inserts:** all 7 M2 inserts now go into PLA (spider and back plate): set the iron to about 190–200 °C.
+- **Files:** `out/VoiceClock_U1.3mf` holds all 4 plates (PLA externals, PLA internals, PETG light ring, TPU). The 3MFs are model-only, so your own printer, process and filament presets stay selected.
 
 ## Hardware
 
-Sized for common kits: M2 heat-set inserts (3 long × 3.2 OD) and a metric socket-head assortment. No countersunk screws, standoffs or M3 inserts needed. The shells and back plate snap together.
-
-| Qty | Screw | Where | Thread engaged |
+| Qty | Screw | Where | Engaged |
 |---|---|---|---|
-| 3 | M3 × 12 socket head | Spider → CrowPanel hub (replaces the 3 stock rear screws) | 3.4 mm (stock 3.5) |
-| 3 | M2 × 20 socket head | Carrier back (head flush) → carrier boss → reSpeaker hole → **printed spacer** → **M2 insert in the spider's underside** | 2.5 mm |
-| 2 | M2 × 10 socket head | Speaker ears. Stack: head, TPU washer, ear, TPU washer, boss | 3.0 mm |
-| 2 | M2 × 10 socket head | USB-C breakout → oval holes in its backing wall (self-tapping) | — |
+| 3 | M3 × 12 socket head | Spider → CrowPanel hub (replaces the 3 stock screws) | 1.8 mm, same depth as Elecrow's own screws |
+| 3 | M2 × 20 socket head | Carrier → reSpeaker → ring_base spacer → M2 insert in the spider | 2.5 mm |
+| 2 | M2 × 10 socket head | Speaker ears: head, TPU washer, ear, TPU washer, boss insert | 3.0 mm; 4.4 mm of hole below the tip |
+| 2 | M2 × 10 socket head | USB-C breakout → M2 inserts in its backing wall (through holes) | 3 mm insert, tip 2.2 mm past the wall |
 
-| Qty | Insert | Where |
+| Qty | Insert (M2 × 3 × Ø3.2, hole Ø2.9) | Where |
 |---|---|---|
-| 5 | M2 (hole Ø2.9, depth ≥4.0 mm) | Spider underside ×3, speaker bosses ×2 |
+| 7 | | Spider underside 3, speaker bosses 2, USB-C wall 2 (pressed in horizontally from the wall's outer face, the side toward the plate's rim) |
 
-Also needed: the USB-C breakout with 5.1 kΩ CC resistors, 1/16" adhesive closed-cell foam (4 mic gaskets Ø5 with Ø2 hole, speaker-face ring), wire, the MX1.25 pigtail and heat shrink.
-
-**Insert holes:** M2 Ø2.9 (3DZWMAN D3). `insert_coupon` (plate 2) has three sizes per thread (1/2/3 dots = small/nominal/large). Set an insert in each M2 hole and note which fits best. If it isn't the middle one, change `M2_INSERT_D` and rebuild.
-
-**Snap fits:** the hooks flex 0.5 mm over a 12 mm arm (0.7 % strain, fine for PLA). `SNAP_ENG` sets the engagement; lower it to 0.4 if the shells are too hard to pull apart, raise it to 0.6 if they're loose.
-
-**No battery.** No compact USB-C UPS board with ≥2.5 A and a confirmed glitch-free switchover exists, and the seamless 3 A modules (88 × 41 × 22 mm with 2× 18650) don't fit. A flat 103450 pack would fit behind the carrier later if a suitable board turns up.
+**Also needed:**
+- 1/16" adhesive closed-cell foam: 4 mic gaskets Ø5 with a Ø2 hole, stuck **to the front shell's mic boots**, plus a speaker-face ring.
+- **Aluminium foil tape**, about 50 mm wide, for the light channel.
+- **Ballast:** about 160 g of steel BBs or shot (4.5 mm airgun BBs are cheap) with **slow-cure (30 min or longer) epoxy**, or about 300 g of tungsten putty. Modelling clay only adds about 55 g.
+- **CA glue** for the TPU grip pads.
+- Wire, the MX1.25 pigtail and heat shrink.
 
 ## Assembly order
 
-Illustrated, step-by-step guide: [`../docs/assembly`](../docs/assembly/ASSEMBLY.md).
+Full steps are in [`../docs/assembly/ASSEMBLY.md`](../docs/assembly/ASSEMBLY.md).
 
-1. Fit the 5 M2 heat-set inserts (spider ×3, back plate ×2).
-2. Make the power harness and bench-test both boards (`docs/wiring/WIRING.md`).
-3. Swap the CrowPanel's 3 rear screws for M3 × 12 through the spider. **Check that the knob still presses and turns.**
-4. Fit the light guide from behind (notch at 10 o'clock over the CrowPanel cable) and the 4 mic foam gaskets.
-5. Spacers, reSpeaker (mute "A" at 12 o'clock), carrier, 3 × M2 × 20 into the spider. Plug in the speaker lead first.
-6. Click the mute plunger into the rear shell from outside. Drop the stack into the rear shell onto the cradle ribs.
-7. Snap the front shell on over the knob (the mic boots key it).
-8. Speaker and USB-C breakout onto the back plate; snap the back plate in (key at 6 o'clock).
+1. Fit the 7 M2 inserts.
+2. Make the power harness and bench-test both boards.
+3. Swap the CrowPanel's 3 rear screws for M3 × 12 through the spider.
+4. **Light ring, part 1.**
+   - Wrap foil tape round the ring_base's outer face, from just above the capacitor notches to the top, leaving the top 2 mm (crush ribs, key slots) bare.
+   - Cut the tape away over the cable notch. Use non-conductive-adhesive tape.
+   - Slide it over the spider from behind, with its cable notch at 11 o'clock over the CrowPanel lead.
+5. reSpeaker (mute "A" at 12 o'clock), carrier, 3 × M2 × 20 into the spider (snug only).
+6. **Light ring, part 2.** Line the inside of the ring_shell sleeve with foil tape, stopping 4 mm below the cap. Press it on over the knob: tabs into the slots, cable notch over the lead.
+7. **Ballast** (before the stack goes in): stand the rear shell on its back rim and fill the pocket along the bottom of the shell to 1 mm below its rim. Use steel shot stirred into slow-cure epoxy, poured in two layers so the epoxy doesn't heat the PLA (it softens around 55 °C), or press in tungsten putty and skim it with a little epoxy. Let it cure, then glue the 2 TPU grip pads into the recesses in the flat base.
+8. Click the mute plunger into the rear shell. Hold the CrowPanel lead down the board edge at 11 o'clock (the collar's gap) and drop the stack in: the carrier's notches go over the 4 ribs.
+9. **Front shell.**
+   - Stick the 4 mic gaskets onto the boots.
+   - Set the shell on turned 10° anticlockwise (seen from the front), so the base flats are offset by a finger's width.
+   - Press it down and turn it **clockwise** until the 4 detent fingers click and the flats line up.
+10. USB-C board first, then the speaker, onto the back plate (the speaker blocks the USB-C screws).
+11. **Back plate.** Set it in with the USB-C at about 5 o'clock and turn it **clockwise (seen from the back)** about 1/11 of a turn until both pawls click and the USB-C sits at 6 o'clock.
 
-## Still to verify before the full print
+**To open:**
+- **Back plate:** put a coin in the slot on the back and turn it anticlockwise, seen from the back.
+- **Front shell:** turn it anticlockwise, seen from the front, firmly past the detent clicks.
 
-- **Mute button (confirmed).** The button marked A is mute, at 9 o'clock seen from the LED side with the XIAO at the top. `RS_ROT = -90` puts it at 12 o'clock under the plunger.
-- **Knob diameter.** `CP_KNOB_R` (Ø79.0) comes from Elecrow's STEP and the gap is now 0.45 mm. Measure your knob ring; if it's bigger, raise `LG_KNOB_GAP`.
-- **CrowPanel "up".** Checked on the first build (6 Nov 2026): the panel's native display top sits at D 180° (viewer's left), opposite its ribbon-cable flat at D 0°, not at the STEP's +Z. The firmware fixes this with `lvgl: rotation: 90` plus a few-degree **Face Trim** (see `firmware/README.md`). The leftover tilt (about 5° counter-clockwise, ±2° from a photo) is not in the design. Play accounts for most of it: the reSpeaker turns about ±2.4° in the rear-shell cradle (nothing keys it) and the M3 holes add about ±1.4°. Print error and Elecrow's own display-to-housing tolerance make up the rest. Key the stack before relying on a fixed trim.
-- **USB-C breakout.** The slot (9.4 × 3.6), outside overmould recess and backing wall are sized for the measured 21.96 × 13.11 mm board.
-- **Fit print first:** print the rear shell and a `SPLIT_Z + 10` slice of the front shell. Check the cradle fit on the board, the snap feel and the mute click.
-- **Texture:** the shells and back-plate rim get a 0.6 mm knit-stitch relief (`texture.py`; set `TEXTURE = "hex"` or `"none"` to change it). It's applied at mesh level, so the `.stl`/`.ply`/`.3mf` files are textured but the `.step` files are smooth. Never add supports on the shells; the stitch flanks print fine unsupported.
+## What check.py verifies
+
+- **Parts and clashes:**
+  - every part is one solid
+  - no clashes in the locked state
+  - nothing touches the real reSpeaker STEP
+  - the LEDs and their capacitors clear the light ring
+- **Front bayonet:**
+  - the stack drops into the rear shell past the already-fitted mute plunger
+  - the front shell goes on at its entry angle
+  - its rigid parts are clear through the whole twist; the 4 detent fingers ride the collar 0.3 mm deflected and click into V-grooves
+  - zero overlap when locked, and the stops work
+  - flat (non-camming) bearing of at least 0.6 mm
+  - the mic boots never pass over the CrowPanel lead
+- **Back plate bayonet:**
+  - the plate (with its pawls bent in to clear the lip), speaker and USB screw tips are clear through the 32° twist, and each bent pawl clears its slot wall
+  - lugs over the lip, hard stop, pawl strain
+- **Keying, base, plunger:**
+  - key clearance and the stack's rotation budget
+  - base and floor, mute plunger
+- **Light ring:**
+  - channel width, bore clearance, knob exposure
+  - crush ribs and how the ring goes on
+- **Screws:** every screw length against its insert, with at least 2.5 mm of hole below each tip.
+
+## Still to verify on the bench
+
+- **Coupons first:**
+  - a 30° wedge of the bayonet, the front shell's bottom 10 mm with the rear shell's top 10 mm: lock feel and detent
+  - for the wood variant, coupon C1
+- **CrowPanel "up".** The panel's native display top sits at D 180° (viewer's left), opposite its ribbon-cable flat at D 0°, not at the STEP's +Z. The firmware turns the picture with `lvgl: rotation: 90` only (no fine trim).
+- **CP_ROT_TRIM_DEG (-5°)** cancels the dial offset measured from one photo of v1 (5° anticlockwise, ±2°). It is a fixed offset, most likely Elecrow's display sitting slightly turned in its housing or print accuracy: the CAD chain (reSpeaker holes, mute button up under the plunger, spider, CrowPanel screw pattern) has no offset of its own. The firmware no longer has a Face Trim. After assembly, judge the dial by eye: if 12 sits X° anticlockwise, change it by -X° and reprint the spider.
+- **Knob diameter.** `CP_KNOB_R` (Ø79.0) gives a 0.45 mm gap; measure your knob ring.

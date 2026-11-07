@@ -30,33 +30,35 @@ BACK_PLATE_ONLY_PLA = [
     ("back_plate", 2, 135, 135, 0),
 ]
 
-# name, extruder (1 = matte PLA body, 2 = clear/natural PETG light guide, 3 = TPU), bed x, y, rot-z
-# PLA and PETG never share a plate (different bed temperatures).
-PLATES = [
-    # filament slots match the U1 as loaded: 1 = PETG (internals & light guide), 2 = matte PLA (shells),
-    # 4 = TPU (washers, optional). Slot 3 is unused.
-    ("Externals - PLA slot 2", EXTERNALS_PLA),
-    ("Internals and Light Guide - PETG slot 1", [
-        ("carrier", 1, 62, 62, 0),
-        ("light_guide", 1, 62, 200, 0),
-        ("spider", 1, 196, 42, 0),
-        ("board_spacers", 1, 196, 108, 0),
-        ("insert_coupon", 1, 196, 160, 0),
-        ("mute_plunger", 1, 196, 200, 0),
-    ]),
-    ("TPU washers - slot 4 (optional)", [
-        ("tpu_washers", 4, 135, 135, 0),
-    ]),
+# The structural internals (carrier, spider) are PLA: modestly stiffer than PETG (tensile modulus about 1.3x)
+# and, more usefully, more accurate for the 0.2 mm key notches and the d2.9 insert holes (less ooze and stringing). Only the light ring stays PETG (the cap must be translucent; the
+# crush-rib press fit wants PETG's give), plus a PETG mute button (its snap barb is tougher in PETG).
+INTERNALS_PLA = [
+    ("carrier", 2, 75, 135, 0),
+    ("spider", 2, 195, 135, 0),
+]
+LIGHT_RING_PETG = [
+    ("ring_shell", 1, 70, 135, 0),
+    ("ring_base", 1, 190, 135, 0),
+    ("mute_plunger", 1, 135, 235, 0),
+]
+INTERNALS_WITH_BACK_PLATE_PLA = [
+    ("carrier", 2, 62, 62, 0),
+    ("spider", 2, 200, 62, 0),
+    ("back_plate", 2, 135, 195, 0),
 ]
 
-SEVEN_PARTS_PETG = [
-    ("carrier", 1, 62, 62, 0),
-    ("back_plate", 1, 200, 52, 0),
-    ("light_guide", 1, 62, 200, 0),
-    ("spider", 1, 200, 130, 0),
-    ("board_spacers", 1, 200, 185, 0),
-    ("insert_coupon", 1, 140, 245, 0),
-    ("mute_plunger", 1, 135, 135, 0),
+# name, extruder (U1 slot), bed x, y, rot-z. PLA and PETG never share a plate (different bed temperatures).
+PLATES = [
+    # filament slots match the U1 as loaded: 1 = PETG (natural/clear, light ring), 2 = matte PLA
+    # (shells and structural internals), 4 = TPU (grip pads, speaker washers). Slot 3 is unused.
+    ("Externals - PLA slot 2", EXTERNALS_PLA),
+    ("Internals - PLA slot 2", INTERNALS_PLA),
+    ("Light Ring - PETG slot 1", LIGHT_RING_PETG),
+    ("TPU - grip pads + speaker washers - slot 4", [
+        ("foot_pads", 4, 135, 95, 0),
+        ("tpu_washers", 4, 135, 200, 0),
+    ]),
 ]
 # object-level overrides (independent of the user's preset names)
 SETTINGS = {
@@ -65,10 +67,10 @@ SETTINGS = {
     "rear_shell": {"brim_type": "outer_only", "brim_width": "5"},
     "spider": {"sparse_infill_density": "100%"},
     "mute_plunger": {"sparse_infill_density": "100%"},
-    "light_guide": {"sparse_infill_density": "100%", "wall_loops": "3"},
-    "insert_coupon": {"sparse_infill_density": "100%"},
-    "board_spacers": {"sparse_infill_density": "100%", "wall_loops": "3"},
+    "ring_base": {"wall_loops": "3", "brim_type": "outer_only", "brim_width": "4"},
+    "ring_shell": {"wall_loops": "3", "brim_type": "outer_only", "brim_width": "4"},
     "tpu_washers": {"sparse_infill_density": "100%", "wall_loops": "2", "brim_type": "outer_only", "brim_width": "3"},
+    "foot_pads": {"sparse_infill_density": "100%", "wall_loops": "2"},
 }
 STRIDE = BED * 1.2          # Orca lays plates out on a grid: stride = bed * (1 + 1/5)
 
@@ -316,14 +318,19 @@ if __name__ == "__main__":
     write(OUT / "plates" / "VoiceClock_externals_PLA.3mf", [(PLATES[0][0], place(EXTERNALS_PLA))])
     write(OUT / "plates" / "VoiceClock_shells_only_PLA.3mf", [("Shells only - PLA slot 2", place(SHELLS_ONLY_PLA))])
     write(OUT / "plates" / "VoiceClock_back_plate_only.3mf", [("Back plate - PLA slot 2", place(BACK_PLATE_ONLY_PLA))])
-    write(OUT / "plates" / "VoiceClock_internals_PETG.3mf", [(PLATES[1][0], place(PLATES[1][1]))])
-    write(OUT / "plates" / "VoiceClock_internals_with_back_plate_PETG.3mf", [("Internals with Back Plate - PETG slot 1", place(SEVEN_PARTS_PETG))])
+    write(OUT / "plates" / "VoiceClock_internals_PLA.3mf", [(PLATES[1][0], place(INTERNALS_PLA))])
+    write(OUT / "plates" / "VoiceClock_light_ring_PETG.3mf", [(PLATES[2][0], place(LIGHT_RING_PETG))])
+    write(OUT / "plates" / "VoiceClock_internals_with_back_plate_PLA.3mf", [("Internals with Back Plate - PLA slot 2", place(INTERNALS_WITH_BACK_PLATE_PLA))])
     # Universal generic 3MFs (raw meshes embedded in 3D/3dmodel.model, works in every slicer & import mode)
     write_generic(OUT / "plates" / "VoiceClock_externals_PLA_generic.3mf", EXTERNALS_PLA)
     write_generic(OUT / "plates" / "VoiceClock_shells_only_PLA_generic.3mf", SHELLS_ONLY_PLA)
     write_generic(OUT / "plates" / "VoiceClock_back_plate_only_generic.3mf", BACK_PLATE_ONLY_PLA)
-    write_generic(OUT / "plates" / "VoiceClock_internals_PETG_generic.3mf", PLATES[1][1])
-    write_generic(OUT / "plates" / "VoiceClock_internals_with_back_plate_PETG_generic.3mf", SEVEN_PARTS_PETG)
+    write_generic(OUT / "plates" / "VoiceClock_internals_PLA_generic.3mf", INTERNALS_PLA)
+    write_generic(OUT / "plates" / "VoiceClock_light_ring_PETG_generic.3mf", LIGHT_RING_PETG)
+    write_generic(OUT / "plates" / "VoiceClock_internals_with_back_plate_PLA_generic.3mf", INTERNALS_WITH_BACK_PLATE_PLA)
     for old in OUT.glob("VoiceClock_plate*.3mf"):
         old.unlink()
+    for old in ("internals_PETG", "internals_PETG_generic", "internals_with_back_plate_PETG",
+                "internals_with_back_plate_PETG_generic"):           # v2 first cut: internals were PETG
+        (OUT / "plates" / f"VoiceClock_{old}.3mf").unlink(missing_ok=True)
     print("\nall plates verified")

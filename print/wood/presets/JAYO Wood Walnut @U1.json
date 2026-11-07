@@ -57,7 +57,7 @@
         "1.75"
     ],
     "filament_max_volumetric_speed": [
-        "12"
+        "8"
     ],
     "filament_minimal_purge_on_wipe_tower": [
         "15"
@@ -169,7 +169,7 @@
         "70"
     ],
     "default_filament_colour": [
-        "#4A2A1C"
+        "#3E2418"
     ],
     "dont_slow_down_outer_wall": [
         "0"
@@ -269,7 +269,7 @@
         "-1"
     ],
     "nozzle_temperature_range_high": [
-        "230"
+        "245"
     ],
     "nozzle_temperature_range_low": [
         "190"
@@ -330,6 +330,6 @@
     ],
     "inherits": "Snapmaker PLA Wood @U1 0.4 nozzle",
     "filament_colour": [
-        "#4A2A1C"
+        "#3E2418"
     ]
 }
