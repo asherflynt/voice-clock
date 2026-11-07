@@ -179,8 +179,10 @@ def materials(hero):
     M["display"] = m
     # wood PLA (turned-wood variant): matte, 0.2 mm layer lines, fine fibre speckle + tone drift
     M["steel_shot"] = principled("steel_shot", (0.10, 0.10, 0.11, 1), 0.48, 0.85)[0]
-    for key, hexc in (("wood_cherry", "#6A3527"), ("wood_walnut", "#36221A"), ("wood_cherry_hot", "#552A1E"),
-                      ("pla_core", "#5A3B2A"), ("wood_maple", "#C6AA80"), ("wood_oak", "#8E6B47")):
+    woods = [("wood_cherry", "#6A3527"), ("wood_walnut", "#36221A"), ("wood_cherry_hot", "#552A1E"),
+             ("pla_core", "#5A3B2A"), ("wood_maple", "#C6AA80"), ("wood_oak", "#8E6B47")]
+    woods += list(S.get("wood_tones", {}).items())      # Full Spectrum layer mixes (wood_scene.py walnut_fs)
+    for key, hexc in woods:
         m, nt, b = principled(key, hexlin(hexc), 0.74, **{"Specular IOR Level": 0.3})
         tc = nt.nodes.new("ShaderNodeTexCoord")
         speck = nt.nodes.new("ShaderNodeTexNoise")

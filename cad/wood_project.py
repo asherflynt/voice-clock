@@ -1,7 +1,10 @@
 """Snapmaker Orca project for the turned-wood Voice Clock (4 x JAYO wood PLA on the U1).
 
   .venv/bin/python wood.py            # painted, textured meshes -> out/wood/
-  .venv/bin/python wood_project.py    # presets + project 3MF + sliced, post-processed G-code
+  .venv/bin/python wood_project.py    # presets + project 3MF + sliced G-code
+  .venv/bin/python wood.py walnut && .venv/bin/python wood_project.py walnut   # 3-tone walnut (superseded) -> out/wood_walnut/
+  .venv/bin/python wood.py walnut_fs && .venv/bin/python wood_project.py walnut_fs [fine]
+      # Full Spectrum walnut, 8 tones -> out/wood_walnut_fs/VoiceClock_walnut_fs_<008|004>_U1.3mf/.gcode/_model.3mf
 
 Outputs (out/wood/):
   VoiceClock_wood_model.3mf    painted model only (your own presets stay selected)
@@ -21,8 +24,12 @@ import trimesh
 
 import make_3mf as M3
 from voice_clock import OUT
+import sys
+from wood import STYLE, WOOD_OUT, HEAD_NAMES, FS_ROWS
 
-WOOD_OUT = OUT / "wood"
+FS_LAYER = "0.04" if "fine" in sys.argv[1:] else "0.08"   # walnut_fs only: thin layers hide the Z mixes
+TAG = {"cherry": "wood", "walnut": "walnut",
+       "walnut_fs": f"walnut_fs_{FS_LAYER.replace('.', '')}"}[STYLE]   # VoiceClock_<TAG>_U1.3mf etc.
 APP = "io.github.Snapmaker.Snapmaker_Orca"
 REAL_HOME = Path(os.environ.get("VOICE_CLOCK_HOME", str(Path.home())))   # your login home
 POST = REAL_HOME / ".local/share/voice-clock/wood_temps.py"
@@ -43,6 +50,20 @@ FILAMENTS = [  # (preset name, colour, nozzle C, base preset, max volumetric mm3
     # clogs. Coupon C1 says whether 235-240 is worth it.
     ("JAYO Wood Walnut @U1", "#3E2418", 212, FILAMENT_BASE, 8),         # T3 ring cores, gum streak, mute button
 ]
+if STYLE == "walnut_fs":  # Full Spectrum: maple replaces cherry on head 3; tones are per-layer head sequences
+    FILAMENTS = [
+        ("PLA core (brown) @U1", "#6B4A35", 215, FILAMENT_BASE_PLAIN, 15),   # T0 structure; one dark mix (41)
+        ("JAYO Wood Oak @U1", "#A8804F", 206, FILAMENT_BASE, 8),            # T1
+        ("JAYO Wood Maple @U1", "#DCC497", 204, FILAMENT_BASE, 8),          # T2 (only in the lightest mixes)
+        ("JAYO Wood Walnut @U1", "#3E2418", 212, FILAMENT_BASE, 8),         # T3, also the mute button
+    ]
+elif STYLE == "walnut":   # all four spools are on hand; no hot head, so no second spool of anything
+    FILAMENTS = [
+        ("PLA core (brown) @U1", "#6B4A35", 215, FILAMENT_BASE_PLAIN, 15),   # T0 structure (a darker brown is better)
+        ("JAYO Wood Oak @U1", "#A8804F", 206, FILAMENT_BASE, 8),            # T1 golden base
+        ("JAYO Wood Cherry @U1", "#8A4A32", 205, FILAMENT_BASE, 8),         # T2 latewood lines
+        ("JAYO Wood Walnut @U1", "#3E2418", 212, FILAMENT_BASE, 8),         # T3 heartwood zones, mute button
+    ]
 PROCESS_NAME = "0.16mm Turned Wood v2 @Snapmaker U1 (0.4 nozzle)"
 PROCESS_OVERRIDES = {
     "layer_height": "0.16",
@@ -60,6 +81,17 @@ PROCESS_OVERRIDES = {
     "wipe_tower_x": ["150"],
     "wipe_tower_y": ["158"],
 }
+if STYLE == "walnut_fs":
+    PROCESS_NAME = f"{FS_LAYER}mm Walnut Full Spectrum @Snapmaker U1 (0.4 nozzle)"
+    PROCESS_OVERRIDES.update({
+        "layer_height": FS_LAYER,
+        "initial_layer_print_height": "0.2",       # adhesion; the bed face uses physical heads only
+        # one row per mixed tone: a=1,b=2 so pattern digits are head numbers (1 core, 2 oak, 3 maple, 4 walnut);
+        # ids 5.. follow the rows in order (Snapmaker Orca 2.4.1 MixedFilament.cpp, tested headless)
+        "mixed_filament_definitions": ";".join(f"1,2,1,1,50,0,g,w,m2,z0,xa0,xb0,d0,o0,u{i},{pat}"
+                                               for i, pat in enumerate(FS_ROWS, 1)),
+        "dithering_local_z_mode": "0",             # Subdivide Mix Layer ignores pattern rows: plain thin layers
+    })
 # plate layout (bed 270 x 270): shells side by side, back plate + walnut mute button below
 LAYOUT = [("front_shell", 1, 67, 69), ("rear_shell", 1, 201, 69), ("back_plate", 1, 67, 205),
           ("mute_plunger", 4, 240, 245)]
@@ -196,8 +228,11 @@ if __name__ == "__main__":
     # model-only 3MF with paint
     M3.SETTINGS["mute_plunger"] = {"sparse_infill_density": "100%"}
     meshes, paints = placed_meshes()
-    model = WOOD_OUT / "VoiceClock_wood_model.3mf"
-    M3.write(model, [("Turned wood v2 - PLA core + cherry cool/hot + walnut", meshes)], paints=paints)
+    model = WOOD_OUT / f"VoiceClock_{TAG}_model.3mf"
+    plate = {"cherry": "Turned wood v2 - PLA core + cherry cool/hot + walnut",
+             "walnut": "Turned walnut - PLA core + oak + cherry + walnut",
+             "walnut_fs": f"Turned walnut Full Spectrum {FS_LAYER} mm - core + oak + maple + walnut, 8 tones"}[STYLE]
+    M3.write(model, [(plate, meshes)], paints=paints)
     print("model 3MF:", model, round(model.stat().st_size / 1e6, 1), "MB", flush=True)
 
     # v2: no post-processing (each head holds one temperature; wood_temps.py is retired)
@@ -211,7 +246,7 @@ if __name__ == "__main__":
     print("installed user presets in", USER_PRESETS, flush=True)
 
     # full project + slice with Snapmaker Orca's own CLI
-    proj = WOOD_OUT / "VoiceClock_wood_U1.3mf"
+    proj = WOOD_OUT / f"VoiceClock_{TAG}_U1.3mf"
     sliced_dir = WOOD_OUT / "sliced"
     shutil.rmtree(sliced_dir, ignore_errors=True)
     sliced_dir.mkdir()
@@ -225,5 +260,5 @@ if __name__ == "__main__":
     print("slice rc", r.returncode, res[:400], flush=True)
     g = sliced_dir / "plate_1.gcode"
     assert g.exists(), "slicing failed"
-    shutil.copy(g, WOOD_OUT / "VoiceClock_wood_U1.gcode")
-    print("gcode:", WOOD_OUT / "VoiceClock_wood_U1.gcode", flush=True)
+    shutil.copy(g, WOOD_OUT / f"VoiceClock_{TAG}_U1.gcode")
+    print("gcode:", WOOD_OUT / f"VoiceClock_{TAG}_U1.gcode", flush=True)

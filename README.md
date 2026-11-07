@@ -40,6 +40,7 @@ The [build plan](docs/build-plan.md) explains the design decisions: mic-channel 
 | | |
 |---|---|
 | [![Turned cherry](docs/img/wood/wood_front.jpg)](print/wood/README.md) | **Turned cherry** ([`print/wood`](print/wood/README.md)): the same enclosure printed in JAYO wood PLA on the Snapmaker U1, v2: only the outer skin is wood PLA (the core is plain PLA, so nothing load-bearing is brittle). The growth rings follow the grain in 3D, with the latewood on a second, hotter cherry head and walnut ring cores, at fixed temperatures and with no surface relief, so the bed faces print flat. Snapmaker Orca project, presets and the scripts that generate them. |
+| [![Turned walnut](docs/img/wood/walnut_front.jpg)](print/wood_walnut/README.md) | **Turned walnut, Full Spectrum** ([`print/wood_walnut`](print/wood_walnut/README.md)): modelled on a real turned bowl. Snapmaker Orca's Full Spectrum layer mixing turns 4 heads into 8 tones: fine side-grain streaks that fade in tone, rippled end grain, lighter earlywood and soft heartwood zones, in JAYO oak, maple and walnut over a plain-PLA core (no cherry). About 1 day 9 h at 0.08 mm layers, or 3 days 8 h at 0.04 mm; print the tone swatch first. |
 
 ## Status
 

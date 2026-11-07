@@ -12,6 +12,8 @@ v2 (6 Nov 2026) rebuilds the wood look from research into how wood-grain prints 
   - The log runs front to back, so the layers cut across the grain instead of along it.
 - **No surface relief.** The back plate's face sits flat on the bed now.
 
+There is also a **turned-walnut** variant, modelled on a real turned bowl and printed with Full Spectrum layer mixing (8 tones from oak, maple and walnut, no cherry): see `../wood_walnut/README.md`.
+
 ## Load the heads like this
 
 | U1 head | Spool | Temperature | Used for |

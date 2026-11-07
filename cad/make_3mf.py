@@ -130,6 +130,7 @@ def paint_code(state):
     if state < 3:
         return "%X" % (state * 4)
     n = state - 3
+    assert n < 15, "paint states above 17 need the 0xF continuation chunk"   # mixed filaments: 5.. = rows
     return "%X" % n + "C"
 
 
@@ -153,7 +154,7 @@ def write(path, plates, paints=None):
                 f.write(f'<vertex x="{v[0]:.6f}" y="{v[1]:.6f}" z="{v[2]:.6f}"/>\n')
             f.write('</vertices><triangles>\n')
             pt = paints.get(name)
-            codes = [paint_code(int(x)) for x in range(6)]
+            codes = [paint_code(int(x)) for x in range(18)]   # 1-4 physical heads, 5-17 Full Spectrum mixes
             for i, t in enumerate(m.faces):
                 pc = codes[int(pt[i])] if pt is not None else ""
                 if pc:

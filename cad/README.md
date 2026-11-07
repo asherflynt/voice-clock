@@ -32,6 +32,11 @@ Turned-wood variant (Snapmaker Orca must be installed as a flatpak; set `VOICE_C
 .venv/bin/python wood.py            # painted wood skin -> out/wood/
 .venv/bin/python wood_project.py    # Orca presets + project 3MF + sliced G-code
 .venv/bin/python coupons.py         # test coupon C1 (wood tone vs temperature) -> out/wood/coupons/
+.venv/bin/python wood.py walnut_fs                  # turned walnut, Full Spectrum (8 tones) -> out/wood_walnut_fs/
+.venv/bin/python wood_project.py walnut_fs          # 0.08 mm project + G-code (add 'fine' for 0.04 mm)
+.venv/bin/python fs_swatch.py walnut_fs             # 8-tone swatch to print first (add 'fine' for 0.04 mm)
+.venv/bin/python blender/wood_scene.py walnut_fs    # then render the hero_walnut_fs_* scenes
+# (wood.py walnut / wood_project.py walnut: the earlier 3-tone walnut with cherry lines, superseded)
 ```
 
 Every dimension is a named constant at the top of `voice_clock.py`. Values marked **VERIFY** come from vendor CAD or drawings, not calipers.
