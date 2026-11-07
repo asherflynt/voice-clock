@@ -426,6 +426,16 @@ script:
             if (lv_obj_get_style_width(ch, LV_PART_MAIN) == 26)
               lv_obj_set_style_bg_color(ch, c(n ? 0xD2D2D2 : 0xD8404F), LV_PART_MAIN);
           }
+          // Control page: level arc, its knob, and the three buttons with their icons.
+          lv_obj_set_style_arc_color(id(arc_level), c(n ? 0x2E2E2E : 0xF3D3D6), LV_PART_MAIN);
+          lv_obj_set_style_arc_color(id(arc_level), c(n ? 0xC8C8C8 : 0xD8404F), LV_PART_INDICATOR);
+          lv_obj_set_style_bg_color(id(arc_level), c(n ? 0xE6E6E6 : 0x6E0A1E), LV_PART_KNOB);
+          for (auto *b : {id(btn_prev), id(btn_next), id(btn_home)}) {
+            lv_obj_set_style_bg_color(b, c(n ? 0x2E2E2E : 0xF3D3D6), LV_PART_MAIN);
+            if (lv_obj_get_child_count(b) > 0)
+              lv_obj_set_style_text_color(lv_obj_get_child(b, 0), c(n ? 0xB4B4B4 : 0x6E0A1E), LV_PART_MAIN);
+          }
+      - script.execute: refresh_ui   # device dots follow the theme
 
   # Redraw the control page from levels / states_on / dev_idx / ui_mode.
   - id: refresh_ui
@@ -455,7 +465,8 @@ script:
           }
           lv_obj_t *dots[vc::DEVICE_COUNT] = {id(dot0), id(dot1), id(dot2), id(dot3), id(dot4)};
           for (int k = 0; k < vc::DEVICE_COUNT; k++)
-            lv_obj_set_style_bg_color(dots[k], lv_color_hex(k == i ? 0xD8404F : 0xEBC2C7), LV_PART_MAIN);
+            lv_obj_set_style_bg_color(dots[k], lv_color_hex(k == i ? (id(night) ? 0xD2D2D2 : 0xD8404F)
+                                                                    : (id(night) ? 0x3C3C3C : 0xEBC2C7)), LV_PART_MAIN);
 
   - id: idle_timer
     mode: restart
@@ -1134,6 +1145,7 @@ lvgl:
             border_width: 0
             clickable: false
         - button:
+            id: btn_home
             align: CENTER
             y: 196
             width: 64
