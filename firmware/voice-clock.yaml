@@ -279,7 +279,7 @@ number:
     min_value: 1
     max_value: 50
     step: 1
-    initial_value: 22
+    initial_value: 12
     restore_value: true
     optimistic: true
     entity_category: config
@@ -402,23 +402,30 @@ script:
           bool n = id(night);
           auto c = [](uint32_t hex) { return lv_color_hex(hex); };
           uint32_t bg = n ? 0x000000 : 0xFCEBEC;
-          uint32_t num = n ? 0x6A0E18 : 0x6E0A1E;
-          uint32_t tick = n ? 0x420A12 : 0x6E0A1E;
+          // Night is grayscale: light greys on black stay readable at a low backlight.
+          uint32_t num = n ? 0xB4B4B4 : 0x6E0A1E;
+          uint32_t tick = n ? 0x6E6E6E : 0x6E0A1E;
           lv_obj_set_style_bg_color(id(clock_page).obj, c(bg), LV_PART_MAIN);
           lv_obj_set_style_bg_color(id(control_page).obj, c(bg), LV_PART_MAIN);
           for (auto *l : {id(num12), id(num3), id(num6), id(num9)})
             lv_obj_set_style_text_color(l, c(num), LV_PART_MAIN);
           for (auto *t : {id(tick0), id(tick1), id(tick2), id(tick3), id(tick4), id(tick5), id(tick6), id(tick7)})
             lv_obj_set_style_line_color(t->obj, c(tick), LV_PART_MAIN);
-          lv_obj_set_style_line_color(id(hour_hand)->obj, c(n ? 0x7A1A26 : 0xF08090), LV_PART_MAIN);
-          lv_obj_set_style_line_color(id(minute_hand)->obj, c(n ? 0xA02234 : 0xD8404F), LV_PART_MAIN);
+          lv_obj_set_style_line_color(id(hour_hand)->obj, c(n ? 0x8C8C8C : 0xF08090), LV_PART_MAIN);
+          lv_obj_set_style_line_color(id(minute_hand)->obj, c(n ? 0xD2D2D2 : 0xD8404F), LV_PART_MAIN);
           for (auto *l : {id(lbl_name), id(lbl_value)})
-            lv_obj_set_style_text_color(l, c(n ? 0x8A1E2A : 0x6E0A1E), LV_PART_MAIN);
-          lv_obj_set_style_text_color(id(lbl_status), c(n ? 0x5A1018 : 0x9A4A5A), LV_PART_MAIN);
-          lv_obj_set_style_text_color(id(lbl_alarm), c(n ? 0x5A1018 : 0x9A4A5A), LV_PART_MAIN);
-          lv_obj_set_style_text_color(id(lbl_mute), c(n ? 0x7A1A26 : 0xD8404F), LV_PART_MAIN);
-          lv_obj_set_style_text_color(id(lbl_timer), c(n ? 0x1E4A66 : 0x3BA7DC), LV_PART_MAIN);
-          lv_obj_set_style_arc_color(id(timer_arc), c(n ? 0x1E4A66 : 0x3BA7DC), LV_PART_INDICATOR);
+            lv_obj_set_style_text_color(l, c(n ? 0xB4B4B4 : 0x6E0A1E), LV_PART_MAIN);
+          lv_obj_set_style_text_color(id(lbl_status), c(n ? 0x7A7A7A : 0x9A4A5A), LV_PART_MAIN);
+          lv_obj_set_style_text_color(id(lbl_alarm), c(n ? 0x7A7A7A : 0x9A4A5A), LV_PART_MAIN);
+          lv_obj_set_style_text_color(id(lbl_mute), c(n ? 0xDCDCDC : 0xD8404F), LV_PART_MAIN);
+          lv_obj_set_style_text_color(id(lbl_timer), c(n ? 0x9A9A9A : 0x3BA7DC), LV_PART_MAIN);
+          lv_obj_set_style_arc_color(id(timer_arc), c(n ? 0x9A9A9A : 0x3BA7DC), LV_PART_INDICATOR);
+          // Centre dot of the hands (the meter's 26 px pivot child).
+          for (uint32_t k = 0; k < lv_obj_get_child_count(id(clock_meter)); k++) {
+            lv_obj_t *ch = lv_obj_get_child(id(clock_meter), k);
+            if (lv_obj_get_style_width(ch, LV_PART_MAIN) == 26)
+              lv_obj_set_style_bg_color(ch, c(n ? 0xD2D2D2 : 0xD8404F), LV_PART_MAIN);
+          }
 
   # Redraw the control page from levels / states_on / dev_idx / ui_mode.
   - id: refresh_ui
