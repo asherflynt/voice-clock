@@ -371,6 +371,8 @@ def woodify(name, shape):
     m = trimesh.load(raw)
     raw.unlink()
     import texture
+    if name == "back_plate":                       # one-layer knit patch in the bed face (not a glossy bed surface)
+        m = texture.bed_texture(m)
     m = texture.clean(m)                           # before refining: clean() collapses flat sub-0.01 mm detail
     m = refine(m)
     assert m.is_watertight, name

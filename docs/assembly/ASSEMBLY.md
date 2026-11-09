@@ -8,7 +8,7 @@
 
 | Plate | Parts | Material | Notes |
 |---|---|---|---|
-| 1 | Front shell, rear shell, back plate, mute button | Matte PLA, or the wood variant (print/wood/) | 5 mm brim on the shells, no supports. Front shell face-up (seam on the bed), rear shell on its back rim. |
+| 1 | Front shell, rear shell, back plate, mute button | Matte PLA, or the wood variant (print/wood/) | 5 mm brim on the shells, no supports. Front shell face-up (seam on the bed), rear shell on its back rim. The back plate prints outer face down; its knit pattern is a one-layer groove, so leave the first layer at 0.2–0.25 mm. |
 | 2 | Carrier, spider bracket | The same matte PLA | A little stiffer than PETG and more accurate for the key notches and insert holes. Spider at 100% infill. |
 | 3 | Ring base, ring shell, mute button | Natural or clear PETG | The ring cap must be translucent. No brim on the ring parts: it can't be peeled off their thin walls. Use this mute button rather than the PLA one: its snap barb is tougher in PETG. |
 | 4 | 2 grip pads, 4 speaker washers | TPU | The grip pads stop the clock turning when you turn the knob. |

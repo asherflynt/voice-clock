@@ -141,6 +141,63 @@ def apply(mesh_D):
     return out
 
 
+# ---------------------------------------------------------------- back plate bed face
+# The back plate prints outer face down, so its whole visible face is a glossy first layer. A knit
+# patch is carved into it BED_DEPTH deep: the stitches touch the bed (glossy), the grooves are
+# bridged by the second layer (matte). 0.22 mm removes exactly the first layer whether that is
+# 0.2 or 0.25 mm thick, and keeps the next 0.08 mm wood layer (slice at z 0.24) solid.
+BED_DEPTH = 0.22
+BED_HEM = 2.5             # solid rim round the face
+BED_HOLE_MARGIN = 0.5     # solid land round every hole/recess already in the face
+BED_LEG_T = 0.3           # stitch outline = knit height 0.3 (wider grooves than the 0.0 outline)
+
+
+def _knit_polys(x0, x1, y0, y1, W=None, H=KNIT_H):
+    """Raised stitch legs as shapely polygons (mm, D frame), same leg shape as _knit()."""
+    from shapely.geometry import Polygon
+    from shapely.ops import unary_union
+    W = W or 2 * pi * SPHERE_R / KNIT_COLS
+    k = np.sqrt(1 - BED_LEG_T ** (1 / 0.85))
+    th = np.linspace(0, 2 * pi, 40, endpoint=False)
+    legs = []
+    for i in range(int(np.floor(x0 / W)) - 1, int(np.ceil(x1 / W)) + 1):
+        for j in range(int(np.floor(y0 / H)) - 1, int(np.ceil(y1 / H)) + 1):
+            for cx, tilt in ((0.29, 0.40), (0.71, -0.40)):
+                y = 0.49 * k * np.sin(th)
+                xr = 0.42 * k * np.cos(th)
+                u = cx + (xr + tilt * y * 2.0) / 2.0
+                v = 0.5 + y
+                legs.append(Polygon(np.c_[(i + u) * W, (j + 1 - v) * H]))   # v runs down the stitch
+    return unary_union(legs)
+
+
+def bed_texture(mesh_D):
+    """Carve the knit patch into the back plate's outer (bed) face. D frame in and out."""
+    from shapely.geometry import Polygon, Point
+    from shapely.ops import unary_union
+    from voice_clock import BACK_T, BP_PAWLS, BP_PAWL_LEN, BP_PAWL_SLOT
+    z0 = BACK_Z - BACK_T
+    sec = mesh_D.section(plane_origin=[0, 0, z0 + 0.05], plane_normal=[0, 0, 1])
+    face = max(sec.to_2D(to_2D=np.eye(4))[0].polygons_full, key=lambda q: q.area)
+    region = Polygon(face.exterior).buffer(-BED_HEM)
+    holes = unary_union([Polygon(r) for r in face.interiors]).buffer(BED_HOLE_MARGIN)
+    keep = [holes]
+    for t in BP_PAWLS:                                   # flexing pawl arms stay full thickness
+        a = np.radians(np.linspace(t - 4, t + BP_PAWL_LEN + 3, 40))
+        r0, r1 = BP_PAWL_SLOT[0] - 1.5, BP_PAWL_SLOT[1] + 1.5
+        keep.append(Polygon(np.r_[np.c_[r1 * np.cos(a), r1 * np.sin(a)],
+                                  np.c_[r0 * np.cos(a[::-1]), r0 * np.sin(a[::-1])]]))
+    region = region.difference(unary_union(keep))
+    x0, y0, x1, y1 = region.bounds
+    grooves = region.difference(_knit_polys(x0, x1, y0, y1)).buffer(-0.05).buffer(0.05)
+    grooves = [g for g in getattr(grooves, "geoms", [grooves]) if g.area > 0.3]
+    cut = trimesh.util.concatenate([trimesh.creation.extrude_polygon(g, BED_DEPTH + 1.0) for g in grooves])
+    cut.apply_translation([0, 0, z0 - 1.0])
+    out = trimesh.boolean.difference([mesh_D, cut], engine="manifold")
+    out.metadata["bed_texture"] = dict(groove_area=sum(g.area for g in grooves), region_area=region.area)
+    return out
+
+
 def clean(mesh, tol=0.01):
     """Manifold simplify: collapses sub-tol edges where safe (keeps it a valid manifold)."""
     import manifold3d as m3

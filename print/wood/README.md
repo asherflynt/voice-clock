@@ -45,7 +45,7 @@ The hot-head step and the smallest printable details are measured, not assumed.
 
 - **`VoiceClock_wood_U1.3mf`:** the full Snapmaker Orca project, with printer, process (`0.16mm Turned Wood v2`), the 4 filament presets and the painted model.
 - **`renders/`** (local print folder) and `docs/img/wood/` (repo): the v2 Blender renders, from the same paint data the slicer gets.
-- **`VoiceClock_wood_U1.gcode`:** sliced, about 16 h 50 min, 315 layers. It is in the local print folder only (46 MB, kept out of git); in the repo, open the 3MF in Snapmaker Orca and slice it. C1 is optional; at 230 °C the hot head stays close to JAYO's range.
+- **`VoiceClock_wood_U1.gcode`:** sliced, about 17 h 3 min, 315 layers. It is in the local print folder only (46 MB, kept out of git); in the repo, open the 3MF in Snapmaker Orca and slice it. C1 is optional; at 230 °C the hot head stays close to JAYO's range.
 - **`VoiceClock_wood_model.3mf`:** the painted model only, for use with your own presets.
 - **`presets/`:** the 4 filament presets used (PLA core, cherry, cherry HOT, walnut), the process and the printer. Maple and oak are spare v1 tones, not used. They're also installed in Snapmaker Orca's user presets.
 - **`coupons/`:** C1.

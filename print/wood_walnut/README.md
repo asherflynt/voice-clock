@@ -48,9 +48,9 @@ No extra spool is needed.
 | | |
 |---|---|
 | Project | `VoiceClock_walnut_fs_008_U1.3mf` |
-| Print time | **about 1 day 9 h 37 min** |
-| Layers / tool changes | 629 / 1,660 |
-| Filament (core / oak / maple / walnut) | 121 / 53 / 46 / 30 g (250 g) |
+| Print time | **about 1 day 9 h 53 min** |
+| Layers / tool changes | 629 / 1,674 |
+| Filament (core / oak / maple / walnut) | 121 / 54 / 23 / 54 g (251 g) |
 | How the mixes look | 2-layer tones blend (0.16 mm repeat); 3-layer tones show fine 0.24 mm stripes up close, which blend at arm's length |
 
 0.08 mm is the minimum layer height in the U1's 0.4 mm nozzle profile, so there is no finer option: going thinner would need a smaller nozzle, and wood PLA's particles clog nozzles under 0.4 mm.
@@ -75,7 +75,7 @@ Check:
 - **End grain** is 6 L* darker overall, as in the photo.
 - **Heartwood:** broad zones darken smoothly by up to 36 L*, so their edges step through several tones instead of a hard boundary.
 - **Dither:** a little noise before rounding to the 8 tones keeps gradients from banding.
-- **Bed face:** the back plate's outer face prints on the bed, where a single layer can't show a mix, so it uses only physical heads (oak, brown, walnut).
+- **Bed face:** the back plate's outer face prints on the bed, where a single layer can't show a mix, so it uses only physical heads (oak, brown, walnut). A knit patch is carved one first layer (0.22 mm) deep into it, so it isn't a glossy bed surface.
 
 ## Files
 

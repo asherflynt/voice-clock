@@ -1094,6 +1094,8 @@ if __name__ == "__main__":
         m = trimesh.load(raw)
         raw.unlink()
         t = texture.apply(m)
+        if name == "back_plate":                     # knit patch carved into the flat bed face
+            t = texture.bed_texture(t)
         bodies = [b for b in t.split(only_watertight=False) if b.is_watertight and b.volume > 1.0]
         assert len(bodies) == 1, (name, len(bodies))
         t = texture.clean(bodies[0])
