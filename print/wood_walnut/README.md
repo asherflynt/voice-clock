@@ -43,29 +43,27 @@ The expected L* values come from averaging the filament colours. The swatch (bel
 
 No extra spool is needed.
 
-## Pick a layer height
+## Layer height: 0.08 mm
 
-| | 0.08 mm | 0.04 mm |
-|---|---|---|
-| Project | `VoiceClock_walnut_fs_008_U1.3mf` | `VoiceClock_walnut_fs_004_U1.3mf` |
-| Print time | **about 1 day 9 h 37 min** | **about 3 days 8 h 40 min** |
-| Layers / tool changes | 629 / 1,660 | 1,256 / 3,352 |
-| Filament (core / oak / maple / walnut) | 121 / 53 / 46 / 30 g (250 g) | 138 / 93 / 89 / 50 g (370 g) |
-| How the mixes look | 2-layer tones blend (0.16 mm repeat); 3-layer tones show fine 0.24 mm stripes up close, which blend at arm's length | Every tone blends (0.12 mm repeat or finer) |
-| Risk | Standard thin layer | A 0.04 mm layer is 1/10 of the nozzle width; wood PLA at that height hasn't been tested on this printer |
+| | |
+|---|---|
+| Project | `VoiceClock_walnut_fs_008_U1.3mf` |
+| Print time | **about 1 day 9 h 37 min** |
+| Layers / tool changes | 629 / 1,660 |
+| Filament (core / oak / maple / walnut) | 121 / 53 / 46 / 30 g (250 g) |
+| How the mixes look | 2-layer tones blend (0.16 mm repeat); 3-layer tones show fine 0.24 mm stripes up close, which blend at arm's length |
 
-Every layer uses all 4 heads (3 tool changes per layer), so time and prime-tower waste scale with the number of layers. Most of the wood filament goes into the prime tower, not the skin. The G-code files are in the local print folder only (the 0.04 mm one is 164 MB, over GitHub's limit); in the repo, open a 3MF in Snapmaker Orca 2.4.1 or later and slice it.
+0.08 mm is the minimum layer height in the U1's 0.4 mm nozzle profile, so there is no finer option: going thinner would need a smaller nozzle, and wood PLA's particles clog nozzles under 0.4 mm.
 
-**Recommendation:** print the swatch at both heights first. Go with 0.08 mm unless the 0.04 mm swatch prints cleanly and looks clearly better.
+Every layer uses all 4 heads (3 tool changes per layer), so time and prime-tower waste scale with the number of layers. Most of the wood filament goes into the prime tower, not the skin. The G-code is in the local print folder only; in the repo, open the 3MF in Snapmaker Orca 2.4.1 or later and slice it.
 
 ## Print the swatch first
 
-`coupons/FS_swatch_008.3mf` and `coupons/FS_swatch_004.3mf`: a 72 × 3 × 4 mm plate whose front face shows the 8 tones as 9 mm stripes, darkest on the left, with the same heads, temperatures and mixes as the clock. About 1 h 11 min at 0.08 mm and 3 h 27 min at 0.04 mm (12 g and 22 g, mostly prime tower: every layer still swaps through all 4 heads).
+`coupons/FS_swatch_008.3mf`: a 72 × 3 × 4 mm plate whose front face shows the 8 tones as 9 mm stripes, darkest on the left, with the same heads, temperatures and mixes as the clock. About 1 h 11 min (12 g, mostly prime tower: every layer still swaps through all 4 heads).
 
 Check:
-1. **Colours:** the 8 stripes should step evenly from walnut to light gold. If two neighbours look the same, or one stands out, tell me which and the mix gets refitted.
+1. **Colours:** the 8 stripes should step evenly from walnut to light gold. If two neighbours look the same, or one stands out, the mix needs refitting (`FS` in `CAD/wood.py`).
 2. **Stripes:** look at the 3-layer tones (3, 5 and 7) from 30 cm away and from arm's length.
-3. **0.04 mm only:** the walls should be solid, with no gaps or blobs and no clogging over the run.
 
 ## How it's built
 
@@ -81,11 +79,11 @@ Check:
 
 ## Files
 
-- **`VoiceClock_walnut_fs_008_U1.3mf`, `VoiceClock_walnut_fs_004_U1.3mf`:** full Snapmaker Orca projects (printer, process with the 6 mixed rows, 4 filaments, painted model).
-- **`VoiceClock_walnut_fs_008_U1.gcode`, `..._004_U1.gcode`:** sliced, in the local print folder only.
-- **`VoiceClock_walnut_fs_model.3mf`:** the painted model only, the same for both layer heights (the generator names it `VoiceClock_walnut_fs_008_model.3mf`). It needs a process preset with the mixed rows (in `presets/`) to show the mixes.
-- **`presets/`:** the 4 filament presets, both processes and the printer.
-- **`coupons/`:** the tone swatches.
+- **`VoiceClock_walnut_fs_008_U1.3mf`:** the full Snapmaker Orca project (printer, process with the 6 mixed rows, 4 filaments, painted model).
+- **`VoiceClock_walnut_fs_008_U1.gcode`:** sliced, in the local print folder only.
+- **`VoiceClock_walnut_fs_model.3mf`:** the painted model only (the generator names it `VoiceClock_walnut_fs_008_model.3mf`). It needs a process preset with the mixed rows (in `presets/`) to show the mixes.
+- **`presets/`:** the 4 filament presets, the process and the printer.
+- **`coupons/`:** the tone swatch.
 - **`renders/`** (local print folder) and [`docs/img/wood/`](../../docs/img/wood) (repo): Blender renders, each tone shown as its blended colour.
 
 ## Tuning
@@ -95,7 +93,7 @@ Everything is in `CAD/wood.py`:
 - `FS`: lightness model, with `BASE_L`, `LINE_D`, `HEART_D`, `END_D` and `DITHER`.
 - `WN`: grain geometry.
 
-Then run `wood.py walnut_fs`, then `wood_project.py walnut_fs` (and `wood_project.py walnut_fs fine`), and `fs_swatch.py walnut_fs [fine]`.
+Then run `wood.py walnut_fs`, then `wood_project.py walnut_fs`, and `fs_swatch.py walnut_fs`.
 
 ## Finishing
 

@@ -29,9 +29,9 @@
 > | Board clamping | Carrier screwed to the front shell | Front shell → light guide → board front; cradle pads on the board back. The carrier now hangs on the 3 M2 clamp screws only (bulkhead + wire organiser) |
 > | Mute plunger | Front shell, stopped at r 53.75, z −0.6 (3.5 mm short, 2.4 mm high) | **Rear shell**, on the measured BUTA nub (r 50.23, z −3.75 to −2.2), 0.25 mm rest gap, 1 mm travel, 5 mm guide boss |
 > | Knob gap | 0.75 mm | **0.45 mm**; the light guide centres on the CrowPanel's fixed housing (land Ø78.4 on Ø77.9) |
-> | Cable notch | 195° (on an LED, over the 3.5 mm jack) | **120°** (11 o'clock from the front, between LEDs 105/135) |
+> | Cable notch | 195° (on an LED, over the 3.5 mm jack) | **None** (9 Nov 2026). The CrowPanel is fed from the reSpeaker header's spare 5V / GND pins on the LED side, inside the light ring, so the ring, carrier and rear-shell collar have no cable notch or gap; the carrier's centre hole is the only wire opening |
 >
-> Hardware is now 3 × M3 × 12, 3 × M2 × 20, 4 × M2 × 10 and 5 M2 inserts. Sections 4 and 4b below describe v0's screws and are kept for the reasoning; the wiring is unchanged apart from the notch position.
+> Hardware is now 3 × M3 × 12, 3 × M2 × 20, 4 × M2 × 10 and 5 M2 inserts. Sections 4 and 4b below describe v0's screws and are kept for the reasoning; the wiring now runs USB-C → disconnect → reSpeaker header → CrowPanel ([`wiring/WIRING.md`](wiring/WIRING.md)).
 
 **Start here (10 min with calipers):**
 

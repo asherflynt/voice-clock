@@ -2,7 +2,6 @@
 as 9 mm stripes (darkest left), sliced with the same presets and mixed rows as the clock.
 
   .venv/bin/python fs_swatch.py walnut_fs          # 0.08 mm layers
-  .venv/bin/python fs_swatch.py walnut_fs fine     # 0.04 mm layers
 -> out/wood_walnut_fs/coupons/FS_swatch_<layer>.3mf and .gcode
 
 Print it before the clock: it shows each mixed tone's real colour and whether the layer height prints

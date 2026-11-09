@@ -17,7 +17,7 @@ PLATES = [
     ("1", "Front shell, rear shell, back plate, mute button", "Matte PLA, or the wood variant (print/wood/)",
      "5 mm brim on the shells, no supports. Front shell face-up (seam on the bed), rear shell on its back rim."),
     ("2", "Carrier, spider bracket", "The same matte PLA", "A little stiffer than PETG and more accurate for the key notches and insert holes. Spider at 100% infill."),
-    ("3", "Ring base, ring shell, mute button", "Natural or clear PETG", "The ring cap must be translucent. Use this mute button rather than the PLA one: its snap barb is tougher in PETG."),
+    ("3", "Ring base, ring shell, mute button", "Natural or clear PETG", "The ring cap must be translucent. No brim on the ring parts: it can't be peeled off their thin walls. Use this mute button rather than the PLA one: its snap barb is tougher in PETG."),
     ("4", "2 grip pads, 4 speaker washers", "TPU", "The grip pads stop the clock turning when you turn the knob."),
 ]
 HARDWARE = [
@@ -30,7 +30,7 @@ HARDWARE = [
     ("—", "1/16\" adhesive closed-cell foam", "4 mic gaskets, 1 speaker ring"),
     ("about 160 g", "Steel BBs or shot (4.5 mm airgun BBs) + slow-cure epoxy, or about 300 g tungsten putty", "Ballast pocket in the rear shell"),
     ("—", "CA (superglue)", "Grip pads"),
-    ("—", "22/24 AWG silicone wire, 2-pin JST-SM or JST-XH pair, MX1.25 4-pin pigtail, heat shrink, zip tie", "Power harness (docs/wiring/WIRING.md)"),
+    ("—", "22 AWG silicone wire, 2-pin JST-SM or JST-XH pair, MX1.25 4-pin pigtail, heat shrink, zip tie", "Power harness (docs/wiring/WIRING.md)"),
 ]
 TOOLS = ["Soldering iron with an M2 heat-set tip", "Hex keys 1.5 and 2.5 mm", "Multimeter",
          "Wire strippers, flush cutters, heat gun", "Craft knife", "5 mm and 2 mm hole punch"]
@@ -55,18 +55,18 @@ STEPS = [
       "Fit 3 × M3 × 12 and tighten them evenly. The holes are a close fit (Ø3.1), so the screws may need a gentle turn to start."],
      "The knob still turns and clicks, and nothing touches the connectors."),
     ("step_03", "Light ring, part 1 (ring base)",
-     ["Wrap aluminium foil tape round the <b>outside</b> of the ring base's tall wall, from 1 mm above the bottom edge up to 2 mm below the top edge. Keep it smooth (it is the channel's mirror) and keep it off the top 2 mm, where the crush ribs and key slots are. Then cut the tape away over the cable notch (5 × 2 mm) with a craft knife. Use tape with non-conductive adhesive: the LED capacitors sit just below the bottom edge.",
-      "Plug the CrowPanel lead into its connector and lay it so it can leave through the notch at the ring base's foot.",
-      "Slide the ring base over the spider <b>from behind</b>, with the cable notch at <b>11 o'clock</b> seen from the front (one hour left of the mute button), until its three spacers sit under the spider's insert pads. Feed the lead out through the notch."],
-     "The ring base sits square on the spider pads and the foil is smooth, with no tape over the notch."),
+     ["Wrap aluminium foil tape round the <b>outside</b> of the ring base's tall wall, from 1 mm above the bottom edge up to 2 mm below the top edge. Keep it smooth (it is the channel's mirror) and keep it off the top 2 mm, where the crush ribs and key slots are. Use tape with non-conductive adhesive: the LED capacitors sit just below the bottom edge.",
+      "Plug the CrowPanel lead (the pigtail already soldered to the reSpeaker header) into the panel's power port.",
+      "Slide the ring base over the spider <b>from behind</b>, until its three spacers sit under the spider's insert pads. There is no cable notch: the lead stays inside the ring, between the spider arms."],
+     "The ring base sits square on the spider pads and the foil is smooth."),
     (("step_04", "step_05"), "reSpeaker and carrier",
-     ["Lay the reSpeaker on the ring base's spacers, LED side toward the display, mute button (marked A) at 12 o'clock. The ring base's foot surrounds the LED ring; the CrowPanel lead runs across the board between two LEDs at 11 o'clock.",
-      "Feed the speaker lead and the reSpeaker power lead through the carrier's centre hole. Set the carrier behind the board with its cable notch at 11 o'clock seen from the front.",
+     ["Lay the reSpeaker on the ring base's spacers, LED side toward the display, mute button (marked A) at 12 o'clock. The ring base's foot surrounds the LED ring; the CrowPanel lead stays inside it, flat in the gap between the board and the spider.",
+      "Feed the speaker lead and the reSpeaker power lead through the carrier's centre hole, the only wire opening. Set the carrier behind the board.",
       "Fit 3 × M2 × 20 from the back of the carrier, through the board and the spacers, into the spider. <b>Snug only</b>: the screws pull the spider's inserts toward their mouths."],
      "The board doesn't rock and no wire is pinched."),
     ("step_06", "Light ring, part 2 (ring shell)",
-     ["Line the <b>inside</b> of the ring shell's sleeve with foil tape, from the bottom edge up to about 4 mm below the cap, and cut it away over the sleeve's cable notch. The part of the sleeve that stands out of the case stays bare so it glows.",
-      "Press the ring shell on over the knob, with its two tabs in the ring base's slots and its notch over the CrowPanel lead. The crush ribs hold it."],
+     ["Line the <b>inside</b> of the ring shell's sleeve with foil tape, from the bottom edge up to about 4 mm below the cap. The part of the sleeve that stands out of the case stays bare so it glows.",
+      "Press the ring shell on over the knob, with its two tabs in the ring base's slots. The crush ribs hold it."],
      "Power the boards on the bench and set the LED ring white. The whole ring should glow evenly, with no bright gap round the knob and no LED visible."),
     ("step_07", "Ballast and grip pads",
      ["Stand the rear shell on its back opening. Inside, along the bottom, a thin curved wall forms a pocket between itself and the shell, open at the top.",
@@ -77,7 +77,6 @@ STEPS = [
     ("step_08", "Into the rear shell",
      ["Push the mute button into the hole at the top of the rear shell from outside until its barb clicks.",
       "Stand the rear shell on its back opening and pass the speaker and power leads out through it.",
-      "Before lowering, dress the CrowPanel lead straight down the board edge at 11 o'clock and through the carrier notch, and hold it there: the collar at the top of the rear shell has a gap for it only at that spot.",
       "Lower the stack in, display up, mute button (A) under the plunger. The carrier's 4 notches (with lead-in chamfers) slide down over the 4 ribs on the shell wall, and the board edge lands on the rib pads. It only goes in one way."],
      "The stack can't turn at all."),
     ("step_09", "Front shell (twist lock)",
@@ -119,7 +118,7 @@ def md(s):
     return s.replace("<code>", "`").replace("</code>", "`").replace("<b>", "**").replace("</b>", "**")
 
 
-WIRING_SVG = """<svg class="wiring" viewBox="0 0 720 300" role="img" aria-label="Power wiring: the USB-C inlet feeds a 2-pin disconnect, which splits to the reSpeaker header 5V pin and a pigtail into the CrowPanel power port.">
+WIRING_SVG = """<svg class="wiring" viewBox="0 0 720 300" role="img" aria-label="Power wiring: the USB-C inlet feeds a 2-pin disconnect, then the reSpeaker header; the CrowPanel is fed from the header's spare 5V and GND pins through a pigtail into its power port.">
   <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink)"/></marker></defs>
   <g font-family="var(--mono)" font-size="13" fill="var(--ink)">
     <rect x="16" y="112" width="150" height="76" rx="8" fill="var(--panel)" stroke="var(--rule)"/>
@@ -129,18 +128,19 @@ WIRING_SVG = """<svg class="wiring" viewBox="0 0 720 300" role="img" aria-label=
     <text x="285" y="148" text-anchor="middle" font-weight="600">2-pin SM/XH</text>
     <text x="285" y="166" text-anchor="middle" fill="var(--muted)">disconnect</text>
     <rect x="470" y="30" width="234" height="76" rx="8" fill="var(--panel)" stroke="var(--rule)"/>
-    <text x="587" y="60" text-anchor="middle" font-weight="600">reSpeaker XVF3800</text>
-    <text x="587" y="80" text-anchor="middle" fill="var(--muted)">header 5V + GND (back)</text>
+    <text x="587" y="56" text-anchor="middle" font-weight="600">reSpeaker XVF3800</text>
+    <text x="587" y="76" text-anchor="middle" fill="var(--muted)">header 5V + GND (back)</text>
     <rect x="470" y="194" width="234" height="76" rx="8" fill="var(--panel)" stroke="var(--rule)"/>
     <text x="587" y="224" text-anchor="middle" font-weight="600">CrowPanel 2.1"</text>
     <text x="587" y="244" text-anchor="middle" fill="var(--muted)">MX1.25 pigtail, power port</text>
     <path d="M166 150 H226" stroke="var(--red)" stroke-width="3" fill="none" marker-end="url(#ah)"/>
     <path d="M340 150 H400 V68 H466" stroke="var(--red)" stroke-width="3" fill="none" marker-end="url(#ah)"/>
-    <path d="M400 150 V232 H466" stroke="var(--red)" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+    <path d="M587 106 V190" stroke="var(--red)" stroke-width="2" fill="none" marker-end="url(#ah)"/>
     <text x="196" y="138" text-anchor="middle" fill="var(--muted)">22 AWG</text>
     <text x="432" y="58" text-anchor="middle" fill="var(--muted)">22 AWG</text>
-    <text x="432" y="252" text-anchor="middle" fill="var(--muted)">24 AWG</text>
-    <text x="587" y="128" text-anchor="middle" fill="var(--muted)">speaker lead plugs in here too</text>
+    <text x="577" y="146" text-anchor="end" fill="var(--muted)">spare 5V/GND pins</text>
+    <text x="577" y="162" text-anchor="end" fill="var(--muted)">MX1.25 pigtail</text>
+    <text x="587" y="98" text-anchor="middle" fill="var(--muted)" font-size="11">the speaker plugs in here too</text>
   </g>
 </svg>"""
 
@@ -242,7 +242,7 @@ def page(img_prefix="img/"):
         steps.append(f'''<section class="step" id="step-{i}">
   <header><span class="num">{i:02d}</span><h2>{esc(title)}</h2></header>
   {fig}
-  <div class="body">{"".join(legend_html(r) for r in rids) if rids else '<div><h3 class="eyebrow">Parts</h3><ul class="plain"><li>USB-C breakout</li><li>22 and 24 AWG wire</li><li>2-pin JST-SM or JST-XH pair</li><li>MX1.25 4-pin pigtail</li><li>Heat shrink</li></ul></div>'}
+  <div class="body">{"".join(legend_html(r) for r in rids) if rids else '<div><h3 class="eyebrow">Parts</h3><ul class="plain"><li>USB-C breakout</li><li>22 AWG wire</li><li>2-pin JST-SM or JST-XH pair</li><li>MX1.25 4-pin pigtail</li><li>Heat shrink</li></ul></div>'}
     <div><ol class="do">{lis}</ol><div class="check"><strong>Check before moving on</strong>{esc(check)}</div></div>
   </div>
 </section>''')
@@ -299,7 +299,7 @@ def markdown():
                     out += ["In this picture: " + ", ".join(f"**{it['n']}** {it['label']}" for it in LEG[r]), ""]
         else:
             out += ["```mermaid", "flowchart LR", "  A[USB-C inlet, 5.1k CC] -- 22 AWG --> B[2-pin SM/XH disconnect]",
-                    "  B -- 22 AWG --> C[reSpeaker header 5V + GND]", "  B -- 24 AWG + MX1.25 pigtail --> D[CrowPanel power port]", "```", ""]
+                    "  B -- 22 AWG, carrier centre hole --> C[reSpeaker header 5V + GND]", "  C -- MX1.25 pigtail from the spare 5V + GND pins --> D[CrowPanel power port]", "```", ""]
         out += [f"{k}. {md(t)}" for k, t in enumerate(todo, 1)]
         out += ["", f"> **Check:** {md(check)}"]
     out += ["", "## Finished", "", "![Back](img/hero_back.jpg)", "", "## Firmware", "", md(FIRMWARE)]

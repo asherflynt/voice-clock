@@ -12,7 +12,7 @@
   .note{fill:#f4f7f5;stroke:#9bb;stroke-width:1.2}
 </style>
 <rect width="1100" height="700" fill="#fff"/>
-<text x="24" y="38" class="h">02 · reSpeaker XVF3800: 5 V and GND solder points</text>
+<text x="24" y="38" class="h">02 · reSpeaker XVF3800: 5 V and GND solder points (power in + CrowPanel out)</text>
 <text x="24" y="60" class="s">Back (component) side, XIAO at 12 o'clock, as in Seeed's pinout photo. Positions are approximate. Board Ø100 mm. Pin labels are from Seeed's pinout.</text>
 
 <!-- board -->
@@ -97,6 +97,8 @@
   <circle cx="132" cy="94" r="15" fill="none" stroke="#fff" stroke-width="4"/>
   <circle cx="132" cy="58" r="13" fill="none" stroke="#f5c542" stroke-width="2" stroke-dasharray="3 3"/>
   <text x="150" y="420" class="s" text-anchor="middle" style="fill:#aaa">square pad (X1D11) = far end. Use it to orient.</text>
+  <circle cx="168" cy="94" r="15" fill="none" stroke="#ff8a80" stroke-width="3" stroke-dasharray="5 3"/>
+  <circle cx="168" cy="130" r="15" fill="none" stroke="#bbb" stroke-width="3" stroke-dasharray="5 3"/>
 </g>
 <!-- callouts for zoom -->
 <path d="M783 58 H960" stroke="#d62728" stroke-width="2" transform="translate(0,100)"/>
@@ -107,10 +109,11 @@
 <text x="554" y="186" class="b" text-anchor="end">GND</text>
 <text x="554" y="204" class="t" text-anchor="end">black 22 AWG</text>
 <text x="554" y="220" class="s" text-anchor="end">row 2, left</text>
-<text x="914" y="232" class="s">The other 5V and</text>
-<text x="914" y="246" class="s">GND holes are the</text>
-<text x="914" y="260" class="s">same nets: use them</text>
-<text x="914" y="274" class="s">if a pad lifts.</text>
+<text x="914" y="226" class="t" font-weight="700">Lead D (CrowPanel)</text>
+<text x="914" y="242" class="s">dashed: row 2 right = 5V,</text>
+<text x="914" y="256" class="s">row 3 right = GND.</text>
+<text x="914" y="270" class="s">Pigtail wires go in from the</text>
+<text x="914" y="284" class="s">LED side, soldered on the back.</text>
 <path d="M600 140 H560" stroke="#c9a34a" stroke-width="2" stroke-dasharray="4 3"/>
 <text x="554" y="136" class="t" text-anchor="end" style="fill:#a07c10" font-weight="700">VDDIO ≠ 5 V</text>
 <text x="554" y="152" class="s" text-anchor="end">right next to +5 V.</text>

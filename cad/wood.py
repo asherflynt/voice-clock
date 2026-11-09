@@ -212,7 +212,7 @@ def _walnut_fields(p, n=None, P=WN):
 
 # Full Spectrum walnut (7 Nov 2026): 8 tones, each a physical head or an exact per-layer head sequence
 # (Snapmaker Orca 2.4.1 'mixed_filament_definitions' pattern rows; digits = heads 1 core, 2 oak, 3 maple,
-# 4 walnut). Cycles are at most 3 layers: 0.24 mm at 0.08 mm layers, 0.12 mm at 0.04 mm. L* by
+# 4 walnut). Cycles are at most 3 layers: 0.24 mm at 0.08 mm layers. L* by
 # linear-light averaging of the preset colours (to be measured on the swatch).
 FS_TONES = [  # (paint state, layer sequence, L*)
     (4, "4", 17.2), (5, "41", 27.6), (6, "442", 37.3), (7, "42", 43.3),

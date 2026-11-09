@@ -55,35 +55,32 @@
 <rect x="565.65" y="444" width="11" height="14" fill="#bbb" stroke="#666"/>
 <text x="536" y="476" class="part" text-anchor="middle">USB-C inlet</text>
 
-<!-- CrowPanel lead: plug -> spider gap -> notch -> over board edge -> carrier channel -> splice -> Y -->
+<!-- D: pigtail from the CrowPanel port, across the gap inside the light ring, to the header's spare pins (LED side) -->
 <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M321 405 H346 V514 V560 Q346 576 362 576 H418 Q440 576 444 560 V520" stroke="#d62728" stroke-width="3"/>
-  <path d="M321 410 H342 V514 V562 Q342 580 362 580 H418 Q446 580 448 560 V520" stroke="#222" stroke-width="3"/>
-  <!-- C to header via centre hole -->
+  <path d="M321 405 H336 Q346 405 346 395 V318 H360" stroke="#d62728" stroke-width="3"/>
+  <path d="M321 410 H340 Q351 410 351 400 V326 H360" stroke="#222" stroke-width="3"/>
+  <!-- C: B-C splice behind the carrier, through the centre hole, to the header (back side) -->
   <path d="M452 494 V340 H379" stroke="#d62728" stroke-width="3"/>
   <path d="M456 494 V346 H379" stroke="#222" stroke-width="3"/>
-  <!-- trunk + A -->
-  <path d="M444 500 H480 M486 500 Q500 500 506 452" stroke="#d62728" stroke-width="3"/>
-  <path d="M448 506 H480 M486 506 Q506 506 510 457" stroke="#222" stroke-width="3"/>
+  <!-- B + A: splice -> disconnect -> inlet -->
+  <path d="M452 500 H480 M486 500 Q500 500 506 452" stroke="#d62728" stroke-width="3"/>
+  <path d="M456 506 H480 M486 506 Q506 506 510 457" stroke="#222" stroke-width="3"/>
   <!-- speaker lead -->
   <path d="M497 300 H470 Q462 300 462 310 V360 H377" stroke="#888" stroke-width="2.5" stroke-dasharray="6 3"/>
 </g>
-<rect x="439" y="508" width="14" height="14" rx="3" fill="#9cc7e8" stroke="#3d6f99"/>
-<circle cx="450" cy="497" r="7" fill="#fff" stroke="#222" stroke-width="2"/>
+<rect x="445" y="494" width="16" height="16" rx="3" fill="#9cc7e8" stroke="#3d6f99"/>
 <rect x="478" y="494" width="10" height="18" fill="#f3efe4" stroke="#222"/>
 
 <!-- callout markers -->
 <g>
   <circle cx="306" cy="430" r="10" fill="#1b6ca8"/><text x="306" y="434" class="num" text-anchor="middle">1</text>
-  <circle cx="330" cy="528" r="10" fill="#1b6ca8"/><text x="330" y="532" class="num" text-anchor="middle">2</text>
-  <circle cx="390" cy="598" r="10" fill="#1b6ca8"/><text x="390" y="602" class="num" text-anchor="middle">3</text>
-  <circle cx="428" cy="528" r="10" fill="#1b6ca8"/><text x="428" y="532" class="num" text-anchor="middle">4</text>
-  <circle cx="466" cy="484" r="10" fill="#1b6ca8"/><text x="466" y="488" class="num" text-anchor="middle">5</text>
-  <circle cx="440" cy="330" r="10" fill="#1b6ca8"/><text x="440" y="334" class="num" text-anchor="middle">6</text>
-  <circle cx="494" cy="524" r="10" fill="#1b6ca8"/><text x="494" y="528" class="num" text-anchor="middle">7</text>
-  <circle cx="520" cy="430" r="10" fill="#1b6ca8"/><text x="520" y="434" class="num" text-anchor="middle">8</text>
-  <circle cx="480" cy="286" r="10" fill="#1b6ca8"/><text x="480" y="290" class="num" text-anchor="middle">9</text>
-  <circle cx="352" cy="490" r="10" fill="#d62728"/><text x="352" y="494" class="num" text-anchor="middle">!</text>
+  <circle cx="330" cy="352" r="10" fill="#1b6ca8"/><text x="330" y="356" class="num" text-anchor="middle">2</text>
+  <circle cx="440" cy="330" r="10" fill="#1b6ca8"/><text x="440" y="334" class="num" text-anchor="middle">3</text>
+  <circle cx="452" cy="530" r="10" fill="#1b6ca8"/><text x="452" y="534" class="num" text-anchor="middle">4</text>
+  <circle cx="494" cy="530" r="10" fill="#1b6ca8"/><text x="494" y="534" class="num" text-anchor="middle">5</text>
+  <circle cx="520" cy="430" r="10" fill="#1b6ca8"/><text x="520" y="434" class="num" text-anchor="middle">6</text>
+  <circle cx="480" cy="286" r="10" fill="#1b6ca8"/><text x="480" y="290" class="num" text-anchor="middle">7</text>
+  <circle cx="349" cy="478" r="10" fill="#d62728"/><text x="349" y="482" class="num" text-anchor="middle">!</text>
 </g>
 
 </g>
@@ -92,37 +89,35 @@
   <rect x="0" y="0" width="452" height="566" rx="10" fill="#fafafa" stroke="#ccc"/>
   <g class="t">
     <circle cx="24" cy="30" r="10" fill="#1b6ca8"/><text x="24" y="34" class="num" text-anchor="middle">1</text>
-    <text x="44" y="34">Pigtail plug in the CrowPanel power port.</text>
+    <text x="44" y="34">Pigtail (lead D) plug in the CrowPanel power port.</text>
     <circle cx="24" cy="76" r="10" fill="#1b6ca8"/><text x="24" y="80" class="num" text-anchor="middle">2</text>
-    <text x="44" y="72">Out through the spider, across the 5 mm gap and out</text>
-    <text x="44" y="88">through the ring base's notch (11 o'clock from the front).</text>
-    <circle cx="24" cy="126" r="10" fill="#1b6ca8"/><text x="24" y="130" class="num" text-anchor="middle">3</text>
-    <text x="44" y="122">Over the reSpeaker's edge (4.6 mm to the shell wall)</text>
-    <text x="44" y="138">and through the carrier's wire channel.</text>
-    <circle cx="24" cy="176" r="10" fill="#1b6ca8"/><text x="24" y="180" class="num" text-anchor="middle">4</text>
-    <text x="44" y="172">Pigtail-to-24 AWG splices (E→D). Only behind the</text>
-    <text x="44" y="188">carrier, where there is room.</text>
-    <circle cx="24" cy="226" r="10" fill="#1b6ca8"/><text x="24" y="230" class="num" text-anchor="middle">5</text>
-    <text x="44" y="222">Y splice (+ optional capacitor). Hot-glue or zip-tie</text>
-    <text x="44" y="238">it to the carrier back so no tug reaches a pad.</text>
-    <circle cx="24" cy="276" r="10" fill="#1b6ca8"/><text x="24" y="280" class="num" text-anchor="middle">6</text>
-    <text x="44" y="272">Lead C through the carrier centre hole to the</text>
-    <text x="44" y="288">reSpeaker header (5V / GND).</text>
-    <circle cx="24" cy="326" r="10" fill="#1b6ca8"/><text x="24" y="330" class="num" text-anchor="middle">7</text>
-    <text x="44" y="322">Disconnect. Unplug it to lift the back plate off.</text>
-    <text x="44" y="338">Clear of the speaker and the inlet cage.</text>
-    <circle cx="24" cy="376" r="10" fill="#1b6ca8"/><text x="24" y="380" class="num" text-anchor="middle">8</text>
-    <text x="44" y="372">Lead A to the USB-C inlet. Stays with the back plate.</text>
-    <text x="44" y="388">10 cm gives room to set the plate beside the clock.</text>
-    <circle cx="24" cy="426" r="10" fill="#1b6ca8"/><text x="24" y="430" class="num" text-anchor="middle">9</text>
-    <text x="44" y="422">Speaker lead (plug-in, no soldering) through the</text>
-    <text x="44" y="438">centre hole to the SPK socket. Zip-tie it to its anchor.</text>
-    <circle cx="24" cy="480" r="10" fill="#d62728"/><text x="24" y="484" class="num" text-anchor="middle">!</text>
-    <text x="44" y="476" font-weight="700">No joints, heat shrink or loops in the 5 mm gap</text>
-    <text x="44" y="492">between the spider and the reSpeaker, or in the notch.</text>
-    <text x="44" y="508">Only the bare pigtail passes there (notch 5 × 2 mm: wires side by side).</text>
-    <text x="20" y="546" class="s">Leave about 2 cm of slack on lead D so the finished stack can</text>
-    <text x="20" y="560" class="s">drop into the rear shell with every lead already plugged in.</text>
+    <text x="44" y="72">Between the spider arms and across the 5 mm gap to the</text>
+    <text x="44" y="88">header's spare 5V / GND holes, soldered from the LED side.</text>
+    <text x="44" y="104">All of it inside the light ring: no notch, nothing at the edge.</text>
+    <circle cx="24" cy="142" r="10" fill="#1b6ca8"/><text x="24" y="146" class="num" text-anchor="middle">3</text>
+    <text x="44" y="138">Lead C through the carrier's centre hole to the</text>
+    <text x="44" y="154">header's 5V / GND from the back side.</text>
+    <circle cx="24" cy="192" r="10" fill="#1b6ca8"/><text x="24" y="196" class="num" text-anchor="middle">4</text>
+    <text x="44" y="188">B–C inline splices (+ optional capacitor). Hot-glue or</text>
+    <text x="44" y="204">zip-tie them to the carrier back so no tug reaches a joint.</text>
+    <circle cx="24" cy="242" r="10" fill="#1b6ca8"/><text x="24" y="246" class="num" text-anchor="middle">5</text>
+    <text x="44" y="238">Disconnect. Unplug it to lift the back plate off.</text>
+    <text x="44" y="254">Clear of the speaker and the inlet cage.</text>
+    <circle cx="24" cy="292" r="10" fill="#1b6ca8"/><text x="24" y="296" class="num" text-anchor="middle">6</text>
+    <text x="44" y="288">Lead A to the USB-C inlet. Stays with the back plate.</text>
+    <text x="44" y="304">10 cm gives room to set the plate beside the clock.</text>
+    <circle cx="24" cy="342" r="10" fill="#1b6ca8"/><text x="24" y="346" class="num" text-anchor="middle">7</text>
+    <text x="44" y="338">Speaker lead (plug-in, no soldering) through the</text>
+    <text x="44" y="354">centre hole to the SPK socket. Zip-tie it to its anchor.</text>
+    <circle cx="24" cy="396" r="10" fill="#d62728"/><text x="24" y="400" class="num" text-anchor="middle">!</text>
+    <text x="44" y="392" font-weight="700">No splices, heat shrink or loops in the 5 mm gap</text>
+    <text x="44" y="408">between the spider and the reSpeaker. Only the bare</text>
+    <text x="44" y="424">pigtail passes there; trim its joints flat on the LED side.</text>
+    <text x="20" y="470" class="s">The carrier's centre hole is the only wire opening in the stack.</text>
+    <text x="20" y="486" class="s">Nothing runs round the board edge, so the finished stack drops</text>
+    <text x="20" y="502" class="s">into the rear shell at its keyed angle with every lead plugged in,</text>
+    <text x="20" y="518" class="s">and the front shell twist-locks on with no wires attached to it.</text>
+    <text x="20" y="546" class="s">Leave about 2 cm of slack on lead C behind the carrier.</text>
   </g>
 </g>
 </svg>

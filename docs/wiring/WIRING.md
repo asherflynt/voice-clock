@@ -1,10 +1,12 @@
 # Voice Clock wiring and soldering
 
-The only wiring inside the clock is power: one 5 V USB-C inlet feeds both boards. The speaker plugs into the reSpeaker and the mute button is mechanical, so neither needs any soldering.
+The only wiring inside the clock is power: one 5 V USB-C inlet feeds the reSpeaker, and the CrowPanel is fed from the reSpeaker's spare 5V and GND header pins on its LED side. The speaker plugs into the reSpeaker and the mute button is mechanical, so neither needs any soldering.
+
+The chain is **USB-C inlet → disconnect → reSpeaker header → CrowPanel**. The only wire opening in the stack is the carrier's centre hole, and nothing runs round the reSpeaker's edge, so the light ring, carrier and rear shell need no cable notch or gap.
 
 **Printable version:** [`wiring_sheets.pdf`](wiring_sheets.pdf) (5 landscape pages, one per sheet below). Print it and keep it on the bench.
 
-**Time:** about 1.5 hours, including the bench checks.
+**Time:** about 1 hour, including the bench checks.
 
 ---
 
@@ -14,9 +16,9 @@ The only wiring inside the clock is power: one 5 V USB-C inlet feeds both boards
 |---|---|---|
 | 1 | MX1.25 4-pin pigtail, 10–15 cm (often sold as "Molex PicoBlade 1.25 mm 4P") | Goes into the CrowPanel's power port. Buy a pack; they're cheap. Keep the supplied USB cable intact for bench flashing. |
 | 1 pair | 2-pin wire-to-wire connector, ≥ 3 A, 22 AWG leads: **JST-SM** (LED-strip type) or **JST-XH** male/female | The back-plate disconnect. JST-PH isn't suitable: its crimps only take 24–32 AWG and it's rated 2 A. |
-| — | Silicone wire: 22 AWG red + black, 24 AWG red + black | About 30 cm of each is plenty |
+| — | Silicone wire: 22 AWG red + black | About 30 cm of each is plenty |
 | — | Heat shrink: 1.5, 2.5 and 4.8 mm | |
-| 1 | 470 µF / 10 V electrolytic capacitor (optional) | Smooths amp peaks at the Y splice |
+| 1 | 470 µF / 10 V electrolytic capacitor (optional) | Smooths amp peaks at the B–C splice |
 | — | Flux-core solder (0.6–0.8 mm), flux pen, hot glue, small zip ties | |
 
 ## Cut list
@@ -26,10 +28,9 @@ Cut everything long and trim it at the test fit (sheet 05).
 | Lead | Wire | Length | From | To |
 |---|---|---|---|---|
 | **A** | 22 AWG red + black | 10 cm | USB-C breakout VBUS / GND | Disconnect, **socket** half |
-| **B** | 22 AWG (the connector's own leads) | 3 cm | Disconnect, **pin** half | Y splice |
-| **C** | 22 AWG red + black | 10 cm | Y splice | reSpeaker header: 5V (row 1 right), GND (row 2 left) |
-| **D** | 24 AWG red + black | 8 cm | Y splice | Inline splice to the pigtail |
-| **E** | MX1.25 pigtail (28 AWG, as bought) | 10 cm | Inline splice | CrowPanel power port |
+| **B** | 22 AWG (the connector's own leads) | 3 cm | Disconnect, **pin** half | Inline splice to C |
+| **C** | 22 AWG red + black | 10 cm | Inline splice to B, through the carrier's centre hole | reSpeaker header, from the back: 5V (row 1 right), GND (row 2 left) |
+| **D** | MX1.25 pigtail (28 AWG, as bought) | trim to ~6 cm | reSpeaker header, from the LED side: 5V (row 2 right), GND (row 3 right) | CrowPanel power port |
 
 ---
 
@@ -37,9 +38,9 @@ Cut everything long and trim it at the test fit (sheet 05).
 
 ![Wiring diagram](img/01_wiring_diagram.svg)
 
-The current budget is about 3 A peak in total: the reSpeaker takes up to about 1.6 A (amp peaks plus a full-white LED ring) and the CrowPanel up to about 1 A. Use a 5 V 3 A charger.
+The current budget is about 3 A peak in total: the reSpeaker takes up to about 1.6 A (amp peaks plus a full-white LED ring) and the CrowPanel up to about 1 A. All of it comes in on lead C; the CrowPanel's share crosses the header from the row 1 / row 2 pins to the row 2 / row 3 pins on the same 5V and GND nets. Use a 5 V 3 A charger.
 
-## Sheet 02: reSpeaker, 5 V and GND
+## Sheet 02: reSpeaker, 5 V and GND (power in, CrowPanel out)
 
 ![reSpeaker solder points](img/02_respeaker_solder_points.svg)
 
@@ -50,35 +51,36 @@ Solder to the **2×10 through-hole header** on the back of the board, not to the
 3. Push the red wire into **row 1, right (5V)** from the back side. Solder it on the LED side and trim it to 1 mm or less. That side has only a 5 mm gap to the spider.
 4. Push the black wire into **row 2, left (GND)** the same way. It's on a ground plane, so use about 370 °C and hold the iron there for 3–4 s until the solder flows round the hole.
 5. **VDDIO is right next to the 5V hole and is not 5 V.** Check under a light that nothing bridges them.
-6. Hot-glue both wires to the board's back about 10 mm from the joints, away from the mic holes.
+6. **Lead D (CrowPanel):** push the pigtail's 5 V wire into **row 2, right (5V)** and its GND wire into **row 3, right (GND)**, this time **from the LED side**, and solder them on the back. Trim them flat on the LED side: the wires lie across the 5 mm gap to the spider. Both holes are inside the light ring (the header is about 26–32 mm from the board centre, the ring's inner wall at 37 mm), so the lead never goes near the board edge.
+7. Hot-glue lead C to the board's back about 10 mm from the joints, away from the mic holes.
 
 ## Sheet 03: CrowPanel via a plug-in pigtail
 
 ![CrowPanel pigtail](img/03_crowpanel_pigtail.svg)
 
-Elecrow's schematic only brings 5 V into the CrowPanel's main board through its 12-pin FPC (pins 1–2 = 5 V, 11–12 = GND) and a tiny test pad. Rather than soldering to the display, feed 5 V into the same 4-pin port that the supplied MX1.25-to-USB cable uses.
+Elecrow's schematic only brings 5 V into the CrowPanel's main board through its 12-pin FPC (pins 1–2 = 5 V, 11–12 = GND) and a tiny test pad. Rather than soldering to the display, feed 5 V into the same 4-pin port that the supplied MX1.25-to-USB cable uses, from the reSpeaker header.
 
 1. **Find the pins.** Plug the supplied cable into a USB charger. With a sewing needle taped to each meter probe, probe pairs of contacts in the MX1.25 plug until you read **+5.0 V**. The red probe is on 5 V and the black probe on GND. Note both positions.
 2. On the spare pigtail, identify those **same positions**. Its wire colours mean nothing.
 3. Cut the other two wires (D+ and D−) 5 mm back, and sleeve each one separately in 1.5 mm shrink.
-4. Splice the 5 V and GND wires to lead D (24 AWG red and black) with inline splices staggered 10 mm, then put one 4.8 mm sleeve over the pair.
-5. **Test:** plug the pigtail into the panel and feed it 5 V. The clock face should boot.
+4. Trim the pigtail to about 6 cm, strip 2 mm of the 5 V and GND wires and tin them. They go straight into the reSpeaker header (sheet 02 step 6): no splice.
+5. **Test:** with lead D soldered, power the reSpeaker from its own USB-C on the bench and plug the pigtail into the panel. The clock face should boot.
 
-## Sheet 04: inlet, disconnect, Y splice
+## Sheet 04: inlet, disconnect, B–C splice
 
-![Inlet, disconnect and Y splice](img/04_inlet_disconnect_splice.svg)
+![Inlet, disconnect and B–C splice](img/04_inlet_disconnect_splice.svg)
 
 - **USB-C breakout:** solder lead A to **VBUS** and **GND**, going by the silkscreen. Leave CC1, CC2, D+ and D− alone. Check that CC1 to GND and CC2 to GND each read about 5.1 kΩ. Without those resistors a USB-C charger supplies nothing.
 - **Disconnect:** the **socket** (shrouded) half goes on the inlet side, so a loose lead can't short. Pin 1 is red.
-- **Y splice:** for each colour, lay B, C and D side by side with the ends pointing the same way. Twist, solder, trim to 8 mm and cover with 4.8 mm shrink. Stagger the red and black joints by 15 mm. If you're fitting the capacitor, solder its long leg into the red joint and its striped short leg into the black joint before you shrink them.
+- **B–C splice:** thread lead C through the carrier's centre hole first. Then, for each colour, slide 2.5 mm shrink on, lay B and C side by side, twist, solder and shrink. Stagger the red and black joints by 15 mm. If you're fitting the capacitor, solder its long leg into the red joint and its striped short leg into the black joint before you shrink them.
 
 ## Sheet 05: the route inside the case
 
 ![Cable route](img/05_cable_route.svg)
 
-Keep the 5 mm gap between the spider and the reSpeaker, and the ring base's notch, clear of joints. Only the bare pigtail passes through them. Every splice sits behind the carrier.
+Keep splices, heat shrink and loops out of the 5 mm gap between the spider and the reSpeaker. Only the bare pigtail (lead D) passes there, from the header's spare pins to the CrowPanel's power port, and all of it stays inside the light ring. Every splice sits behind the carrier.
 
-The ring base's notch and the carrier's notch are at **11 o'clock seen from the front** (between two LEDs, clear of the reSpeaker's USB-C and audio jack at 9 o'clock). From there the pigtail runs down the 4.6 mm gap between the board edge and the rear-shell wall. The whole electronics stack, with every lead plugged in, drops into the rear shell in one piece (hold the pigtail at 11 o'clock as it goes in: the rear shell's collar has a gap for it only there), and the front shell then twist-locks on with no wires attached to it, so it can come off without unplugging anything.
+Lead C and the speaker lead pass through the carrier's centre hole, the only wire opening in the stack. Nothing runs round the reSpeaker's edge, so the whole electronics stack, with every lead plugged in, drops into the rear shell at its keyed angle in one piece, and the front shell then twist-locks on with no wires attached to it, so it can come off without unplugging anything.
 
 ---
 

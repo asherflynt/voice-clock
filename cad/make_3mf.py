@@ -67,8 +67,8 @@ SETTINGS = {
     "rear_shell": {"brim_type": "outer_only", "brim_width": "5"},
     "spider": {"sparse_infill_density": "100%"},
     "mute_plunger": {"sparse_infill_density": "100%"},
-    "ring_base": {"wall_loops": "3", "brim_type": "outer_only", "brim_width": "4"},
-    "ring_shell": {"wall_loops": "3", "brim_type": "outer_only", "brim_width": "4"},
+    "ring_base": {"wall_loops": "3", "brim_type": "no_brim"},   # brims were impossible to remove from the thin PETG walls
+    "ring_shell": {"wall_loops": "3", "brim_type": "no_brim"},   # brims were impossible to remove from the thin PETG walls
     "tpu_washers": {"sparse_infill_density": "100%", "wall_loops": "2", "brim_type": "outer_only", "brim_width": "3"},
     "foot_pads": {"sparse_infill_density": "100%", "wall_loops": "2"},
 }

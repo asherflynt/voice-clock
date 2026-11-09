@@ -69,7 +69,7 @@ if __name__ == "__main__":
     # make_3mf loads out/<name>.ply first (textured shells); point it at the draft folder instead
     M3.OUT = OUTF
     for name in list(BANDS) + REAL:
-        M3.SETTINGS[name] = RING_BRIM if name.startswith("fit_") or name in ("ring_base", "ring_shell") else DRAFT
+        M3.SETTINGS[name] = RING_BRIM if name.startswith("fit_") else DRAFT
     placed = []
     for i, (pname, items) in enumerate(PLATES):
         ox, oy = M3.plate_origin(i, len(PLATES))

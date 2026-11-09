@@ -12,7 +12,7 @@
 </style>
 <rect width="1100" height="700" fill="#fff"/>
 <text x="24" y="38" class="h">03 · CrowPanel 2.1": power through a plug-in pigtail</text>
-<text x="24" y="60" class="s">No soldering on the CrowPanel itself. Feed 5 V into the same 4-pin MX1.25 port that its supplied USB cable uses, with a spare pigtail, so the panel stays removable.</text>
+<text x="24" y="60" class="s">No soldering on the CrowPanel itself. Feed 5 V into the same 4-pin MX1.25 port that its supplied USB cable uses, with a spare pigtail wired to the reSpeaker header, so the panel stays removable.</text>
 
 <!-- rear view -->
 <g transform="translate(200,300)">
@@ -64,9 +64,9 @@
 <text x="976" y="240" class="t">black = GND.</text>
 <text x="436" y="268" class="s">Write down the two positions before you go on. Pigtail wire colours are not a standard; positions are.</text>
 
-<!-- B: pigtail + splice -->
+<!-- B: pigtail straight into the reSpeaker header -->
 <rect x="420" y="296" width="656" height="222" rx="10" class="card"/>
-<text x="436" y="320" class="b">B · Spare MX1.25 4-pin pigtail → 24 AWG (lead D)</text>
+<text x="436" y="320" class="b">B · Spare MX1.25 4-pin pigtail = lead D, straight into the reSpeaker header</text>
 <rect x="440" y="350" width="30" height="62" rx="2" fill="#f3efe4" stroke="#222" stroke-width="1.2"/>
 <g stroke-width="2.4" fill="none">
   <path d="M470 360 H700" stroke="#d62728"/>
@@ -76,28 +76,20 @@
 </g>
 <rect x="528" y="368" width="20" height="12" rx="3" class="hs"/><rect x="528" y="382" width="20" height="12" rx="3" class="hs"/>
 <text x="556" y="390" class="s">D+ / D−: cut 5 mm back, shrink each</text>
-<!-- splices -->
-<rect x="690" y="352" width="44" height="16" rx="4" class="hs"/>
-<rect x="750" y="394" width="44" height="16" rx="4" class="hs"/>
-<path d="M734 360 H960" stroke="#d62728" stroke-width="4"/>
-<path d="M794 402 H960" stroke="#222" stroke-width="4"/>
-<text x="712" y="346" class="s" text-anchor="middle">1.5 mm shrink</text>
-<text x="772" y="428" class="s" text-anchor="middle">stagger 10 mm</text>
-<text x="966" y="364" class="t">24 AWG red</text>
-<text x="966" y="406" class="t">24 AWG black</text>
+<!-- straight to the header: no splice -->
+<path d="M700 360 H960" stroke="#d62728" stroke-width="2.4"/>
+<path d="M760 402 H960" stroke="#222" stroke-width="2.4"/>
+<text x="830" y="384" class="s" text-anchor="middle">no splice: the pigtail's own wires to the header</text>
+<text x="966" y="364" class="t">row 2 R (5V)</text>
+<text x="966" y="406" class="t">row 3 R (GND)</text>
 <text x="455" y="430" class="s" text-anchor="middle">plug</text>
 <text x="476" y="346" class="s">use the positions from A</text>
-<text x="610" y="376" class="s" text-anchor="middle"></text><text x="620" y="420" class="s" text-anchor="middle">28 AWG pigtail, ~10 cm</text>
-<!-- inline splice detail -->
+<text x="610" y="376" class="s" text-anchor="middle"></text><text x="620" y="420" class="s" text-anchor="middle">28 AWG pigtail, trim to ~6 cm</text>
+<!-- header joint detail -->
 <g transform="translate(440,446)">
-  <text x="0" y="12" class="t" font-weight="700">Inline splice:</text>
-  <path d="M100 8 H150" stroke="#d62728" stroke-width="3"/><path d="M150 8 H176" stroke="#b87333" stroke-width="2"/>
-  <path d="M200 8 H226" stroke="#b87333" stroke-width="3"/><path d="M226 8 H286" stroke="#d62728" stroke-width="5"/>
-  <text x="188" y="12" class="s" text-anchor="middle">→</text>
-  <path d="M310 8 H350" stroke="#d62728" stroke-width="3"/><path d="M350 8 H390" stroke="#b87333" stroke-width="4"/><path d="M390 8 H430" stroke="#d62728" stroke-width="5"/>
-  <rect x="344" y="0" width="52" height="16" rx="4" fill="none" stroke="#3d6f99" stroke-dasharray="3 2"/>
-  <text x="0" y="38" class="s">Slide on 1.5 mm shrink first. Strip 6 mm on each, lay them side by side, twist, solder, let cool, shrink.</text>
-  <text x="0" y="54" class="s">Then one 4.8 mm sleeve over the pair. The splices must sit behind the carrier, not in the notch.</text>
+  <text x="0" y="12" class="t" font-weight="700">Into the header:</text>
+  <text x="0" y="34" class="s">Strip 2 mm, tin, slide 1.5 mm shrink on. Push each wire into its hole from the LED side and solder on the back side</text>
+  <text x="0" y="50" class="s">(the side facing the carrier). Trim flat on the LED side: only the bare pigtail crosses the 5 mm gap to the spider.</text>
 </g>
 
 <!-- C: test -->

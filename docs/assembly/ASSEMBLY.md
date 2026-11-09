@@ -10,7 +10,7 @@
 |---|---|---|---|
 | 1 | Front shell, rear shell, back plate, mute button | Matte PLA, or the wood variant (print/wood/) | 5 mm brim on the shells, no supports. Front shell face-up (seam on the bed), rear shell on its back rim. |
 | 2 | Carrier, spider bracket | The same matte PLA | A little stiffer than PETG and more accurate for the key notches and insert holes. Spider at 100% infill. |
-| 3 | Ring base, ring shell, mute button | Natural or clear PETG | The ring cap must be translucent. Use this mute button rather than the PLA one: its snap barb is tougher in PETG. |
+| 3 | Ring base, ring shell, mute button | Natural or clear PETG | The ring cap must be translucent. No brim on the ring parts: it can't be peeled off their thin walls. Use this mute button rather than the PLA one: its snap barb is tougher in PETG. |
 | 4 | 2 grip pads, 4 speaker washers | TPU | The grip pads stop the clock turning when you turn the knob. |
 
 **Electronics:** Elecrow CrowPanel 2.1" rotary display; Seeed reSpeaker XVF3800 with XIAO ESP32-S3; 4428 3 W 8 Ω speaker; 5 V 3 A USB-C charger
@@ -28,7 +28,7 @@
 | — | 1/16" adhesive closed-cell foam | 4 mic gaskets, 1 speaker ring |
 | about 160 g | Steel BBs or shot (4.5 mm airgun BBs) + slow-cure epoxy, or about 300 g tungsten putty | Ballast pocket in the rear shell |
 | — | CA (superglue) | Grip pads |
-| — | 22/24 AWG silicone wire, 2-pin JST-SM or JST-XH pair, MX1.25 4-pin pigtail, heat shrink, zip tie | Power harness (docs/wiring/WIRING.md) |
+| — | 22 AWG silicone wire, 2-pin JST-SM or JST-XH pair, MX1.25 4-pin pigtail, heat shrink, zip tie | Power harness (docs/wiring/WIRING.md) |
 
 ## 1. Heat-set inserts
 
@@ -52,8 +52,8 @@ In this picture: **1** Back plate, **2** 4x M2 insert (2 speaker, 2 USB-C pads)
 ```mermaid
 flowchart LR
   A[USB-C inlet, 5.1k CC] -- 22 AWG --> B[2-pin SM/XH disconnect]
-  B -- 22 AWG --> C[reSpeaker header 5V + GND]
-  B -- 24 AWG + MX1.25 pigtail --> D[CrowPanel power port]
+  B -- 22 AWG, carrier centre hole --> C[reSpeaker header 5V + GND]
+  C -- MX1.25 pigtail from the spare 5V + GND pins --> D[CrowPanel power port]
 ```
 
 1. Follow `docs/wiring/WIRING.md`.
@@ -79,11 +79,11 @@ In this picture: **1** Spider bracket, **2** 3x M3x12 SHCS, **3** CrowPanel 2.1"
 
 In this picture: **1** Ring base (PETG), **2** Foil tape (outside), **3** CrowPanel 2.1" display, **4** Spider bracket
 
-1. Wrap aluminium foil tape round the **outside** of the ring base's tall wall, from 1 mm above the bottom edge up to 2 mm below the top edge. Keep it smooth (it is the channel's mirror) and keep it off the top 2 mm, where the crush ribs and key slots are. Then cut the tape away over the cable notch (5 × 2 mm) with a craft knife. Use tape with non-conductive adhesive: the LED capacitors sit just below the bottom edge.
-2. Plug the CrowPanel lead into its connector and lay it so it can leave through the notch at the ring base's foot.
-3. Slide the ring base over the spider **from behind**, with the cable notch at **11 o'clock** seen from the front (one hour left of the mute button), until its three spacers sit under the spider's insert pads. Feed the lead out through the notch.
+1. Wrap aluminium foil tape round the **outside** of the ring base's tall wall, from 1 mm above the bottom edge up to 2 mm below the top edge. Keep it smooth (it is the channel's mirror) and keep it off the top 2 mm, where the crush ribs and key slots are. Use tape with non-conductive adhesive: the LED capacitors sit just below the bottom edge.
+2. Plug the CrowPanel lead (the pigtail already soldered to the reSpeaker header) into the panel's power port.
+3. Slide the ring base over the spider **from behind**, until its three spacers sit under the spider's insert pads. There is no cable notch: the lead stays inside the ring, between the spider arms.
 
-> **Check:** The ring base sits square on the spider pads and the foil is smooth, with no tape over the notch.
+> **Check:** The ring base sits square on the spider pads and the foil is smooth.
 
 ## 5. reSpeaker and carrier
 
@@ -95,8 +95,8 @@ In this picture: **1** reSpeaker XVF3800, **2** Ring base (PETG), **3** Spider b
 
 In this picture: **1** Carrier, **2** 3x M2x20 SHCS, **3** reSpeaker XVF3800
 
-1. Lay the reSpeaker on the ring base's spacers, LED side toward the display, mute button (marked A) at 12 o'clock. The ring base's foot surrounds the LED ring; the CrowPanel lead runs across the board between two LEDs at 11 o'clock.
-2. Feed the speaker lead and the reSpeaker power lead through the carrier's centre hole. Set the carrier behind the board with its cable notch at 11 o'clock seen from the front.
+1. Lay the reSpeaker on the ring base's spacers, LED side toward the display, mute button (marked A) at 12 o'clock. The ring base's foot surrounds the LED ring; the CrowPanel lead stays inside it, flat in the gap between the board and the spider.
+2. Feed the speaker lead and the reSpeaker power lead through the carrier's centre hole, the only wire opening. Set the carrier behind the board.
 3. Fit 3 × M2 × 20 from the back of the carrier, through the board and the spacers, into the spider. **Snug only**: the screws pull the spider's inserts toward their mouths.
 
 > **Check:** The board doesn't rock and no wire is pinched.
@@ -107,8 +107,8 @@ In this picture: **1** Carrier, **2** 3x M2x20 SHCS, **3** reSpeaker XVF3800
 
 In this picture: **1** Foil tape (inside), **2** Ring shell (PETG), **3** Ring base (PETG)
 
-1. Line the **inside** of the ring shell's sleeve with foil tape, from the bottom edge up to about 4 mm below the cap, and cut it away over the sleeve's cable notch. The part of the sleeve that stands out of the case stays bare so it glows.
-2. Press the ring shell on over the knob, with its two tabs in the ring base's slots and its notch over the CrowPanel lead. The crush ribs hold it.
+1. Line the **inside** of the ring shell's sleeve with foil tape, from the bottom edge up to about 4 mm below the cap. The part of the sleeve that stands out of the case stays bare so it glows.
+2. Press the ring shell on over the knob, with its two tabs in the ring base's slots. The crush ribs hold it.
 
 > **Check:** Power the boards on the bench and set the LED ring white. The whole ring should glow evenly, with no bright gap round the knob and no LED visible.
 
@@ -133,8 +133,7 @@ In this picture: **1** Carrier, **2** reSpeaker XVF3800, **3** Mute button, **4*
 
 1. Push the mute button into the hole at the top of the rear shell from outside until its barb clicks.
 2. Stand the rear shell on its back opening and pass the speaker and power leads out through it.
-3. Before lowering, dress the CrowPanel lead straight down the board edge at 11 o'clock and through the carrier notch, and hold it there: the collar at the top of the rear shell has a gap for it only at that spot.
-4. Lower the stack in, display up, mute button (A) under the plunger. The carrier's 4 notches (with lead-in chamfers) slide down over the 4 ribs on the shell wall, and the board edge lands on the rib pads. It only goes in one way.
+3. Lower the stack in, display up, mute button (A) under the plunger. The carrier's 4 notches (with lead-in chamfers) slide down over the 4 ribs on the shell wall, and the board edge lands on the rib pads. It only goes in one way.
 
 > **Check:** The stack can't turn at all.
 

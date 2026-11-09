@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 660" width="1100" height="660" role="img" aria-label="Voice Clock power wiring diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 660" width="1100" height="660" role="img" aria-label="Voice Clock power wiring diagram: USB-C inlet to disconnect to reSpeaker header, then from the reSpeaker header's spare pins to the CrowPanel">
 <style>
   text{font-family:Helvetica,Arial,sans-serif;fill:#222}
   .h{font-size:22px;font-weight:700}
@@ -9,28 +9,26 @@
   .red{stroke:#d62728;stroke-width:4;fill:none;stroke-linecap:round}
   .blk{stroke:#222;stroke-width:4;fill:none;stroke-linecap:round}
   .thin{stroke-width:2.2}
-  .dash{stroke:#999;stroke-width:2;stroke-dasharray:6 5;fill:none}
   .box{fill:#fff;stroke:#222;stroke-width:1.6}
   .pcb{fill:#1d2a22;stroke:#111;stroke-width:1.5}
   .pad5{fill:#d62728}
   .padg{fill:#222;stroke:#fff;stroke-width:1}
-  .note{fill:#fff8e6;stroke:#e0b54a;stroke-width:1.4}
   .warn{fill:#fdecec;stroke:#d62728;stroke-width:1.4}
+  .note{fill:#fff8e6;stroke:#e0b54a;stroke-width:1.4}
 </style>
 <rect width="1100" height="660" fill="#fff"/>
 <text x="24" y="38" class="h">Voice Clock: power wiring</text>
-<text x="24" y="60" class="s">One 5 V USB-C inlet feeds both boards. Red = +5 V, black = GND. Lengths are cut lengths; cut long and trim at the test fit. Not to scale.</text>
+<text x="24" y="60" class="s">One 5 V USB-C inlet feeds the reSpeaker; the CrowPanel is fed from the reSpeaker's spare 5V / GND header pins. Red = +5 V, black = GND. Cut lengths; cut long and trim at the test fit. Not to scale.</text>
 
 <!-- USB-C inlet -->
 <rect x="24" y="250" width="170" height="120" rx="6" class="pcb"/>
 <rect x="74" y="236" width="70" height="22" rx="9" fill="#bbb" stroke="#666"/>
 <text x="109" y="232" class="s" text-anchor="middle">to charger</text>
-<text x="109" y="280" class="b w" text-anchor="middle" style="fill:#fff">USB-C inlet</text>
+<text x="109" y="280" class="b" text-anchor="middle" style="fill:#fff">USB-C inlet</text>
 <text x="109" y="297" class="s" text-anchor="middle" style="fill:#cfd">breakout, 5.1 kΩ CC</text>
 <text x="109" y="313" class="s" text-anchor="middle" style="fill:#cfd">CC pads: leave alone</text>
 <circle cx="70" cy="350" r="7" class="pad5"/><text x="70" y="335" class="s" text-anchor="middle" style="fill:#fff">VBUS</text>
 <circle cx="150" cy="350" r="7" class="padg"/><text x="150" y="335" class="s" text-anchor="middle" style="fill:#fff">GND</text>
-
 
 <!-- lead A -->
 <path d="M70 357 V440 H290" class="red"/>
@@ -38,7 +36,7 @@
 <text x="230" y="432" class="t" text-anchor="middle" font-weight="700">A</text>
 <text x="230" y="476" class="s" text-anchor="middle">22 AWG, 10 cm</text>
 
-<!-- XH connector -->
+<!-- disconnect -->
 <rect x="290" y="424" width="26" height="52" rx="3" fill="#f3efe4" stroke="#222"/>
 <rect x="318" y="428" width="22" height="44" rx="3" fill="#f3efe4" stroke="#222"/>
 <text x="315" y="414" class="b" text-anchor="middle">Disconnect</text>
@@ -46,50 +44,60 @@
 <text x="315" y="515" class="s" text-anchor="middle">(JST-SM or JST-XH pair)</text>
 <text x="315" y="530" class="s" text-anchor="middle">socket half on the inlet side</text>
 
-<!-- lead B trunk -->
-<path d="M340 440 H430" class="red"/>
-<path d="M340 460 H470" class="blk"/>
-<text x="385" y="430" class="t" text-anchor="middle" font-weight="700">B</text>
-<text x="385" y="480" class="s" text-anchor="middle">22 AWG, 3 cm</text>
+<!-- lead B -->
+<path d="M340 440 H420" class="red"/>
+<path d="M340 460 H420" class="blk"/>
+<text x="380" y="430" class="t" text-anchor="middle" font-weight="700">B</text>
+<text x="380" y="480" class="s" text-anchor="middle">22 AWG, 3 cm</text>
 
-<!-- Y splice -->
-<circle cx="440" cy="440" r="8" fill="#d62728"/>
-<circle cx="470" cy="460" r="8" fill="#222"/>
-<text x="488" y="452" class="b">Y splice</text>
-<text x="488" y="468" class="s">behind the carrier,</text>
-<text x="488" y="482" class="s">glued or tied to it</text>
-<!-- branch C to reSpeaker -->
-<path d="M440 440 V170 H640" class="red"/>
-<path d="M470 460 V190 H640" class="blk"/>
-<text x="555" y="160" class="t" text-anchor="middle" font-weight="700">C</text>
-<text x="555" y="210" class="s" text-anchor="middle">22 AWG, 10 cm</text>
-<text x="555" y="224" class="s" text-anchor="middle">through carrier centre hole</text>
-<!-- cap between the C verticals -->
-<path d="M440 320 H450 M460 320 H470" stroke="#555" stroke-width="2"/>
-<path d="M450 308 V332" stroke="#555" stroke-width="3"/>
-<path d="M461 308 Q457 320 461 332" stroke="#555" stroke-width="3" fill="none"/>
-<text x="446" y="304" class="s" text-anchor="middle" style="fill:#d62728">+</text>
-<text x="482" y="316" class="s">Optional 470 µF 10 V across</text>
-<text x="482" y="330" class="s">5 V and GND, close to the Y.</text>
-<text x="482" y="344" class="s">− stripe to GND.</text>
+<!-- B-C inline splices -->
+<rect x="420" y="432" width="30" height="16" rx="4" fill="#9cc7e8" stroke="#3d6f99"/>
+<rect x="436" y="452" width="30" height="16" rx="4" fill="#9cc7e8" stroke="#3d6f99"/>
+<text x="443" y="500" class="s" text-anchor="middle">inline splices,</text>
+<text x="443" y="514" class="s" text-anchor="middle">staggered 15 mm,</text>
+<text x="443" y="528" class="s" text-anchor="middle">tied to the carrier back</text>
+
+<!-- lead C up to the header (back side) -->
+<path d="M450 440 H500 V170 H640" class="red"/>
+<path d="M466 460 H530 V190 H640" class="blk"/>
+<text x="585" y="160" class="t" text-anchor="middle" font-weight="700">C</text>
+<text x="585" y="210" class="s" text-anchor="middle">22 AWG, 10 cm</text>
+<text x="585" y="224" class="s" text-anchor="middle">through the carrier's</text>
+<text x="585" y="238" class="s" text-anchor="middle">centre hole</text>
+<!-- optional cap across C -->
+<path d="M500 330 H510 M520 330 H530" stroke="#555" stroke-width="2"/>
+<path d="M510 318 V342" stroke="#555" stroke-width="3"/>
+<path d="M521 318 Q517 330 521 342" stroke="#555" stroke-width="3" fill="none"/>
+<text x="506" y="314" class="s" text-anchor="middle" style="fill:#d62728">+</text>
+<text x="542" y="326" class="s">Optional 470 µF 10 V across</text>
+<text x="542" y="340" class="s">5 V and GND at the B–C splice.</text>
+<text x="542" y="354" class="s">− stripe to GND.</text>
+
 <!-- reSpeaker -->
-<rect x="640" y="90" width="300" height="170" rx="10" class="pcb"/>
-<text x="790" y="116" class="b" text-anchor="middle" style="fill:#fff">reSpeaker XVF3800 + XIAO</text>
-<text x="790" y="134" class="s" text-anchor="middle" style="fill:#cfd">2×10 header on the back (component) side</text>
-<!-- mini header -->
-<g transform="translate(662,150)">
+<rect x="640" y="90" width="300" height="200" rx="10" class="pcb"/>
+<text x="790" y="114" class="b" text-anchor="middle" style="fill:#fff">reSpeaker XVF3800 + XIAO</text>
+<text x="790" y="132" class="s" text-anchor="middle" style="fill:#cfd">2×10 through-hole header (sheet 02)</text>
+<!-- mini header: rows 1-5 -->
+<g transform="translate(662,148)">
   <rect x="0" y="0" width="44" height="96" rx="3" fill="none" stroke="#fff" stroke-width="1"/>
   <circle cx="12" cy="10" r="4" fill="#c9a34a"/><circle cx="32" cy="10" r="5.5" class="pad5"/>
-  <circle cx="12" cy="28" r="5.5" class="padg" style="stroke:#fff;stroke-width:2"/><circle cx="32" cy="28" r="4" fill="#c9a34a"/>
-  <circle cx="12" cy="46" r="4" fill="#c9a34a"/><circle cx="32" cy="46" r="4" fill="#c9a34a"/>
+  <circle cx="12" cy="28" r="5.5" class="padg" style="stroke:#fff;stroke-width:2"/><circle cx="32" cy="28" r="5.5" class="pad5" style="stroke:#ffb3ad;stroke-width:2"/>
+  <circle cx="12" cy="46" r="4" fill="#c9a34a"/><circle cx="32" cy="46" r="5.5" class="padg" style="stroke:#ccc;stroke-width:2"/>
   <circle cx="12" cy="64" r="4" fill="#c9a34a"/><circle cx="32" cy="64" r="4" fill="#c9a34a"/>
-  <circle cx="12" cy="82" r="4" fill="#c9a34a"/><rect x="28" y="78" width="8" height="8" fill="#c9a34a"/>
+  <circle cx="12" cy="82" r="4" fill="#c9a34a"/><circle cx="32" cy="82" r="4" fill="#c9a34a"/>
 </g>
 <path d="M640 170 H694" class="red thin"/><path d="M640 190 H668" class="blk thin" style="stroke:#fff"/>
-<text x="720" y="164" class="t" style="fill:#fff">row 1 right: <tspan font-weight="700" style="fill:#ff8a80">5V</tspan></text>
-<text x="720" y="182" class="t" style="fill:#fff">row 2 left: <tspan font-weight="700">GND</tspan></text>
-<text x="720" y="204" class="s" style="fill:#cfd">see sheet 02 for the full header</text>
-<text x="720" y="236" class="s" style="fill:#cfd">draws up to ~1.6 A peak (amp + LEDs)</text>
+<text x="716" y="160" class="s" style="fill:#fff"><tspan font-weight="700">C</tspan>, from the back side:</text>
+<text x="716" y="174" class="s" style="fill:#fff">row 1 R <tspan font-weight="700" style="fill:#ff8a80">5V</tspan> · row 2 L <tspan font-weight="700">GND</tspan></text>
+<text x="716" y="192" class="s" style="fill:#fff"><tspan font-weight="700">D</tspan>, from the LED side (dashed):</text>
+<text x="716" y="206" class="s" style="fill:#fff">row 2 R <tspan font-weight="700" style="fill:#ff8a80">5V</tspan> · row 3 R <tspan font-weight="700">GND</tspan></text>
+<text x="716" y="228" class="s" style="fill:#cfd">Same nets: the CrowPanel's current</text>
+<text x="716" y="242" class="s" style="fill:#cfd">passes straight across the header.</text>
+<text x="716" y="260" class="s" style="fill:#cfd">reSpeaker ~1.6 A peak (amp + LEDs);</text>
+<text x="716" y="274" class="s" style="fill:#cfd">lead C carries both, ~2.6 A peak.</text>
+<!-- D leaves the header on the LED side -->
+<path d="M694 176 C700 300 720 330 760 330 H790 V500" class="red thin"/>
+<path d="M694 194 C690 300 712 344 750 344 H778 V500" class="blk thin"/>
 
 <!-- speaker -->
 <path d="M940 175 H990" stroke="#777" stroke-width="3"/>
@@ -100,34 +108,27 @@
 <text x="1030" y="262" class="s" text-anchor="middle">the SPK socket.</text>
 <text x="1030" y="276" class="s" text-anchor="middle">No soldering.</text>
 
-<!-- branch D to CrowPanel (hop where red crosses the black trunk) -->
-<path d="M440 440 V452 a8 8 0 0 1 0 16 V580 H600" class="red"/>
-<path d="M470 460 V560 H600" class="blk"/>
-<text x="535" y="550" class="s" text-anchor="middle"><tspan class="t" font-weight="700" style="fill:#222">D</tspan>  24 AWG, 8 cm</text>
-<!-- pigtail splices -->
-<rect x="600" y="551" width="34" height="18" rx="4" fill="#bde" stroke="#468"/>
-<rect x="612" y="571" width="34" height="18" rx="4" fill="#bde" stroke="#468"/>
-<text x="623" y="610" class="s" text-anchor="middle">inline splices, staggered 10 mm</text>
-<!-- E pigtail -->
-<path d="M634 560 H780" class="blk thin"/>
-<path d="M646 580 H780" class="red thin"/>
-<path d="M712 522 H780 M724 540 H780" stroke="#2a7" stroke-width="2.2"/>
-<path d="M712 522 l-6 -6 m6 6 l-6 6 M724 540 l-6 -6 m6 6 l-6 6" stroke="#2a7" stroke-width="2"/>
-<text x="600" y="500" class="s">D+ / D−: cut short, insulate each one</text>
-<text x="700" y="636" class="s" text-anchor="middle"><tspan class="t" font-weight="700" style="fill:#222">E</tspan>  MX1.25 4-pin pigtail, 10 cm (as bought). Match pins by position, not colour.</text>
+<!-- D pigtail -->
+<text x="808" y="392" class="t" font-weight="700">D</text>
+<text x="826" y="392" class="s">MX1.25 4-pin pigtail (28 AWG), trimmed to ~6 cm.</text>
+<text x="826" y="406" class="s">Match pins by position, not colour (sheet 03).</text>
+<text x="826" y="420" class="s">Stays inside the light ring: no notch, no splice.</text>
+<path d="M752 440 H776 M752 458 H776" stroke="#2a7" stroke-width="2.2"/>
+<path d="M752 440 l6 -6 m-6 6 l6 6 M752 458 l6 -6 m-6 6 l6 6" stroke="#2a7" stroke-width="2"/>
+<text x="746" y="444" class="s" text-anchor="end">D+ / D−: cut short,</text>
+<text x="746" y="462" class="s" text-anchor="end">insulate each one</text>
 <!-- MX1.25 plug -->
-<rect x="780" y="508" width="20" height="84" rx="2" fill="#f3efe4" stroke="#222"/>
-<text x="790" y="606" class="s" text-anchor="middle">MX1.25</text>
+<rect x="768" y="500" width="34" height="20" rx="2" fill="#f3efe4" stroke="#222"/>
+<text x="785" y="536" class="s" text-anchor="middle">MX1.25</text>
 <!-- CrowPanel -->
-<circle cx="930" cy="520" r="104" fill="#cfd3d6" stroke="#555" stroke-width="2"/>
-<circle cx="930" cy="520" r="62" fill="#2c3a5a" stroke="#222"/>
-<rect x="800" y="520" width="30" height="50" rx="3" fill="#fff" stroke="#222"/>
-<path d="M800 545 H830" stroke="#222"/>
-<text x="930" y="508" class="b" text-anchor="middle" style="fill:#fff">CrowPanel 2.1"</text>
-<text x="930" y="526" class="s" text-anchor="middle" style="fill:#dfe">rear, power/USB port</text>
-<text x="930" y="542" class="s" text-anchor="middle" style="fill:#dfe">(the one its USB</text>
-<text x="930" y="556" class="s" text-anchor="middle" style="fill:#dfe">cable plugs into)</text>
-<text x="930" y="408" class="s" text-anchor="middle">~1 A peak</text>
+<circle cx="930" cy="540" r="96" fill="#cfd3d6" stroke="#555" stroke-width="2"/>
+<circle cx="930" cy="540" r="58" fill="#2c3a5a" stroke="#222"/>
+<rect x="840" y="500" width="34" height="34" rx="3" fill="#fff" stroke="#222"/>
+<path d="M802 510 H840" stroke="#222" stroke-width="2"/>
+<text x="930" y="530" class="b" text-anchor="middle" style="fill:#fff">CrowPanel 2.1"</text>
+<text x="930" y="548" class="s" text-anchor="middle" style="fill:#dfe">rear power/USB port</text>
+<text x="930" y="562" class="s" text-anchor="middle" style="fill:#dfe">(where its USB cable plugs in)</text>
+<text x="1000" y="452" class="s">~1 A peak</text>
 
 <!-- notes -->
 <rect x="24" y="86" width="380" height="130" rx="8" class="warn"/>
@@ -139,7 +140,7 @@
 <text x="38" y="208" class="t">• Supply: 5 V 3 A USB-C charger.</text>
 
 <!-- UART optional -->
-<text x="24" y="556" class="s">v2 only, optional: CrowPanel UART TX/RX</text>
-<text x="24" y="572" class="s" style="fill:#d62728">is 5 V logic. Not safe on XIAO pins without</text>
-<text x="24" y="588" class="s" style="fill:#d62728">a level shifter. Leave unconnected for now.</text>
+<text x="24" y="580" class="s">v2 only, optional: CrowPanel UART TX/RX</text>
+<text x="24" y="596" class="s" style="fill:#d62728">is 5 V logic. Not safe on XIAO pins without</text>
+<text x="24" y="612" class="s" style="fill:#d62728">a level shifter. Leave unconnected for now.</text>
 </svg>

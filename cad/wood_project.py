@@ -3,8 +3,8 @@
   .venv/bin/python wood.py            # painted, textured meshes -> out/wood/
   .venv/bin/python wood_project.py    # presets + project 3MF + sliced G-code
   .venv/bin/python wood.py walnut && .venv/bin/python wood_project.py walnut   # 3-tone walnut (superseded) -> out/wood_walnut/
-  .venv/bin/python wood.py walnut_fs && .venv/bin/python wood_project.py walnut_fs [fine]
-      # Full Spectrum walnut, 8 tones -> out/wood_walnut_fs/VoiceClock_walnut_fs_<008|004>_U1.3mf/.gcode/_model.3mf
+  .venv/bin/python wood.py walnut_fs && .venv/bin/python wood_project.py walnut_fs
+      # Full Spectrum walnut, 8 tones -> out/wood_walnut_fs/VoiceClock_walnut_fs_008_U1.3mf/.gcode/_model.3mf
 
 Outputs (out/wood/):
   VoiceClock_wood_model.3mf    painted model only (your own presets stay selected)
@@ -27,7 +27,7 @@ from voice_clock import OUT
 import sys
 from wood import STYLE, WOOD_OUT, HEAD_NAMES, FS_ROWS
 
-FS_LAYER = "0.04" if "fine" in sys.argv[1:] else "0.08"   # walnut_fs only: thin layers hide the Z mixes
+FS_LAYER = "0.08"   # walnut_fs only: the U1 0.4 nozzle minimum; thin layers hide the Z mixes
 TAG = {"cherry": "wood", "walnut": "walnut",
        "walnut_fs": f"walnut_fs_{FS_LAYER.replace('.', '')}"}[STYLE]   # VoiceClock_<TAG>_U1.3mf etc.
 APP = "io.github.Snapmaker.Snapmaker_Orca"

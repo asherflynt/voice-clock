@@ -33,8 +33,8 @@ Turned-wood variant (Snapmaker Orca must be installed as a flatpak; set `VOICE_C
 .venv/bin/python wood_project.py    # Orca presets + project 3MF + sliced G-code
 .venv/bin/python coupons.py         # test coupon C1 (wood tone vs temperature) -> out/wood/coupons/
 .venv/bin/python wood.py walnut_fs                  # turned walnut, Full Spectrum (8 tones) -> out/wood_walnut_fs/
-.venv/bin/python wood_project.py walnut_fs          # 0.08 mm project + G-code (add 'fine' for 0.04 mm)
-.venv/bin/python fs_swatch.py walnut_fs             # 8-tone swatch to print first (add 'fine' for 0.04 mm)
+.venv/bin/python wood_project.py walnut_fs          # 0.08 mm project + G-code
+.venv/bin/python fs_swatch.py walnut_fs             # 8-tone swatch to print first
 .venv/bin/python blender/wood_scene.py walnut_fs    # then render the hero_walnut_fs_* scenes
 # (wood.py walnut / wood_project.py walnut: the earlier 3-tone walnut with cherry lines, superseded)
 ```
@@ -92,12 +92,12 @@ Full steps are in [`../docs/assembly/ASSEMBLY.md`](../docs/assembly/ASSEMBLY.md)
 3. Swap the CrowPanel's 3 rear screws for M3 × 12 through the spider.
 4. **Light ring, part 1.**
    - Wrap foil tape round the ring_base's outer face, from just above the capacitor notches to the top, leaving the top 2 mm (crush ribs, key slots) bare.
-   - Cut the tape away over the cable notch. Use non-conductive-adhesive tape.
-   - Slide it over the spider from behind, with its cable notch at 11 o'clock over the CrowPanel lead.
+   - Use non-conductive-adhesive tape.
+   - Slide it over the spider from behind. There is no cable notch: the CrowPanel's lead comes from the reSpeaker's LED side, so it stays inside the ring.
 5. reSpeaker (mute "A" at 12 o'clock), carrier, 3 × M2 × 20 into the spider (snug only).
-6. **Light ring, part 2.** Line the inside of the ring_shell sleeve with foil tape, stopping 4 mm below the cap. Press it on over the knob: tabs into the slots, cable notch over the lead.
+6. **Light ring, part 2.** Line the inside of the ring_shell sleeve with foil tape, stopping 4 mm below the cap. Press it on over the knob: tabs into the slots.
 7. **Ballast** (before the stack goes in): stand the rear shell on its back rim and fill the pocket along the bottom of the shell to 1 mm below its rim. Use steel shot stirred into slow-cure epoxy, poured in two layers so the epoxy doesn't heat the PLA (it softens around 55 °C), or press in tungsten putty and skim it with a little epoxy. Let it cure, then glue the 2 TPU grip pads into the recesses in the flat base.
-8. Click the mute plunger into the rear shell. Hold the CrowPanel lead down the board edge at 11 o'clock (the collar's gap) and drop the stack in: the carrier's notches go over the 4 ribs.
+8. Click the mute plunger into the rear shell and drop the stack in: the carrier's notches go over the 4 ribs.
 9. **Front shell.**
    - Stick the 4 mic gaskets onto the boots.
    - Set the shell on turned 10° anticlockwise (seen from the front), so the base flats are offset by a finger's width.
@@ -122,7 +122,6 @@ Full steps are in [`../docs/assembly/ASSEMBLY.md`](../docs/assembly/ASSEMBLY.md)
   - its rigid parts are clear through the whole twist; the 4 detent fingers ride the collar 0.3 mm deflected and click into V-grooves
   - zero overlap when locked, and the stops work
   - flat (non-camming) bearing of at least 0.6 mm
-  - the mic boots never pass over the CrowPanel lead
 - **Back plate bayonet:**
   - the plate (with its pawls bent in to clear the lip), speaker and USB screw tips are clear through the 32° twist, and each bent pawl clears its slot wall
   - lugs over the lip, hard stop, pawl strain

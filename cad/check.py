@@ -155,17 +155,6 @@ print(f"  bearing area {arc * flat:.0f} mm2; lug root shear area {sum(radians(sp
 gaps = sorted(a for a, _ in TW_LUGS)
 gmax = max((gaps[(i + 1) % len(gaps)] - gaps[i]) % 360 for i in range(len(gaps)))
 flag(gmax <= 95, f"largest angle between lugs {gmax:.0f} deg")
-# the mic boots never pass over the CrowPanel lead while turning
-cable_hw = degrees(1.25 / 50.0)
-ok = True
-for d in (45.0, 135.0, 225.0, 315.0):
-    h = degrees((BOOT_TUBE_W / 2) / BOOT_SLIM_R) + 0.5
-    lo, hi = d - h, d + TW_ANGLE + degrees(4.5 / BOOT_RI)
-    if lo - cable_hw <= NOTCH_ANG <= hi + cable_hw:
-        ok = False
-flag(ok, "mic boots stay clear of the CrowPanel lead at 120 deg through the twist")
-flag(all(abs(((NOTCH_ANG - (a0 + a1) / 2) + 180) % 360 - 180) > (a1 - a0) / 2 + cable_hw for a0, a1 in collar_arcs()),
-     "collar has a gap for the CrowPanel lead")
 
 # ---------------------------------------------------------------- back plate bayonet
 print(flush=True); print("== back plate twist lock")
@@ -416,14 +405,6 @@ v_key = vol(key, bp_only)
 flag(v_key < 0.01, f"hex key and screw reach both USB-C screws straight in from the plate's rim ({v_key:.3f} mm3)")
 print(f"  inserts: M2 (hole d{M2_INSERT_D}, {INSERT_CHAMFER} mm lead-in): spider 3 (through), speaker bosses 2, "
       f"USB-C pads 2 (pressed in from the pads' speaker-side face)")
-
-print(flush=True); print("== CrowPanel cable path at the notch")
-lane = radial_box(NOTCH_ANG, RS_R + 0.5, SPHERE_R, 3.0, CARRIER_Z0, 0.0) & sphere_in(-0.3)
-flag(vol(lane, rear) < 0.01, f"lane past the board edge at {NOTCH_ANG:.0f} deg free")
-flag(sum(vol(lane, s) for s in rs_solids if s.bounding_box().max.Z > CARRIER_Z0) < 0.01, "no reSpeaker parts in the lane")
-over = radial_box(NOTCH_ANG, RING_IW_R0 - 0.5, RS_R + 1, 2.5, 0.05, 1.6)
-flag(vol(over, parts["ring_base"]) + vol(over, parts["ring_shell"]) + vol(over, rear) < 0.01,
-     "lead passes under both light-ring walls and over the board edge")
 
 print(flush=True); print("== mic channels (port -> outside, all 4 diagonals)")
 fs = parts["front_shell"]

@@ -105,13 +105,11 @@ RING_IW_R1    = 38.3      # z 5.0..26.35 (clear of the spider pads, r 38.0)
 RING_IW_R2    = CP_KNOB_R + LG_KNOB_GAP        # 39.95, z 28.0.. (knob gap)
 RING_IW_Z     = (4.1, 5.0, 26.35, 28.0)        # 45 deg transitions between the three radii
 RING_CAP_NOTCH = (2.2, 0.8)                    # w, h: notches in the inner wall foot over the capacitors
-RING_CABLE_NOTCH = (5.0, 2.0)                  # w, h: CrowPanel lead under both walls at NOTCH_ANG
 RING_BOSS_D   = 6.5       # integral board spacers on the 3 clamp screws
 RING_BOSS_HOLE = 2.25
 RING_WEB_H    = 4.0
 RING_KEY_ANG  = [0.0, 200.0]                   # ring_shell tabs -> ring_base slots (unique)
 RING_CRUSH_ANG = [60.0, 180.0, 300.0]          # crush ribs under the cap's inner edge
-NOTCH_ANG     = 120.0                          # cable notch: between LEDs 105/135, clear of the jack/USB
 
 # spider bracket + reSpeaker clamp
 STANDOFF_L    = 5.0       # board front -> spider plate (ring_base bosses)
@@ -168,7 +166,7 @@ FING_KERF_RO  = BLK_RI + FING_T + 0.8
 FING_LEN      = 6.5       # mm, from the block's CCW (free) end
 FING_BUMP_R   = 53.05     # bump apex: rides the collar face (r COL_RO) 0.15 nominal, ~0.35 as printed
 COL_GROOVE_R  = 52.75     # V-groove bottom in the collar face (lock and entry positions)
-TW_EXCL       = [(162.0, 218.0), (246.0, 296.0), (115.0, 125.0)]   # USB-C/jack, base flat (front floor sweeps it), cable
+TW_EXCL       = [(162.0, 218.0), (246.0, 296.0)]   # USB-C/jack, base flat (front floor sweeps it)
 
 # back plate bayonet
 BP_LIP_T      = 2.0       # lip at the rear shell's back opening (on its bed)
@@ -800,8 +798,6 @@ def ring_base():
     for k in range(12):                                # notches over the LED capacitors
         rb = rb - radial_box(15 + 30 * k - 0.07, RING_IW_R0 - 1, RING_IW_R0 + RING_IW_T + 1,
                              RING_CAP_NOTCH[0], -1, RING_CAP_NOTCH[1])
-    rb = rb - radial_box(NOTCH_ANG, RING_IW_R0 - 1, RING_IW_R0 + RING_IW_T + 1, RING_CABLE_NOTCH[0], -1,
-                         RING_CABLE_NOTCH[1])
     for (x, y) in rs_holes():
         ang, r = degrees(atan2(y, x)), hypot(x, y)
         rb = rb + cyl(RING_BOSS_D / 2, 0, STANDOFF_L - 0.05, x, y) + radial_box(ang, r, RING_IW_R0 + 0.5, 3.0, 0, RING_WEB_H)
@@ -824,7 +820,6 @@ def ring_shell():
     pts = [(RING_SLV_RI, 0.0), (RING_SLV_RO, 0.0), (RING_SLV_RO, zt - 0.6), (RING_SLV_RO - 0.6, zt),
            (RING_CAP_RI, zt), (RING_CAP_RI, zt - RING_CAP_T), (RING_SLV_RI, zt - RING_CAP_T)]
     s = revolve_rz(pts)
-    s = s - radial_box(NOTCH_ANG, RING_SLV_RI - 1, RING_SLV_RO + 1, RING_CABLE_NOTCH[0], -1, RING_CABLE_NOTCH[1])
     for a in RING_KEY_ANG:
         s = s + radial_box(a, RING_CAP_RI - 0.45, RING_CAP_RI + 0.2, 1.2, zt - 1.8, zt)
     s = s - revolve_rz([(RING_CAP_RI - 0.01, zt + 0.01), (RING_CAP_RI + 0.3, zt + 0.01), (RING_CAP_RI - 0.01, zt - 0.3)])
@@ -910,9 +905,7 @@ def carrier():
         c = c + cyl(3.25, z1, -RS_T, x, y)
         c = c - cyl(1.25, z0 - 1, -RS_T - 2.0, x, y) - cyl(CARRIER_M2_CLR / 2, -RS_T - 2.01, 0, x, y)
         c = c - cyl(2.2, z0 - 1, z0 + CARRIER_CB, x, y)
-    c = c - Rot(0, 0, NOTCH_ANG) * Pos(CARRIER_R - 3, 0, z0 - 1) * Box(8, 6, 10,
-                                                                      align=(Align.CENTER, Align.CENTER, Align.MIN))
-    c = c - cyl(6.0, z0 - 1, z1 + 1, -12, 0)
+    c = c - cyl(6.0, z0 - 1, z1 + 1, -12, 0)           # the only wire hole: USB-C lead -> reSpeaker header
     w = CRADLE_W + 2 * CARRIER_KEY_CLR
     for ang in CRADLE_ANG:                              # key notches on the cradle/key ribs, 0.4 mm lead-ins
         c = c - radial_box(ang, CRADLE_PAD_R - 0.2, 60, w, z0 - 1, z1 + 1)
