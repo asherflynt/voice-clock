@@ -75,7 +75,7 @@ Check:
 - **End grain** is 6 L* darker overall, as in the photo.
 - **Heartwood:** broad zones darken smoothly by up to 36 L*, so their edges step through several tones instead of a hard boundary.
 - **Dither:** a little noise before rounding to the 8 tones keeps gradients from banding.
-- **Bed face:** the back plate's outer face prints on the bed, where a single layer can't show a mix, so it uses only physical heads (oak, brown, walnut). A knit patch is carved one first layer (0.22 mm) deep into it, so it isn't a glossy bed surface.
+- **Bed face:** the back plate's outer face prints on the bed, where a single layer can't show a mix, so it uses only physical heads (oak, brown, walnut). A knit patch is carved one first layer (0.22 mm) deep into it, so it isn't a glossy bed surface: the stitches touch the bed, the grooves are bridged by the second layer and print matte. Only this variant has it; keep the first layer at 0.2 mm.
 
 ## Files
 

@@ -371,7 +371,7 @@ def woodify(name, shape):
     m = trimesh.load(raw)
     raw.unlink()
     import texture
-    if name == "back_plate":                       # one-layer knit patch in the bed face (not a glossy bed surface)
+    if name == "back_plate" and STYLE == "walnut_fs":   # walnut only: one-layer knit patch in the bed face
         m = texture.bed_texture(m)
     m = texture.clean(m)                           # before refining: clean() collapses flat sub-0.01 mm detail
     m = refine(m)

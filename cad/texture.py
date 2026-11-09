@@ -142,6 +142,7 @@ def apply(mesh_D):
 
 
 # ---------------------------------------------------------------- back plate bed face
+# Used by the walnut Full Spectrum variant only (wood.py walnut_fs).
 # The back plate prints outer face down, so its whole visible face is a glossy first layer. A knit
 # patch is carved into it BED_DEPTH deep: the stitches touch the bed (glossy), the grooves are
 # bridged by the second layer (matte). 0.22 mm removes exactly the first layer whether that is
