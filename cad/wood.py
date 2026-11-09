@@ -365,14 +365,23 @@ def despeckle(m, paint, ext, min_area=MIN_AREA, bed=None):
     return paint
 
 
+def bed_grain_mask(x, y):
+    """Walnut latewood lines on the back plate's outer face: grooved one layer deep, so the grain
+    reads matte against the glossy bed-face land (texture.bed_texture)."""
+    z = np.full_like(x, BACK_Z - BACK_T)
+    p = np.c_[x, y, z]
+    w = _walnut_fields(p, np.tile([0.0, 0.0, -1.0], (len(x), 1)))
+    return w["f"] > 1 - w["lw"]
+
+
 def woodify(name, shape):
     raw = WOOD_OUT / f"_{name}_raw.stl"
     export_stl(shape, str(raw), tolerance=0.02, angular_tolerance=0.1)
     m = trimesh.load(raw)
     raw.unlink()
     import texture
-    if name == "back_plate" and STYLE == "walnut_fs":   # walnut only: one-layer knit patch in the bed face
-        m = texture.bed_texture(m)
+    if name == "back_plate" and STYLE == "walnut_fs":   # walnut only: grain lines grooved into the bed face
+        m = texture.bed_texture(m, bed_grain_mask)
     m = texture.clean(m)                           # before refining: clean() collapses flat sub-0.01 mm detail
     m = refine(m)
     assert m.is_watertight, name
