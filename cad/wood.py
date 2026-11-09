@@ -365,13 +365,65 @@ def despeckle(m, paint, ext, min_area=MIN_AREA, bed=None):
     return paint
 
 
-def bed_grain_mask(x, y):
-    """Walnut latewood lines on the back plate's outer face: grooved one layer deep, so the grain
-    reads matte against the glossy bed-face land (texture.bed_texture)."""
-    z = np.full_like(x, BACK_Z - BACK_T)
-    p = np.c_[x, y, z]
-    w = _walnut_fields(p, np.tile([0.0, 0.0, -1.0], (len(x), 1)))
-    return w["f"] > 1 - w["lw"]
+# ---- walnut back plate bed face (flat: one layer, so no Z mixes)
+BED_CELL = 0.8            # mm dither cell: 2 extrusion lines
+BED_PHYS_L = {4: 17.2, 1: 34.6, 2: 56.4, 3: 80.1}     # walnut, core, oak, maple (L*)
+STIPPLE_D, STIPPLE_SP = 1.2, 1.6                     # dimple diameter, minimum spacing (mm)
+
+
+def bed_stipple_mask():
+    """Even all-over stipple for the back plate's bed face: random (Poisson-disc) 1.2 mm dimples,
+    about 40 % of the face. The dimples are bridged by the second layer (matte); the land between
+    them touches the bed (glossy), so the face reads satin instead of shiny."""
+    from scipy.spatial import cKDTree
+    rng = np.random.default_rng(7)
+    pts = []
+    tree = None
+    cand = rng.uniform(-44, 44, (60000, 2))
+    for q in cand:                                      # dart throwing
+        if pts and tree is not None and tree.query(q)[0] < STIPPLE_SP:
+            continue
+        if any(np.hypot(*(q - r)) < STIPPLE_SP for r in pts[-400:]):
+            continue
+        pts.append(q)
+        if len(pts) % 200 == 0:
+            tree = cKDTree(np.array(pts))
+    tree = cKDTree(np.array(pts))
+    return lambda x, y: tree.query(np.c_[x, y])[0] < STIPPLE_D / 2
+
+
+def bed_dither(c):
+    """Physical head per bed-face triangle: the 8-tone walnut lightness, error-diffused (Floyd-
+    Steinberg) onto walnut / core / oak / maple in BED_CELL cells, so the flat face shows the same
+    shading as the sphere at arm's length."""
+    lo, hi = -44.0, 44.0
+    n = int((hi - lo) / BED_CELL)
+    g = lo + (np.arange(n) + 0.5) * BED_CELL
+    X, Y = np.meshgrid(g, g)
+    pts = np.c_[X.ravel(), Y.ravel(), np.full(X.size, BACK_Z - BACK_T)]
+    L = walnut_fs_lightness(pts, np.tile([0.0, 0.0, -1.0], (len(pts), 1)))[0].reshape(n, n)
+    heads = np.array(list(BED_PHYS_L))
+    levels = np.array([BED_PHYS_L[h] for h in heads])
+    out = np.zeros((n, n), int)
+    L = L.copy()
+    for iy in range(n):
+        xs = range(n) if iy % 2 == 0 else range(n - 1, -1, -1)      # serpentine
+        sx = 1 if iy % 2 == 0 else -1
+        for ix in xs:
+            k = np.abs(levels - L[iy, ix]).argmin()
+            out[iy, ix] = heads[k]
+            e = L[iy, ix] - levels[k]
+            if 0 <= ix + sx < n:
+                L[iy, ix + sx] += e * 7 / 16
+            if iy + 1 < n:
+                if 0 <= ix - sx < n:
+                    L[iy + 1, ix - sx] += e * 3 / 16
+                L[iy + 1, ix] += e * 5 / 16
+                if 0 <= ix + sx < n:
+                    L[iy + 1, ix + sx] += e * 1 / 16
+    ix = np.clip(((c[:, 0] - lo) / BED_CELL).astype(int), 0, n - 1)
+    iy = np.clip(((c[:, 1] - lo) / BED_CELL).astype(int), 0, n - 1)
+    return out[iy, ix]
 
 
 def woodify(name, shape):
@@ -380,8 +432,8 @@ def woodify(name, shape):
     m = trimesh.load(raw)
     raw.unlink()
     import texture
-    if name == "back_plate" and STYLE == "walnut_fs":   # walnut only: grain lines grooved into the bed face
-        m = texture.bed_texture(m, bed_grain_mask)
+    if name == "back_plate" and STYLE == "walnut_fs":   # walnut only: all-over stipple in the bed face
+        m = texture.bed_texture(m, bed_stipple_mask())
     m = texture.clean(m)                           # before refining: clean() collapses flat sub-0.01 mm detail
     m = refine(m)
     assert m.is_watertight, name
@@ -391,7 +443,12 @@ def woodify(name, shape):
     else:
         tools = wood(m.triangles_center, m.face_normals)["tool"]
         paint = np.where(ext, tools + 1, 0).astype(np.int8)    # state = head + 1, 0 = object default (core)
-    paint = despeckle(m, paint, ext, bed=bed)
+    if STYLE == "walnut_fs":                       # flat bed face: dithered physical heads, after despeckle
+        paint = despeckle(m, paint, ext)
+        if bed.any():
+            paint[bed] = bed_dither(m.triangles_center[bed])
+    else:
+        paint = despeckle(m, paint, ext, bed=bed)
     return m, paint
 
 

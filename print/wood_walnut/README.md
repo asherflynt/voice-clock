@@ -48,9 +48,9 @@ No extra spool is needed.
 | | |
 |---|---|
 | Project | `VoiceClock_walnut_fs_008_U1.3mf` |
-| Print time | **about 1 day 9 h 44 min** |
-| Layers / tool changes | 629 / 1,674 |
-| Filament (core / oak / maple / walnut) | 120 / 54 / 23 / 54 g (251 g) |
+| Print time | **about 1 day 10 h 9 min** |
+| Layers / tool changes | 629 / 1,661 |
+| Filament (core / oak / maple / walnut) | 120 / 52 / 47 / 31 g (250 g) |
 | How the mixes look | 2-layer tones blend (0.16 mm repeat); 3-layer tones show fine 0.24 mm stripes up close, which blend at arm's length |
 
 0.08 mm is the minimum layer height in the U1's 0.4 mm nozzle profile, so there is no finer option: going thinner would need a smaller nozzle, and wood PLA's particles clog nozzles under 0.4 mm.
@@ -75,7 +75,9 @@ Check:
 - **End grain** is 6 L* darker overall, as in the photo.
 - **Heartwood:** broad zones darken smoothly by up to 36 L*, so their edges step through several tones instead of a hard boundary.
 - **Dither:** a little noise before rounding to the 8 tones keeps gradients from banding.
-- **Bed face:** the back plate's outer face prints on the bed, where a single layer can't show a mix, so it uses only physical heads (oak, brown, walnut). Its latewood lines are carved one first layer (0.22 mm) deep, so the face isn't one glossy bed surface: the golden land touches the bed and stays glossy, while the grain lines are bridged by the second layer and print matte, in walnut. Keep the first layer at 0.2 mm.
+- **Back plate face:** it prints flat on the bed, where one layer can't show a layer mix. To match the sphere:
+  - **Colour:** the same 8-tone grain is error-diffused onto the 4 physical heads (walnut, brown core, oak, maple) in 0.8 mm cells, so at arm's length it shows the sphere's shading; up close it reads as a fine speckle.
+  - **Finish:** an even all-over stipple of random 1.2 mm dimples (about 40 % of the face) is carved one first layer (0.22 mm) deep. The dimples are bridged by the second layer and print matte, so the face reads satin instead of glossy. Keep the first layer at 0.2 mm. A textured PEI sheet makes it more matte still.
 
 ## Files
 
