@@ -79,7 +79,7 @@ In this picture: **1** Spider bracket, **2** 3x M3x12 SHCS, **3** CrowPanel 2.1"
 
 In this picture: **1** Ring base (PETG), **2** Foil tape (outside), **3** CrowPanel 2.1" display, **4** Spider bracket
 
-1. Wrap aluminium foil tape round the **outside** of the ring base's tall wall, from 1 mm above the bottom edge up to 2 mm below the top edge. Keep it smooth (it is the channel's mirror) and keep it off the top 2 mm, where the crush ribs and key slots are. Use tape with non-conductive adhesive: the LED capacitors sit just below the bottom edge.
+1. Wrap aluminium foil tape round the **outside** of the ring base's tall wall, from 1 mm above the bottom edge up to 2 mm below the top edge. Keep it smooth (it is the channel's mirror) and keep it off the top 2 mm, where the crush ribs and key slots are. Use tape with non-conductive adhesive: the LED capacitors sit just outside the bottom edge.
 2. Plug the CrowPanel lead (the pigtail already soldered to the reSpeaker header) into the panel's power port.
 3. Slide the ring base over the spider **from behind**, until its three spacers sit under the spider's insert pads. There is no cable notch: the lead stays inside the ring, between the spider arms.
 
@@ -108,7 +108,7 @@ In this picture: **1** Carrier, **2** 3x M2x20 SHCS, **3** reSpeaker XVF3800
 In this picture: **1** Foil tape (inside), **2** Ring shell (PETG), **3** Ring base (PETG)
 
 1. Line the **inside** of the ring shell's sleeve with foil tape, from the bottom edge up to about 4 mm below the cap. The part of the sleeve that stands out of the case stays bare so it glows.
-2. Press the ring shell on over the knob, with its two tabs in the ring base's slots. The crush ribs hold it.
+2. Press the ring shell on over the knob, with its two tabs in the ring base's slots. The skirt under its cap slides down round the top of the ring base, the crush ribs hold it, and the cap now covers the ring base's top edge, so no gap shows at the face.
 
 > **Check:** Power the boards on the bench and set the LED ring white. The whole ring should glow evenly, with no bright gap round the knob and no LED visible.
 

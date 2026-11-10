@@ -50,7 +50,7 @@ Every dimension is a named constant at the top of `voice_clock.py`. Values marke
 | back_plate | 1 → slot 2 (PLA) | Outer face down | 3 bayonet lugs, 2 flexure pawls, coin slot, 4 M2 inserts (speaker 2, USB-C 2). The USB-C board's socket side bears on 2 pads (bosses round its holes only); its screws go in from the rim side, where a hex key comes straight in over the plate |
 | mute_plunger | 1 (PLA) or 3 (PETG) | Cap down | 100% infill. Use the PETG one if you have it: its snap barb is tougher |
 | ring_base | 3 → slot 1 (natural PETG) | Spacers down | Light-channel inner wall plus the 3 board spacers on the clamp screws |
-| ring_shell | 3 → slot 1 (natural/clear PETG) | Cap down | Channel sleeve plus a 1.4 mm diffuser cap (frosted by the textured PEI) |
+| ring_shell | 3 → slot 1 (natural/clear PETG) | Cap down | Channel sleeve plus a 1.4 mm diffuser cap (frosted by the textured PEI). The cap spans the whole ring and overlaps the inner wall's top, so there is no gap at the face and no straight view down to the LEDs |
 | carrier | 2 → slot 2 (PLA) | Back face down | Bulkhead; its 4 notches key the stack on the rear shell's ribs |
 | spider | 2 → slot 2 (PLA) | Plate down | 100% infill. CrowPanel pattern turned by `CP_ROT_TRIM_DEG` |
 | foot_pads | 4 → slot 4 (TPU) | Flat | 2 grip pads for the recesses in the flat base (glue in with CA). They stand 0.4 mm proud |
@@ -91,7 +91,7 @@ Full steps are in [`../docs/assembly/ASSEMBLY.md`](../docs/assembly/ASSEMBLY.md)
 2. Make the power harness and bench-test both boards.
 3. Swap the CrowPanel's 3 rear screws for M3 × 12 through the spider.
 4. **Light ring, part 1.**
-   - Wrap foil tape round the ring_base's outer face, from just above the capacitor notches to the top, leaving the top 2 mm (crush ribs, key slots) bare.
+   - Wrap foil tape round the ring_base's outer face, from 1 mm above the bottom edge to the top, leaving the top 2 mm (crush ribs, key slots) bare. The wall's foot sits inside the LED capacitors, so it has no notches.
    - Use non-conductive-adhesive tape.
    - Slide it over the spider from behind. There is no cable notch: the CrowPanel's lead comes from the reSpeaker's LED side, so it stays inside the ring.
 5. reSpeaker (mute "A" at 12 o'clock), carrier, 3 × M2 × 20 into the spider (snug only).

@@ -345,7 +345,10 @@ for s in SW:
         worst = max(worst, vol(Pos(0, 0, s) * parts["ring_shell"], st))
 flag(worst < 0.01, f"ring_shell slides on from the front: max overlap {worst:.3f}")
 v = vol(parts["ring_base"], parts["ring_shell"])
-flag(0.01 < v < 1.5, f"crush ribs bite the cap's inner edge: {v:.2f} mm3")
+flag(0.01 < v < 1.5, f"crush ribs bite the cap's skirt: {v:.2f} mm3")
+# the face: the cap overlaps the inner wall's top, so no straight line from the face reaches the channel
+flag(RING_CAP_RI <= RING_IW_R2 + 1e-6, f"cap covers the inner wall's top (cap from r {RING_CAP_RI:.2f}, wall from r {RING_IW_R2:.2f})")
+flag(RING_IW_R0 + RING_IW_T <= 37.83 - 0.2, f"inner wall foot (r {RING_IW_R0 + RING_IW_T:.2f}) inside the LED capacitors (r 37.83) by >= 0.2: no notches")
 
 print(flush=True); print("== spider vs CrowPanel plug keep-outs")
 for (x0, x1, y0, y1) in CP_KEEPOUT_NOM:

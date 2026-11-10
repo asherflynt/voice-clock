@@ -98,18 +98,22 @@ RING_BORE_R   = 44.4      # front-shell bore around the ring (0.6 mm gap: both p
 RING_PROUD    = 2.35      # ring top above the sphere surface at the bore (top stays z 36.88)
 RING_SLV_RI, RING_SLV_RO = 42.8, 43.8          # ring_shell sleeve (outer wall of the channel)
 RING_CAP_T    = 1.4       # diffuser cap (printed face-down on textured PEI)
-RING_CAP_RI   = 41.2      # cap inner edge (0.25 mm round the inner wall's top; crush ribs bite 0.15)
 RING_IW_T     = 1.0       # inner wall thickness
-RING_IW_R0    = 37.4      # inner wall inner radius, z 0..4.1 (inside the LED capacitors)
+RING_IW_R0    = 36.6      # inner wall inner radius, z 0..3.3: the whole foot sits inside the LED capacitors
+                          # (bodies from r 37.83), so it needs no notches
 RING_IW_R1    = 38.3      # z 5.0..26.35 (clear of the spider pads, r 38.0)
 RING_IW_R2    = CP_KNOB_R + LG_KNOB_GAP        # 39.95, z 28.0.. (knob gap)
-RING_IW_Z     = (4.1, 5.0, 26.35, 28.0)        # 45 deg transitions between the three radii
-RING_CAP_NOTCH = (2.2, 0.8)                    # w, h: notches in the inner wall foot over the capacitors
+RING_IW_Z     = (3.3, 5.0, 26.35, 28.0)        # 45 deg transitions between the three radii
+RING_CAP_RI   = RING_IW_R2                     # the cap reaches in over the inner wall's top (shiplap):
+                                               # no gap at the face, no straight view down to the LEDs
+RING_IW_GAP   = 0.1       # inner wall top -> cap underside (the sleeve stands on the board)
+RING_SKIRT_T, RING_SKIRT_H, RING_SKIRT_CLR = 0.6, 1.4, 0.15   # skirt under the cap round the wall's top:
+                                               # centres the shell (crush ribs bite 0.15) and closes the joint
 RING_BOSS_D   = 6.5       # integral board spacers on the 3 clamp screws
 RING_BOSS_HOLE = 2.25
 RING_WEB_H    = 4.0
 RING_KEY_ANG  = [0.0, 200.0]                   # ring_shell tabs -> ring_base slots (unique)
-RING_CRUSH_ANG = [60.0, 180.0, 300.0]          # crush ribs under the cap's inner edge
+RING_CRUSH_ANG = [60.0, 180.0, 300.0]          # crush ribs inside the cap's skirt
 
 # spider bracket + reSpeaker clamp
 STANDOFF_L    = 5.0       # board front -> spider plate (ring_base bosses)
@@ -785,7 +789,8 @@ def usb_pcb_y():
 
 def ring_iw_pts():
     z1, z2, z3, z4 = RING_IW_Z
-    R0, R1, R2, T, zt = RING_IW_R0, RING_IW_R1, RING_IW_R2, RING_IW_T, RING_TOP_Z
+    R0, R1, R2, T = RING_IW_R0, RING_IW_R1, RING_IW_R2, RING_IW_T
+    zt = RING_TOP_Z - RING_CAP_T - RING_IW_GAP         # stops under the cap
     return [(R0, 0.0), (R0 + T, 0.0), (R0 + T, z1), (R1 + T, z2), (R1 + T, z3), (R2 + T, z4), (R2 + T, zt),
             (R2, zt), (R2, z4), (R1, z3), (R1, z2), (R0, z1)]
 
@@ -793,11 +798,8 @@ def ring_iw_pts():
 def ring_base():
     """Inner wall of the light channel + the 3 board spacers on the clamp screws. Natural PETG,
     printed upright (spacers on the bed). Wrap aluminium foil tape round its outer face."""
-    zt = RING_TOP_Z
+    zt = RING_TOP_Z - RING_CAP_T - RING_IW_GAP          # wall top, under the cap
     rb = revolve_rz(ring_iw_pts())
-    for k in range(12):                                # notches over the LED capacitors
-        rb = rb - radial_box(15 + 30 * k - 0.07, RING_IW_R0 - 1, RING_IW_R0 + RING_IW_T + 1,
-                             RING_CAP_NOTCH[0], -1, RING_CAP_NOTCH[1])
     for (x, y) in rs_holes():
         ang, r = degrees(atan2(y, x)), hypot(x, y)
         rb = rb + cyl(RING_BOSS_D / 2, 0, STANDOFF_L - 0.05, x, y) + radial_box(ang, r, RING_IW_R0 + 0.5, 3.0, 0, RING_WEB_H)
@@ -806,22 +808,29 @@ def ring_base():
         rb = rb - Pos(x, y, -0.01) * Cone(RING_BOSS_HOLE / 2 + 0.41, RING_BOSS_HOLE / 2, 0.41,
                                           align=(Align.CENTER, Align.CENTER, Align.MIN))   # bed-mouth lead-in
     ro = RING_IW_R2 + RING_IW_T
+    zs = zt - RING_SKIRT_H + RING_IW_GAP               # skirt bottom
     for a in RING_KEY_ANG:                             # slots for the ring_shell's tabs
-        rb = rb - radial_box(a, ro - 0.5, ro + 1, 1.6, zt - 2.0, zt + 1)
-    for a in RING_CRUSH_ANG:                           # crush ribs under the cap's inner edge
-        rb = rb + radial_box(a, ro - 0.2, RING_CAP_RI + 0.15, 0.8, zt - RING_CAP_T - 0.3, zt)
+        rb = rb - radial_box(a, ro - 0.5, ro + 1, 1.6, zs - 0.5, zt + 1)
+    for a in RING_CRUSH_ANG:                           # crush ribs inside the cap's skirt
+        rb = rb + radial_box(a, ro - 0.2, ro + RING_SKIRT_CLR + 0.15, 0.8, zs + 0.4, zt)
     return rb
 
 
 def ring_shell():
-    """Outer wall (sleeve) + diffuser cap of the light channel. Natural/clear PETG, printed cap down.
+    """Outer wall (sleeve) + diffuser cap of the light channel. The cap spans the whole ring and
+    overlaps the inner wall's top, so nothing at the face looks straight down to the LEDs. Natural/clear PETG, printed cap down.
     Line the sleeve's inside with aluminium foil tape up to the front shell's edge."""
     zt = RING_TOP_Z
+    zc = zt - RING_CAP_T                               # cap underside
+    ro = RING_IW_R2 + RING_IW_T                        # inner wall outer face
+    k0 = ro + RING_SKIRT_CLR                           # skirt inner face
+    k1, zs = k0 + RING_SKIRT_T, zc - RING_SKIRT_H      # skirt outer face, skirt bottom
     pts = [(RING_SLV_RI, 0.0), (RING_SLV_RO, 0.0), (RING_SLV_RO, zt - 0.6), (RING_SLV_RO - 0.6, zt),
-           (RING_CAP_RI, zt), (RING_CAP_RI, zt - RING_CAP_T), (RING_SLV_RI, zt - RING_CAP_T)]
+           (RING_CAP_RI, zt), (RING_CAP_RI, zc), (k0, zc), (k0, zs + 0.3), (k0 + 0.3, zs),
+           (k1, zs), (k1, zc), (RING_SLV_RI, zc)]
     s = revolve_rz(pts)
-    for a in RING_KEY_ANG:
-        s = s + radial_box(a, RING_CAP_RI - 0.45, RING_CAP_RI + 0.2, 1.2, zt - 1.8, zt)
+    for a in RING_KEY_ANG:                             # tabs inside the skirt -> slots in the inner wall
+        s = s + radial_box(a, ro - 0.45, k0 + 0.2, 1.2, zs, zc + 0.01)
     s = s - revolve_rz([(RING_CAP_RI - 0.01, zt + 0.01), (RING_CAP_RI + 0.3, zt + 0.01), (RING_CAP_RI - 0.01, zt - 0.3)])
     return s
 

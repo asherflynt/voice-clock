@@ -49,7 +49,7 @@ Version 2 (6 Nov 2026), after the v1 print fell apart:
 
 - **Twist-lock shells.** The front shell turns 10° clockwise onto 7 bayonet lugs on the rear shell and clicks into place on 4 flexure detent fingers, with hard stops. The back plate turns 32° on 3 lugs (one wide, so it only fits one way) and clicks on 2 flexure pawls; a coin slot opens it. v1's snap hooks let both pop off.
 - **Keyed stack.** The cradle ribs run down the shell wall into notches in the carrier, so the electronics stack can't turn.
-- **Light ring that works.** A hollow channel lined with aluminium foil tape (ring base + ring shell, PETG) carries the LED light to a diffuser cap standing 2.35 mm proud of the sphere. v1's solid printed guide passed an estimated 0.4 % of the light.
+- **Light ring that works.** A hollow channel lined with aluminium foil tape (ring base + ring shell, PETG) carries the LED light to a diffuser cap standing 2.35 mm proud of the sphere. The cap overlaps the inner wall, so you see an even glow, not the LEDs. v1's solid printed guide passed an estimated 0.4 % of the light.
 - **Front shell prints face-up.** The sphere runs right up to the light ring, with no flat face, and no textured face sits on the bed.
 - **Inserts everywhere a screw goes.** The USB-C breakout screws into 2 horizontal heat-set inserts, from the plate's rim side where a short hex key reaches; the speaker bosses have room below the screw tips.
 - **Weight.** A 30 cm³ ballast pocket in the rear shell (about 160 g of steel shot in epoxy, or 300 g of tungsten putty) and TPU grip pads on the base: about 479 g in all, with the centre of mass 12 mm lower than v1.
