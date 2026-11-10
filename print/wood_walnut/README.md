@@ -48,9 +48,9 @@ No extra spool is needed.
 | | |
 |---|---|
 | Project | `VoiceClock_walnut_fs_008_U1.3mf` |
-| Print time | **about 1 day 10 h 9 min** |
-| Layers / tool changes | 629 / 1,661 |
-| Filament (core / oak / maple / walnut) | 120 / 52 / 47 / 31 g (250 g) |
+| Print time | **about 1 day 10 h 14 min** |
+| Layers / tool changes | 629 / 1,675 |
+| Filament (core / oak / maple / walnut) | 121 / 53 / 24 / 54 g (251 g; the maple/walnut split moves with the purge order) |
 | How the mixes look | 2-layer tones blend (0.16 mm repeat); 3-layer tones show fine 0.24 mm stripes up close, which blend at arm's length |
 
 0.08 mm is the minimum layer height in the U1's 0.4 mm nozzle profile, so there is no finer option: going thinner would need a smaller nozzle, and wood PLA's particles clog nozzles under 0.4 mm.

@@ -70,7 +70,7 @@ Every dimension is a named constant at the top of `voice_clock.py`. Values marke
 | 3 | M3 × 12 socket head | Spider → CrowPanel hub (replaces the 3 stock screws) | 1.8 mm, same depth as Elecrow's own screws |
 | 3 | M2 × 20 socket head | Carrier → reSpeaker → ring_base spacer → M2 insert in the spider | 2.5 mm |
 | 2 | M2 × 10 socket head | Speaker ears: head, TPU washer, ear, TPU washer, boss insert | 3.0 mm; 4.4 mm of hole below the tip |
-| 2 | M2 × 10 socket head | USB-C breakout, from the rim side → M2 inserts at the far face of its 2 pads (through holes) | 3 mm insert, tip 2.4 mm past the pad and 1.7 mm short of the speaker |
+| 2 | M2 × 10 socket head | USB-C breakout, from the rim side → M2 inserts at the far face of its 2 pads (through holes) | 3 mm insert, tip 2.4 mm past the pad and 7.8 mm short of the speaker |
 
 | Qty | Insert (M2 × 3 × Ø3.2, hole Ø2.9) | Where |
 |---|---|---|
@@ -102,7 +102,7 @@ Full steps are in [`../docs/assembly/ASSEMBLY.md`](../docs/assembly/ASSEMBLY.md)
    - Stick the 4 mic gaskets onto the boots.
    - Set the shell on turned 10° anticlockwise (seen from the front), so the base flats are offset by a finger's width.
    - Press it down and turn it **clockwise** until the 4 detent fingers click and the flats line up.
-10. USB-C board and speaker onto the back plate, in either order: the USB-C screws go in from the rim side.
+10. USB-C board and speaker onto the back plate, in either order: the USB-C screws go in from the rim side. The speaker sits 6 mm off-centre, away from the USB-C board, so its JST plug and lead have about 16 mm of room.
 11. **Back plate.** Set it in with the USB-C at about 5 o'clock and turn it **clockwise (seen from the back)** about 1/11 of a turn until both pawls click and the USB-C sits at 6 o'clock.
 
 **To open:**

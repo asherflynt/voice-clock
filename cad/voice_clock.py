@@ -235,13 +235,14 @@ SPK_EAR_PITCH = 36.7
 SPK_EAR_T     = 2.4
 SPK_EAR_FROM_FACE = 15.3 - 6.9
 SPK_CONE_R    = 13.0
-SPK_CY        = 0.0
+SPK_CY        = 6.0       # speaker 6 mm toward the top (v2: 0): 16 mm from the USB-C board's face to the
+                          # speaker, room for its JST plug and lead
 SPK_GASKET    = 1.1
 TPU_WASHER_T  = 1.0
 SPK_SCREW_L   = 10.0      # M2 x 10 (the shortest in the kit)
 SPK_HOLE_SKIN = 1.0       # insert hole runs into the plate, leaving this much on the outer face
 # USB-C inlet: 6-pin breakout with 5.1k CC resistors (measured 3 Nov 2026)
-USB_CY        = -24.0     # screws now point at the speaker: tips 1.7 mm clear of it (v1 -27, v2a -22)
+USB_CY        = -24.0     # screws point at the speaker: tips 7.8 mm clear of it since SPK_CY = 6 (v1 -27, v2a -22)
 USB_SLOT      = (9.4, 3.6)
 USB_RECESS    = (13.5, 8.0, 1.6)
 USB_PCB       = (21.96, 13.11, 1.61)
@@ -737,7 +738,7 @@ def back_plate():
             M2_INSERT_D / 2 + 0.3, M2_INSERT_D / 2, 0.31, align=(Align.CENTER, Align.CENTER, Align.MIN))
         plate = plate - hole - mouth - start
     # zip-tie anchor for the speaker lead
-    ay = SPK_CY + SPK_BODY[1] / 2 + 10.5
+    ay = min(SPK_CY + SPK_BODY[1] / 2 + 10.5, 29.5)   # stays inside the spigot ring (r 33)
     plate = plate + Pos(0, ay, BACK_Z + 2) * Box(8, 4, 4)
     plate = plate - Pos(0, ay, BACK_Z + 2.4) * Box(10, 2.0, 1.6)
     # bayonet: spigot ring (centres the plate in the lip) + 3 lugs over the lip

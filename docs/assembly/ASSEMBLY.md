@@ -165,6 +165,7 @@ In this picture: **1** Speaker 4428 3 W, **2** 2x M2x10 SHCS (speaker), **3** 4x
 3. Stick a foam ring round the speaker's face. Washer, ear, washer on each boss, then 2 × M2 × 10, snug only.
 4. Zip-tie the speaker lead to the anchor.
 5. The USB-C screws stay reachable from the rim, so the board can come off later without removing the speaker.
+6. The speaker sits 6 mm off-centre, toward the anchor, which leaves about 16 mm between the USB-C board and the speaker for the board's JST plug and its lead.
 
 > **Check:** A USB-C cable plugs in fully from outside, and the speaker touches the plate only through the foam and washers.
 

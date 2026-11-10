@@ -396,6 +396,8 @@ flag(usb_in - (USB_WALL_T - M2_INSERT_L) >= M2_INSERT_L and usb_in > USB_WALL_T,
      f"full {M2_INSERT_L:.0f} mm insert engaged, tip {usb_in - USB_WALL_T:.1f} mm past it")
 d_spk = scr_all.distance_to(spk)
 flag(d_spk >= 1.0, f"USB-C screw tips -> speaker: {d_spk:.2f} mm")
+plug_room = spk.bounding_box().min.Y - usb_y_top
+flag(plug_room >= 14.0, f"USB-C board face -> speaker {plug_room:.1f} mm (JST plug on the board + its lead bend need ~14)")
 bp_only = parts["back_plate"]
 key = None
 for sx in (-1, 1):                                 # bench: plate on its own, hex key and screw come in from the rim
