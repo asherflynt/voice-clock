@@ -72,20 +72,15 @@
   {
    "n": 1,
    "key": "ring_base",
-   "label": "Ring base (PETG)"
+   "label": "Ring base (white PETG)"
   },
   {
    "n": 2,
-   "key": "foil_base",
-   "label": "Foil tape (outside)"
-  },
-  {
-   "n": 3,
    "key": "cp_knob",
    "label": "CrowPanel 2.1\" display"
   },
   {
-   "n": 4,
+   "n": 3,
    "key": "spider",
    "label": "Spider bracket"
   }
@@ -99,7 +94,7 @@
   {
    "n": 2,
    "key": "ring_base",
-   "label": "Ring base (PETG)"
+   "label": "Ring base (white PETG)"
   },
   {
    "n": 3,
@@ -127,18 +122,13 @@
  "step_06": [
   {
    "n": 1,
-   "key": "foil_shell",
-   "label": "Foil tape (inside)"
+   "key": "ring_shell",
+   "label": "Ring shell (white + natural PETG)"
   },
   {
    "n": 2,
-   "key": "ring_shell",
-   "label": "Ring shell (PETG)"
-  },
-  {
-   "n": 3,
    "key": "ring_base",
-   "label": "Ring base (PETG)"
+   "label": "Ring base (white PETG)"
   }
  ],
  "step_07": [

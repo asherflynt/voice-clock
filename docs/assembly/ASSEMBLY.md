@@ -76,7 +76,7 @@ In this picture: **1** Spider bracket, **2** 3x M3x12 SHCS, **3** CrowPanel 2.1"
 
 ![Step 4](img/step_03.jpg)
 
-In this picture: **1** Ring base (PETG), **2** Foil tape (outside), **3** CrowPanel 2.1" display, **4** Spider bracket
+In this picture: **1** Ring base (white PETG), **2** CrowPanel 2.1" display, **3** Spider bracket
 
 1. Plug the CrowPanel lead (the pigtail already soldered to the reSpeaker header) into the panel's power port.
 2. Slide the ring base over the spider **from behind**, until its three spacers sit under the spider's insert pads. There is no cable notch: the lead stays inside the ring, between the spider arms.
@@ -87,7 +87,7 @@ In this picture: **1** Ring base (PETG), **2** Foil tape (outside), **3** CrowPa
 
 ![Step 5](img/step_04.jpg)
 
-In this picture: **1** reSpeaker XVF3800, **2** Ring base (PETG), **3** Spider bracket
+In this picture: **1** reSpeaker XVF3800, **2** Ring base (white PETG), **3** Spider bracket
 
 ![Step 5](img/step_05.jpg)
 
@@ -103,7 +103,7 @@ In this picture: **1** Carrier, **2** 3x M2x20 SHCS, **3** reSpeaker XVF3800
 
 ![Step 6](img/step_06.jpg)
 
-In this picture: **1** Foil tape (inside), **2** Ring shell (PETG), **3** Ring base (PETG)
+In this picture: **1** Ring shell (white + natural PETG), **2** Ring base (white PETG)
 
 1. Press the ring shell on over the knob, with its two tabs in the ring base's slots. The skirt under its cap slides down round the top of the ring base, the crush ribs hold it, and the cap now covers the ring base's top edge, so no gap shows at the face.
 

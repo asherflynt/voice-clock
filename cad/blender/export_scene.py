@@ -24,7 +24,7 @@ MESH = HERE / "meshes"
 MAT = {
     "front_shell": "pla", "rear_shell": "pla", "back_plate": "pla", "mute_plunger": "pla",
     "carrier": "pla", "spider": "pla",
-    "ring_base": "petg_natural", "ring_shell": "petg_natural",
+    "ring_base": "petg_white", "ring_shell": "petg_white", "ring_band": "petg_natural",
     "cp_knob": "alu_dark", "cp_glass": "display", "cp_pcb": "pcb_green", "cp_conn": "nylon_white",
     "rs_pcb": "pcb_black", "rs_leds": "led", "rs_xiao": "pcb_blue",
     "speaker": "plastic_black",
@@ -33,7 +33,7 @@ MAT = {
 LABEL = {
     "front_shell": "Front shell", "rear_shell": "Rear shell", "back_plate": "Back plate",
     "mute_plunger": "Mute button", "carrier": "Carrier", "spider": "Spider bracket",
-    "ring_base": "Ring base (PETG)", "ring_shell": "Ring shell (PETG)",
+    "ring_base": "Ring base (white PETG)", "ring_shell": "Ring shell (white + natural PETG)", "ring_band": "Ring shell, natural PETG band",
     "cp_knob": "CrowPanel 2.1\" display", "rs_pcb": "reSpeaker XVF3800", "speaker": "Speaker 4428 3 W",
     "foot_pad_front": "TPU grip pad (small)", "foot_pad_rear": "TPU grip pad (large)",
     "ballast_fill": "Ballast: steel shot in slow epoxy",
@@ -61,18 +61,6 @@ def centroid(name):
     return m.bounds.mean(0)
 
 
-def foil_meshes():
-    """Aluminium foil tape: round the ring base's outer face, and inside the ring shell's sleeve."""
-    z1, z2, z3, z4 = RING_IW_Z
-    R0, R1, R2, T, zt = RING_IW_R0, RING_IW_R1, RING_IW_R2, RING_IW_T, RING_TOP_Z
-    prof = [(R0 + T, 1.0), (R0 + T, z1), (R1 + T, z2), (R1 + T, z3), (R2 + T, z4), (R2 + T, zt - 2.0)]
-    base = revolve_rz([(r + 0.02, z) for r, z in prof] + [(r + 0.14, z) for r, z in reversed(prof)])
-    zs = zt - RING_CAP_T - 4.0
-    shell = revolve_rz([(RING_SLV_RI - 0.14, 0.0), (RING_SLV_RI - 0.02, 0.0), (RING_SLV_RI - 0.02, zs),
-                        (RING_SLV_RI - 0.14, zs)])
-    return R.tess(base), R.tess(shell)
-
-
 def usb_screws():
     """2 x M2 x 10 from the board's back (rim side) through it into the pads' inserts."""
     _, y_back = usb_pcb_y()
@@ -95,7 +83,9 @@ def main():
     g = RS.tess_all()
     for n, (v, f) in g.items():
         write(n, v, f)
-    fb, fs = foil_meshes()
+    band, white = ring_shell_colours()           # the ring shell prints in two PETG colours
+    write("ring_shell", *R.tess(white))
+    write("ring_band", *R.tess(band))
 
     # fastener / small-part groups (each one mesh + material + label)
     hw = {
@@ -109,8 +99,6 @@ def main():
         "foam_mic":    (RS.hw_mic_foam(),         "foam",    "4x foam mic gasket"),
         "foam_spk":    (RS.hw_spk_foam(),         "foam",    "Foam ring"),
         "usb":         (RS.hw_usb(),              "pcb_blue", "USB-C breakout (5.1k)"),
-        "foil_base":   ([fb],                     "alu",     "Foil tape (outside)"),
-        "foil_shell":  ([fs],                     "alu",     "Foil tape (inside)"),
     }
     for k, (meshes, mat, lab) in hw.items():
         v, f = merged(meshes)
@@ -121,8 +109,8 @@ def main():
     CP = ["cp_knob", "cp_glass", "cp_pcb", "cp_conn"]
     RSB = ["rs_pcb", "rs_leds", "rs_xiao"]
     head = CP + ["spider", "scr_cp", "ins_spider"]
-    core = head + ["ring_base", "foil_base"] + RSB + ["carrier", "scr_clamp"]
-    stack = core + ["ring_shell", "foil_shell"]
+    core = head + ["ring_base"] + RSB + ["carrier", "scr_clamp"]
+    stack = core + ["ring_shell", "ring_band"]
     shell_r = ["rear_shell", "mute_plunger", "ballast_fill", "foot_pad_rear"]
     shell_f = ["front_shell", "foot_pad_front", "foam_mic"]
     plate = ["back_plate", "ins_back", "usb", "scr_usb", "speaker", "foam_spk", "tpu_wash", "scr_spk"]
@@ -170,24 +158,24 @@ def main():
             CP, [("spider", -22), ("ins_spider", -22), ("scr_cp", -40)]),
              callouts=["cp_knob", "spider", "ins_spider", "scr_cp"],
              arrows=[[(0, 0, -44), (0, 0, -26)]]),
-        # 4. ring base (foil outside) from behind
-        dict(id="step_03", title="Ring base, foil tape round the outside", view=(135, 20), items=items(
-            head, [("ring_base", -48), ("foil_base", -48)]),
-             callouts=["ring_base", "foil_base", "spider", "cp_knob"],
+        # 4. ring base from behind
+        dict(id="step_03", title="Ring base over the spider", view=(135, 20), items=items(
+            head, [("ring_base", -48)]),
+             callouts=["ring_base", "spider", "cp_knob"],
              arrows=[[(*polar(46, 300), -86), (*polar(46, 300), -56)]]),
         # 5. reSpeaker, then carrier + clamp screws
         dict(id="step_04", title="reSpeaker onto the ring base", view=(118, 24), items=items(
-            head + ["ring_base", "foil_base"], [(n, -36) for n in RSB]),
+            head + ["ring_base"], [(n, -36) for n in RSB]),
              callouts=["rs_pcb", "ring_base", "spider"],
              arrows=[[(x, y, -50), (x, y, -38)] for x, y in rh]),
         dict(id="step_05", title="Carrier and clamp screws", view=REAR, items=items(
-            head + ["ring_base", "foil_base"] + RSB, [("carrier", -26), ("scr_clamp", -48)]),
+            head + ["ring_base"] + RSB, [("carrier", -26), ("scr_clamp", -48)]),
              callouts=["carrier", "scr_clamp", "rs_pcb"],
              arrows=[[(x, y, -56), (x, y, -38)] for x, y in rh]),
         # 6. ring shell from the front
-        dict(id="step_06", title="Ring shell on over the knob (foil inside)", view=(-64, 22), items=items(
-            core, [("ring_shell", 34), ("foil_shell", 34)]),
-             callouts=["ring_shell", "foil_shell", "ring_base"],
+        dict(id="step_06", title="Ring shell on over the knob", view=(-64, 22), items=items(
+            core, [("ring_shell", 34), ("ring_band", 34)]),
+             callouts=["ring_shell", "ring_base"],
              arrows=[[(*polar(47, 230), 92), (*polar(47, 230), 72)]]),
         # 7. ballast + grip pads
         dict(id="step_07", title="Ballast in the pocket, grip pads on the base", view=(-50, 22), items=items(

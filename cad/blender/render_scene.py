@@ -144,6 +144,9 @@ def materials(hero):
                           **{"Transmission Weight": 0.85, "IOR": 1.57, "Subsurface Weight": 0.15})
     add_bump(nt, b, "layers", 0.04, 0.314 / 0.2)
     M["petg_natural"] = m
+    m, nt, b = principled("petg_white", (0.88, 0.88, 0.86, 1), 0.42, **{"Subsurface Weight": 0.3})
+    add_bump(nt, b, "layers", 0.04, 0.314 / 0.2)
+    M["petg_white"] = m
     M["alu_dark"] = principled("alu_dark", (0.045, 0.045, 0.05, 1), 0.32, 1.0)[0]
     M["alu"] = principled("alu", (0.62, 0.62, 0.64, 1), 0.38, 1.0)[0]
     M["pcb_green"] = principled("pcb_green", hexlin("#1d5a37"), 0.32, **{"Coat Weight": 0.4})[0]
