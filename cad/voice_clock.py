@@ -95,9 +95,13 @@ CP_ROT_TRIM_DEG = -5.0    # rotates the CrowPanel (its screws in the spider) abo
 
 # light ring: hollow channel in white PETG (ring_base inner wall + ring_shell sleeve); natural PETG diffuser on top
 LG_KNOB_GAP   = 0.45                           # radial gap knob -> ring
-RING_BORE_R   = 44.4      # front-shell bore around the ring (0.6 mm gap: both parts can sit 0.2-0.3 off-centre)
+RING_BORE_R   = 44.4      # front-shell bore around the ring
 RING_PROUD    = 2.35      # ring top above the sphere surface at the bore (top stays z 36.88)
-RING_SLV_RI, RING_SLV_RO = 42.8, 43.8          # ring_shell sleeve (outer wall of the channel)
+RING_SLV_RI, RING_SLV_RO = 42.8, 44.1          # ring_shell sleeve (outer wall of the channel); 0.3 mm radial gap
+                                               # to the bore (0.6 on the first v2 print looked loose)
+RING_COLLAR_R = 46.2      # retaining collar on the sleeve, just under the front shell's inner surface: the
+RING_COLLAR_NOTCH = 6.0   # half-width (deg) of the collar notches the mic-boot lugs pass through
+RING_COLLAR_GAP = 0.3     # front shell captures the ring_shell once it's on, so it can't slide out the front
 RING_CAP_T    = 1.4       # diffuser cap (printed face-down on textured PEI)
 RING_IW_T     = 1.0       # inner wall thickness
 RING_IW_R0    = 36.6      # inner wall inner radius, z 0..3.3: the whole foot sits inside the LED capacitors
@@ -819,6 +823,18 @@ def ring_base():
     return rb
 
 
+def ring_collar_pts():
+    """Retaining collar: its top is a chord RING_COLLAR_GAP under the front shell's inner sphere
+    (the sphere bulges above the chord, so the gap is never less), ~55 deg from flat so it prints
+    cap-down without support; 45 deg underside back to the sleeve."""
+    def z_in(r):
+        return C_Z + sqrt(R_IN ** 2 - r ** 2) - RING_COLLAR_GAP
+    r0, r1 = RING_SLV_RO - 0.3, RING_COLLAR_R
+    zt0, zt1 = z_in(RING_BORE_R), z_in(r1)
+    zt0 = zt1 + (zt0 - zt1) * (r1 - r0) / (r1 - RING_BORE_R)   # extend the chord in to r0
+    return [(r0, zt0), (r1, zt1), (r1, zt1 - 0.4), (r0, zt1 - 0.4 - (r1 - r0))]
+
+
 def ring_shell():
     """Outer wall (sleeve) + diffuser cap of the light channel. The cap spans the whole ring and
     overlaps the inner wall's top, so nothing at the face looks straight down to the LEDs. Natural/clear PETG, printed cap down.
@@ -832,10 +848,17 @@ def ring_shell():
     pts = [(RING_SLV_RI, 0.0), (RING_SLV_RO, 0.0), (RING_SLV_RO, zt - 0.6), (RING_SLV_RO - 0.6, zt),
            (RING_CAP_RI, zt), (RING_CAP_RI, zc), (k0, zc), (k0, zs + 0.3), (k0 + 0.3, zs),
            (k1, zs), (k1, zc), (RING_SLV_RI, zc)]
+    collar = revolve_rz(ring_collar_pts())
+    zc0, zc1 = min(z for _, z in ring_collar_pts()) - 0.1, max(z for _, z in ring_collar_pts()) + 0.1
+    for ang in (45, 135, 225, 315):                    # notches: the mic-boot lugs pass here as the front
+        a = ang + TW_ANGLE                             # shell goes on (at its entry angle, before the twist)
+        collar = collar - sector([(RING_SLV_RO, zc0), (RING_COLLAR_R + 1, zc0), (RING_COLLAR_R + 1, zc1),
+                                  (RING_SLV_RO, zc1)], a - RING_COLLAR_NOTCH, a + RING_COLLAR_NOTCH)
     s = revolve_rz(pts)
     for a in RING_KEY_ANG:                             # tabs inside the skirt -> slots in the inner wall
         s = s + radial_box(a, ro - 0.45, k0 + 0.2, 1.2, zs, zc + 0.01)
     s = s - revolve_rz([(RING_CAP_RI - 0.01, zt + 0.01), (RING_CAP_RI + 0.3, zt + 0.01), (RING_CAP_RI - 0.01, zt - 0.3)])
+    s = s.fuse(*collar.solids()).clean()
     return s
 
 
@@ -1097,8 +1120,8 @@ if __name__ == "__main__":
         if name == "ring_shell":                       # the two colour bodies, placed exactly as the whole part
             bb = (PRINT_ROT[name] * built[name]).bounding_box()
             move = Pos(-(bb.min.X + bb.max.X) / 2, -(bb.min.Y + bb.max.Y) / 2, -bb.min.Z)
-            for tag, half in zip(("natural", "white"), ring_shell_colours()):
-                export_stl(move * (PRINT_ROT[name] * half), str(OUT / f"ring_shell_{tag}.stl"),
+            for tag, piece in zip(("natural", "white"), ring_shell_colours()):
+                export_stl(move * (PRINT_ROT[name] * piece), str(OUT / f"ring_shell_{tag}.stl"),
                            tolerance=0.02, angular_tolerance=0.15)
     if only:
         raise SystemExit(0)

@@ -333,7 +333,11 @@ d = parts["ring_base"].distance_to(parts["spider"]) if vol(parts["ring_base"], p
 v = vol(parts["ring_base"] - zslab(-1, STANDOFF_L + 0.01), parts["spider"])
 flag(v < 0.01, f"inner wall clears the spider pads: {v:.3f} mm3")
 flag(vol(parts["ring_base"], prox["cp_knob"]) < 0.01 and vol(parts["ring_shell"], prox["cp_knob"]) < 0.01, "ring clears the knob")
-flag(RING_BORE_R - RING_SLV_RO >= 0.5, f"front-shell bore -> ring_shell: {RING_BORE_R - RING_SLV_RO:.2f} mm (the front shell turns round it)")
+flag(RING_BORE_R - RING_SLV_RO >= 0.25, f"front-shell bore -> ring_shell: {RING_BORE_R - RING_SLV_RO:.2f} mm (the front shell turns round it)")
+# retention: lifted by more than the collar gap + 0.2, the ring_shell's collar hits the front shell
+lift = RING_COLLAR_GAP + 0.2
+v = vol(Pos(0, 0, lift) * parts["ring_shell"], parts["front_shell"])
+flag(v > 1.0, f"front shell captures the ring_shell (lifted {lift:.1f} mm the collar bites {v:.1f} mm3)")
 print(f"  ring stands {RING_PROUD:.1f} mm proud of the sphere (top z {RING_TOP_Z:.2f}); knob exposed "
       f"{CP_KNOB_Z[1] - RING_TOP_Z:.1f} mm (v1: {KNOB_PROUD:.1f})")
 flag(CP_KNOB_Z[1] - RING_TOP_Z >= 4.5, "knob stays grippable (>= 4.5 mm exposed)")
