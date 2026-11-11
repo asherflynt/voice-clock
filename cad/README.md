@@ -5,7 +5,7 @@ A parametric [build123d](https://github.com/gumyr/build123d) model of the enclos
 **v2 (6 Nov 2026)** fixes everything the first wood print showed up:
 - **Shells twist-lock.** The front and rear shells use a 7-lug bayonet with 4 flexure detent fingers, and the back plate a 3-lug bayonet with two flexure pawls. v1's pull-apart snaps are gone.
 - **The board stack is keyed.** It can't turn in the case.
-- **New light ring.** It's a foil-lined hollow channel standing proud of the sphere.
+- **New light ring.** It's a hollow channel standing proud of the sphere. The channel walls print in white PETG, which reflects the LED light, so there's no foil to fit; only the glowing band is natural PETG.
 - **No flat front face.** The front shell prints face-up.
 - **Heat-set inserts** hold the USB-C board and the speaker.
 - **New wood-grain process** for the wood variant.
@@ -48,9 +48,9 @@ Every dimension is a named constant at the top of `voice_clock.py`. Values marke
 | front_shell | 1 → slot 2 (PLA) | **Face up** (seam on the bed) | Sphere runs up to the light-ring bore. 7 bayonet blocks and the 4 mic boots print on the bed. The mic channels (`mic_channel()`) have pointed roofs (a cone up the vertical leg, a 55° ridge on the radial leg), so no ceiling is flatter than 45° and nothing bridges. 5 mm brim |
 | rear_shell | 1 → slot 2 (PLA) | Back rim down | Bayonet collar and 7 lugs at the top, 4 full-height key ribs, **ballast pocket** (about 30 cm³, low behind the carrier), grip-pad recess, mute guide boss, back-plate lip at the bed. 5 mm brim |
 | back_plate | 1 → slot 2 (PLA) | Outer face down | 3 bayonet lugs, 2 flexure pawls, coin slot, 4 M2 inserts (speaker 2, USB-C 2). The USB-C board's socket side bears on 2 pads (bosses round its holes only); its screws go in from the rim side, where a hex key comes straight in over the plate |
-| mute_plunger | 1 (PLA) or 3 (PETG) | Cap down | 100% infill. Use the PETG one if you have it: its snap barb is tougher |
-| ring_base | 3 → slot 1 (natural PETG) | Spacers down | Light-channel inner wall plus the 3 board spacers on the clamp screws |
-| ring_shell | 3 → slot 1 (natural/clear PETG) | Cap down | Channel sleeve plus a 1.4 mm diffuser cap (frosted by the textured PEI). The cap spans the whole ring and overlaps the inner wall's top, so there is no gap at the face and no straight view down to the LEDs |
+| mute_plunger | 1 (PLA) or 3 (white PETG) | Cap down | 100% infill. Use the PETG one if you have it: its snap barb is tougher |
+| ring_base | 3 → slot 2 (white PETG) | Spacers down | Light-channel inner wall (its white face is the inner reflector) plus the 3 board spacers on the clamp screws |
+| ring_shell | 3 → slot 1 natural + slot 2 white PETG, one print | Cap down | One object, two colours: natural PETG for the cap and the band above the sphere (z ≥ `RING_SPLIT_Z`), white PETG for the rest of the sleeve. A 1.4 mm diffuser cap (frosted by the textured PEI). The cap spans the whole ring and overlaps the inner wall's top, so there is no gap at the face and no straight view down to the LEDs |
 | carrier | 2 → slot 2 (PLA) | Back face down | Bulkhead; its 4 notches key the stack on the rear shell's ribs |
 | spider | 2 → slot 2 (PLA) | Plate down | 100% infill. CrowPanel pattern turned by `CP_ROT_TRIM_DEG` |
 | foot_pads | 4 → slot 4 (TPU) | Flat | 2 grip pads for the recesses in the flat base (glue in with CA). They stand 0.4 mm proud |
@@ -59,7 +59,7 @@ Every dimension is a named constant at the top of `voice_clock.py`. Values marke
 **Suggested U1 settings:**
 - **Shells:** matte PLA (or the wood variant). 0.2 mm layers, 4 walls, 20% gyroid.
 - **Structural internals (carrier, spider):** the same matte PLA as the shells. PLA is somewhat stiffer than PETG (about 1.3× the tensile modulus) and, more usefully, prints the 0.2 mm key notches and the insert holes more accurately. Inside the sphere the boards should keep it well under PLA's softening point (about 55 °C), and the shells already rely on that.
-- **Light ring:** natural/clear PETG. The cap has to be translucent, and the crush-rib press fit likes PETG's give. The walls do the work; no special infill is needed. **Not** 100% solid, like v1's ring: in v2 the light travels through air.
+- **Light ring:** PETG in two colours on plate 3: white in slot 2 for the channel walls (diffuse reflector; v2's foil tape was too fiddly and ate the tolerances) and natural/clear in slot 1 for the diffuser band. The crush-rib press fit likes PETG's give. `slice_ring.py` slices this plate for the U1 (no brim, no skirt). The walls do the work; no special infill is needed. **Not** 100% solid, like v1's ring: in v2 the light travels through air.
 - **Inserts:** all 7 M2 inserts now go into PLA (spider and back plate): set the iron to about 190–200 °C.
 - **Files:** `out/VoiceClock_U1.3mf` holds all 4 plates (PLA externals, PLA internals, PETG light ring, TPU). The 3MFs are model-only, so your own printer, process and filament presets stay selected.
 
@@ -78,7 +78,6 @@ Every dimension is a named constant at the top of `voice_clock.py`. Values marke
 
 **Also needed:**
 - 1/16" adhesive closed-cell foam: 4 mic gaskets Ø5 with a Ø2 hole, stuck **to the front shell's mic boots**, plus a speaker-face ring.
-- **Aluminium foil tape**, about 50 mm wide, for the light channel.
 - **Ballast:** about 160 g of steel BBs or shot (4.5 mm airgun BBs are cheap) with **slow-cure (30 min or longer) epoxy**, or about 300 g of tungsten putty. Modelling clay only adds about 55 g.
 - **CA glue** for the TPU grip pads.
 - Wire, the MX1.25 pigtail and heat shrink.
@@ -91,11 +90,10 @@ Full steps are in [`../docs/assembly/ASSEMBLY.md`](../docs/assembly/ASSEMBLY.md)
 2. Make the power harness and bench-test both boards.
 3. Swap the CrowPanel's 3 rear screws for M3 × 12 through the spider.
 4. **Light ring, part 1.**
-   - Wrap foil tape round the ring_base's outer face, from 1 mm above the bottom edge to the top, leaving the top 2 mm (crush ribs, key slots) bare. The wall's foot sits inside the LED capacitors, so it has no notches.
-   - Use non-conductive-adhesive tape.
+   - No foil: the white PETG walls are the reflector. The wall's foot sits inside the LED capacitors, so it has no notches.
    - Slide it over the spider from behind. There is no cable notch: the CrowPanel's lead comes from the reSpeaker's LED side, so it stays inside the ring.
 5. reSpeaker (mute "A" at 12 o'clock), carrier, 3 × M2 × 20 into the spider (snug only).
-6. **Light ring, part 2.** Line the inside of the ring_shell sleeve with foil tape, stopping 4 mm below the cap. Press it on over the knob: tabs into the slots.
+6. **Light ring, part 2.** Press the ring_shell on over the knob: tabs into the slots.
 7. **Ballast** (before the stack goes in): stand the rear shell on its back rim and fill the pocket along the bottom of the shell to 1 mm below its rim. Use steel shot stirred into slow-cure epoxy, poured in two layers so the epoxy doesn't heat the PLA (it softens around 55 °C), or press in tungsten putty and skim it with a little epoxy. Let it cure, then glue the 2 TPU grip pads into the recesses in the flat base.
 8. Click the mute plunger into the rear shell and drop the stack in: the carrier's notches go over the 4 ribs.
 9. **Front shell.**

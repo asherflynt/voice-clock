@@ -17,7 +17,7 @@ PLATES = [
     ("1", "Front shell, rear shell, back plate, mute button", "Matte PLA, or the wood variant (print/wood/)",
      "5 mm brim on the shells, no supports. Front shell face-up (seam on the bed), rear shell on its back rim."),
     ("2", "Carrier, spider bracket", "The same matte PLA", "A little stiffer than PETG and more accurate for the key notches and insert holes. Spider at 100% infill."),
-    ("3", "Ring base, ring shell, mute button", "Natural or clear PETG", "The ring cap must be translucent. No brim on the ring parts: it can't be peeled off their thin walls. Use this mute button rather than the PLA one: its snap barb is tougher in PETG."),
+    ("3", "Ring base, ring shell, mute button", "White PETG (slot 2) + natural or clear PETG (slot 1)", "One print, two colours: the channel walls are white (they reflect the light, no foil), and only the ring shell's cap and the band above the case are natural, so it glows. No brim on the ring parts: it can't be peeled off their thin walls. Use this mute button rather than the PLA one: its snap barb is tougher in PETG."),
     ("4", "2 grip pads, 4 speaker washers", "TPU", "The grip pads stop the clock turning when you turn the knob."),
 ]
 HARDWARE = [
@@ -26,7 +26,6 @@ HARDWARE = [
     ("4", "M2 × 10 socket head", "Speaker (2), USB-C breakout (2)"),
     ("7", "M2 heat-set insert (3 × 3.2 mm)", "Spider 3, speaker bosses 2, USB-C pads 2"),
     ("1", "USB-C breakout with 5.1 kΩ CC resistors", "Power inlet on the back plate"),
-    ("—", "Aluminium foil tape, about 50 mm wide, non-conductive adhesive", "Lines the light channel"),
     ("—", "1/16\" adhesive closed-cell foam", "4 mic gaskets, 1 speaker ring"),
     ("about 160 g", "Steel BBs or shot (4.5 mm airgun BBs) + slow-cure epoxy, or about 300 g tungsten putty", "Ballast pocket in the rear shell"),
     ("—", "CA (superglue)", "Grip pads"),
@@ -55,18 +54,16 @@ STEPS = [
       "Fit 3 × M3 × 12 and tighten them evenly. The holes are a close fit (Ø3.1), so the screws may need a gentle turn to start."],
      "The knob still turns and clicks, and nothing touches the connectors."),
     ("step_03", "Light ring, part 1 (ring base)",
-     ["Wrap aluminium foil tape round the <b>outside</b> of the ring base's tall wall, from 1 mm above the bottom edge up to 2 mm below the top edge. Keep it smooth (it is the channel's mirror) and keep it off the top 2 mm, where the crush ribs and key slots are. Use tape with non-conductive adhesive: the LED capacitors sit just outside the bottom edge.",
-      "Plug the CrowPanel lead (the pigtail already soldered to the reSpeaker header) into the panel's power port.",
+     ["Plug the CrowPanel lead (the pigtail already soldered to the reSpeaker header) into the panel's power port.",
       "Slide the ring base over the spider <b>from behind</b>, until its three spacers sit under the spider's insert pads. There is no cable notch: the lead stays inside the ring, between the spider arms."],
-     "The ring base sits square on the spider pads and the foil is smooth."),
+     "The ring base sits square on the spider pads."),
     (("step_04", "step_05"), "reSpeaker and carrier",
      ["Lay the reSpeaker on the ring base's spacers, LED side toward the display, mute button (marked A) at 12 o'clock. The ring base's foot surrounds the LED ring; the CrowPanel lead stays inside it, flat in the gap between the board and the spider.",
       "Feed the speaker lead and the reSpeaker power lead through the carrier's centre hole, the only wire opening. Set the carrier behind the board.",
       "Fit 3 × M2 × 20 from the back of the carrier, through the board and the spacers, into the spider. <b>Snug only</b>: the screws pull the spider's inserts toward their mouths."],
      "The board doesn't rock and no wire is pinched."),
     ("step_06", "Light ring, part 2 (ring shell)",
-     ["Line the <b>inside</b> of the ring shell's sleeve with foil tape, from the bottom edge up to about 4 mm below the cap. The part of the sleeve that stands out of the case stays bare so it glows.",
-      "Press the ring shell on over the knob, with its two tabs in the ring base's slots. The skirt under its cap slides down round the top of the ring base, the crush ribs hold it, and the cap now covers the ring base's top edge, so no gap shows at the face."],
+     ["Press the ring shell on over the knob, with its two tabs in the ring base's slots. The skirt under its cap slides down round the top of the ring base, the crush ribs hold it, and the cap now covers the ring base's top edge, so no gap shows at the face."],
      "Power the boards on the bench and set the LED ring white. The whole ring should glow evenly, with no bright gap round the knob and no LED visible."),
     ("step_07", "Ballast and grip pads",
      ["Stand the rear shell on its back opening. Inside, along the bottom, a thin curved wall forms a pocket between itself and the shell, open at the top.",
@@ -255,7 +252,7 @@ def page(img_prefix="img/"):
     <div>
       <p class="eyebrow">Open-source Home Assistant voice clock · assembly guide</p>
       <h1>Voice Clock assembly</h1>
-      <p class="lede">A knit-textured 116 mm sphere around a CrowPanel 2.1" knob display, a reSpeaker XVF3800 microphone array and a 3 W speaker. Eleven steps. v2: both shells twist-lock with detent clicks, the electronics stack is keyed so it can't turn, the light ring is a foil-lined channel, and a steel-shot ballast keeps it still when you turn the knob.</p>
+      <p class="lede">A knit-textured 116 mm sphere around a CrowPanel 2.1" knob display, a reSpeaker XVF3800 microphone array and a 3 W speaker. Eleven steps. v2: both shells twist-lock with detent clicks, the electronics stack is keyed so it can't turn, the light ring is a white-walled channel, and a steel-shot ballast keeps it still when you turn the knob.</p>
       <div class="facts"><span><b>10</b>printed parts</span><span><b>10</b>screws</span><span><b>7</b>heat-set inserts</span><span><b>2</b>twist locks</span></div>
     </div>
     <img src="{img_prefix}hero_front.jpg" alt="The finished Voice Clock: a knit-textured sphere with a round clock display and a glowing light ring" width="1800" height="1350">
@@ -283,7 +280,7 @@ def page(img_prefix="img/"):
 
 def markdown():
     out = ["# Voice Clock assembly (v2)", "", "![Finished Voice Clock](img/hero_front.jpg)", "",
-           "> **v2, 6 Nov 2026.** The shells twist-lock, the stack is keyed, the light ring is a foil-lined channel, the "
+           "> **v2, 6 Nov 2026.** The shells twist-lock, the stack is keyed, the light ring is a white-walled channel, the "
            "USB-C board and speaker screw into heat-set inserts, and a ballast pocket plus TPU grip pads keep the clock "
            "still when you turn the knob. Pictures are rendered from `cad/`; this file is generated by `build_guide.py`.", "",
            "## Before you start", "", "| Plate | Parts | Material | Notes |", "|---|---|---|---|"]

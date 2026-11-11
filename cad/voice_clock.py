@@ -19,8 +19,9 @@ v2 (6 Nov 2026), after printing v1 in wood PLA:
     run down the rear shell wall and the carrier's notches fit them at 0.2 mm per side, so the stack
     can't turn in the shell while the front shell is off. (The ~5 deg dial offset seen on v1 is fixed
     and is cancelled separately by CP_ROT_TRIM_DEG.)
-  * Light ring: a hollow channel (ring_base inner wall + ring_shell sleeve and cap) lined with
-    aluminium foil tape. ring_base also carries the 3 board spacers on the clamp screws, so the ring
+  * Light ring: a hollow channel (ring_base inner wall + ring_shell sleeve and cap). No foil: the
+    channel walls print in white PETG, which reflects diffusely, and only the visible band (the cap and
+    the sleeve above the sphere) prints in natural PETG, in the same print. ring_base also carries the 3 board spacers on the clamp screws, so the ring
     is located and keyed by the stack. The ring stands RING_PROUD above the sphere.
   * Front shell prints face-up (seam on the bed); there is no flat face any more: the sphere runs up
     to the ring bore.
@@ -92,7 +93,7 @@ CP_ROT_TRIM_DEG = -5.0    # rotates the CrowPanel (its screws in the spider) abo
                           # the plunger), so this is a FIXED offset in Elecrow's panel or the print, not
                           # play. The firmware has no trim (75f142a); if 12 sits X deg CCW, add -X.
 
-# light ring: hollow channel lined with aluminium foil tape (ring_base inner wall + ring_shell)
+# light ring: hollow channel in white PETG (ring_base inner wall + ring_shell sleeve); natural PETG diffuser on top
 LG_KNOB_GAP   = 0.45                           # radial gap knob -> ring
 RING_BORE_R   = 44.4      # front-shell bore around the ring (0.6 mm gap: both parts can sit 0.2-0.3 off-centre)
 RING_PROUD    = 2.35      # ring top above the sphere surface at the bore (top stays z 36.88)
@@ -267,6 +268,7 @@ FLOOR_TOP = FOOT_H + FLOOR
 BACK_Z = C_Z - SPHERE_R * cos(radians(BACK_LAT))         # rear shell ends / back plate inner face
 FRONT_EDGE_Z = C_Z + sqrt(SPHERE_R**2 - RING_BORE_R**2)  # sphere meets the ring bore (34.88)
 RING_TOP_Z = FRONT_EDGE_Z + RING_PROUD                   # 36.88
+RING_SPLIT_Z = FRONT_EDGE_Z - 0.3                        # ring_shell colour change: natural PETG above (glows), white below
 BP_LUG_Z0 = BACK_Z + BP_LIP_T + 0.2
 _UPv = (UP_D.X, UP_D.Y, UP_D.Z)
 FOOT_C = Vector(*[c + (FOOT_H - CEN.dot(UP_D)) * u for c, u in zip((0.0, 0.0, C_Z), _UPv)])   # centre of the flat
@@ -798,7 +800,7 @@ def ring_iw_pts():
 
 def ring_base():
     """Inner wall of the light channel + the 3 board spacers on the clamp screws. Natural PETG,
-    printed upright (spacers on the bed). Wrap aluminium foil tape round its outer face."""
+    printed upright (spacers on the bed). White PETG: its outer face is the channel's inner reflector."""
     zt = RING_TOP_Z - RING_CAP_T - RING_IW_GAP          # wall top, under the cap
     rb = revolve_rz(ring_iw_pts())
     for (x, y) in rs_holes():
@@ -820,7 +822,8 @@ def ring_base():
 def ring_shell():
     """Outer wall (sleeve) + diffuser cap of the light channel. The cap spans the whole ring and
     overlaps the inner wall's top, so nothing at the face looks straight down to the LEDs. Natural/clear PETG, printed cap down.
-    Line the sleeve's inside with aluminium foil tape up to the front shell's edge."""
+    Two colours in one print: natural PETG above RING_SPLIT_Z (the cap and the band that stands
+    out of the sphere: it glows), white PETG below (the channel's outer reflector)."""
     zt = RING_TOP_Z
     zc = zt - RING_CAP_T                               # cap underside
     ro = RING_IW_R2 + RING_IW_T                        # inner wall outer face
@@ -834,6 +837,13 @@ def ring_shell():
         s = s + radial_box(a, ro - 0.45, k0 + 0.2, 1.2, zs, zc + 0.01)
     s = s - revolve_rz([(RING_CAP_RI - 0.01, zt + 0.01), (RING_CAP_RI + 0.3, zt + 0.01), (RING_CAP_RI - 0.01, zt - 0.3)])
     return s
+
+
+def ring_shell_colours():
+    """(natural, white) halves of ring_shell, split at RING_SPLIT_Z (D frame)."""
+    s = ring_shell()
+    top = zslab(RING_SPLIT_Z, RING_TOP_Z + 5)
+    return s & top, s - top
 
 
 def spider():
@@ -1084,6 +1094,12 @@ if __name__ == "__main__":
         bb = pp.bounding_box()
         print(f"  {name}: {bb.size.X:.1f} x {bb.size.Y:.1f} x {bb.size.Z:.1f} mm, "
               f"vol {pp.volume/1000:.1f} cm3, solids {len(pp.solids())}", flush=True)
+        if name == "ring_shell":                       # the two colour bodies, placed exactly as the whole part
+            bb = (PRINT_ROT[name] * built[name]).bounding_box()
+            move = Pos(-(bb.min.X + bb.max.X) / 2, -(bb.min.Y + bb.max.Y) / 2, -bb.min.Z)
+            for tag, half in zip(("natural", "white"), ring_shell_colours()):
+                export_stl(move * (PRINT_ROT[name] * half), str(OUT / f"ring_shell_{tag}.stl"),
+                           tolerance=0.02, angular_tolerance=0.15)
     if only:
         raise SystemExit(0)
     prox = proxies()

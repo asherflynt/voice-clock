@@ -37,11 +37,16 @@ INTERNALS_PLA = [
     ("carrier", 2, 75, 135, 0),
     ("spider", 2, 195, 135, 0),
 ]
+# Light ring plate, 2 PETG colours (PETG and PLA never share a plate, so slot 2 is free to hold PETG here):
+# slot 1 = natural/clear PETG (only the ring shell's cap and the band that stands out of the sphere),
+# slot 2 = white PETG (the channel walls reflect the LED light diffusely; no foil tape)
 LIGHT_RING_PETG = [
-    ("ring_shell", 1, 70, 135, 0),
-    ("ring_base", 1, 190, 135, 0),
-    ("mute_plunger", 1, 135, 235, 0),
+    ("ring_shell_2c", 2, 70, 135, 0),
+    ("ring_base", 2, 190, 135, 0),
+    ("mute_plunger", 2, 135, 235, 0),
 ]
+# one object printed from several filaments: (part mesh, slot)
+MULTI = {"ring_shell_2c": [("ring_shell_natural", 1), ("ring_shell_white", 2)]}
 INTERNALS_WITH_BACK_PLATE_PLA = [
     ("carrier", 2, 62, 62, 0),
     ("spider", 2, 200, 62, 0),
@@ -50,11 +55,12 @@ INTERNALS_WITH_BACK_PLATE_PLA = [
 
 # name, extruder (U1 slot), bed x, y, rot-z. PLA and PETG never share a plate (different bed temperatures).
 PLATES = [
-    # filament slots match the U1 as loaded: 1 = PETG (natural/clear, light ring), 2 = matte PLA
-    # (shells and structural internals), 4 = TPU (grip pads, speaker washers). Slot 3 is unused.
+    # filament slots: 1 = natural/clear PETG (the ring's diffuser band), 2 = matte PLA (shells and structural
+    # internals) or, for the light-ring plate, white PETG (channel walls, mute button), 4 = TPU (grip pads,
+    # speaker washers). Slot 3 is unused.
     ("Externals - PLA slot 2", EXTERNALS_PLA),
     ("Internals - PLA slot 2", INTERNALS_PLA),
-    ("Light Ring - PETG slot 1", LIGHT_RING_PETG),
+    ("Light Ring - PETG slot 1 natural + slot 2 white", LIGHT_RING_PETG),
     ("TPU - grip pads + speaker washers - slot 4", [
         ("foot_pads", 4, 135, 95, 0),
         ("tpu_washers", 4, 135, 200, 0),
@@ -69,6 +75,7 @@ SETTINGS = {
     "mute_plunger": {"sparse_infill_density": "100%"},
     "ring_base": {"wall_loops": "3", "brim_type": "no_brim"},   # brims were impossible to remove from the thin PETG walls
     "ring_shell": {"wall_loops": "3", "brim_type": "no_brim"},   # brims were impossible to remove from the thin PETG walls
+    "ring_shell_2c": {"wall_loops": "3", "brim_type": "no_brim"},
     "tpu_washers": {"sparse_infill_density": "100%", "wall_loops": "2", "brim_type": "outer_only", "brim_width": "3"},
     "foot_pads": {"sparse_infill_density": "100%", "wall_loops": "2"},
 }
@@ -87,6 +94,11 @@ NS = ('xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" '
 
 
 def load(name):
+    if name in MULTI:                      # several bodies, one object: the union is used for placement
+        parts = [(pn, ext, load(pn)) for pn, ext in MULTI[name]]
+        m = trimesh.util.concatenate([pm for _, _, pm in parts])
+        m.metadata["subparts"] = parts
+        return m
     ply = OUT / f"{name}.ply"
     if ply.exists():                       # textured parts: indexed, don't weld
         m = trimesh.load(ply, process=False)
@@ -103,13 +115,21 @@ def place(items, ox=0.0, oy=0.0):
     meshes = []
     for name, ext, x, y, rz in items:
         m = load(name)
+        subs = m.metadata.get("subparts")
         T = trimesh.transformations.rotation_matrix(np.radians(rz), [0, 0, 1])
         m.apply_transform(T)
         b = m.bounds
-        m.apply_translation([x - (b[0][0] + b[1][0]) / 2, y - (b[0][1] + b[1][1]) / 2, -b[0][2]])
+        shift = [x - (b[0][0] + b[1][0]) / 2, y - (b[0][1] + b[1][1]) / 2, -b[0][2]]
+        m.apply_translation(shift)
         b = m.bounds
         assert b[0][0] >= 2 and b[0][1] >= 2 and b[1][0] <= BED - 2 and b[1][1] <= BED - 2, f"{name} off bed {b}"
         m.apply_translation([ox, oy, 0])
+        if subs:
+            for _, _, pm in subs:
+                pm.apply_transform(T)
+                pm.apply_translation(shift)
+                pm.apply_translation([ox, oy, 0])
+            m.metadata["subparts"] = subs
         meshes.append((name, ext, m))
     # pairwise footprint overlap check (2D bounding boxes + 3 mm gap)
     for i in range(len(meshes)):
@@ -144,16 +164,25 @@ def write(path, plates, paints=None):
     # the way slicer-saved 3MFs do it
     place_xy = {k: ((m.bounds[0][0] + m.bounds[1][0]) / 2, (m.bounds[0][1] + m.bounds[1][1]) / 2)
                 for k, (_, _, m) in enumerate(meshes, 1)}
+    def parts_of(name, ext, m):
+        return m.metadata.get("subparts") or [(name, ext, m)]
+    part_ids, nid = {}, 0                   # object k -> [(mesh object id, part name, slot, mesh)]
+    for k, (name, ext, m) in enumerate(meshes, 1):
+        part_ids[k] = []
+        for pn, pe, pm in parts_of(name, ext, m):
+            nid += 1
+            part_ids[k].append((nid, pn, pe, pm))
     tmp = OUT / f"_{plate}_object.model"
     with open(tmp, "w") as f:
         f.write(f'<?xml version="1.0" encoding="UTF-8"?>\n<model unit="millimeter" xml:lang="en-US" {NS}>\n<resources>\n')
-        for k, (name, ext, m) in enumerate(meshes, 1):
-            f.write(f'<object id="{k}" type="model"><mesh><vertices>\n')
+        for k, (name, ext, m0) in enumerate(meshes, 1):
+          for oid, pname, pext, m in part_ids[k]:
+            f.write(f'<object id="{oid}" type="model"><mesh><vertices>\n')
             cx, cy = place_xy[k]
             for v in m.vertices - [cx, cy, 0.0]:
                 f.write(f'<vertex x="{v[0]:.6f}" y="{v[1]:.6f}" z="{v[2]:.6f}"/>\n')
             f.write('</vertices><triangles>\n')
-            pt = paints.get(name)
+            pt = paints.get(name) if len(part_ids[k]) == 1 else None
             codes = [paint_code(int(x)) for x in range(18)]   # 1-4 physical heads, 5-17 Full Spectrum mixes
             for i, t in enumerate(m.faces):
                 pc = codes[int(pt[i])] if pt is not None else ""
@@ -169,10 +198,11 @@ def write(path, plates, paints=None):
             '<metadata name="BambuStudio:3mfVersion">1</metadata>',
             f'<metadata name="Title">{html.escape(plate)}</metadata>', '<resources>']
     for k, (name, ext, m) in enumerate(meshes, 1):
+        comps = "".join(f'<component p:path="/3D/Objects/object_1.model" objectid="{oid}" '
+                        f'p:UUID="0001{oid:04d}-b206-40ff-9872-83e8017abed1" transform="1 0 0 0 1 0 0 0 1 0 0 0"/>'
+                        for oid, _, _, _ in part_ids[k])
         root.append(f'<object id="{100 + k}" p:UUID="0000{100 + k:04d}-61cb-4c03-9d28-80fed5dfa1dc" type="model"><components>'
-                    f'<component p:path="/3D/Objects/object_1.model" objectid="{k}" '
-                    f'p:UUID="0001{k:04d}-b206-40ff-9872-83e8017abed1" transform="1 0 0 0 1 0 0 0 1 0 0 0"/>'
-                    f'</components></object>')
+                    f'{comps}</components></object>')
     root.append('</resources>\n<build>')
     for k, _ in enumerate(meshes, 1):
         root.append(f'<item objectid="{100 + k}" transform="1 0 0 0 1 0 0 0 1 {place_xy[k][0]:.4f} {place_xy[k][1]:.4f} 0" printable="1"/>')
@@ -185,13 +215,15 @@ def write(path, plates, paints=None):
                f'    <metadata key="extruder" value="{ext}"/>']
         for key, val in {**SETTINGS["_default"], **SETTINGS.get(name, {})}.items():
             ms.append(f'    <metadata key="{key}" value="{val}"/>')
-        ms += [f'    <part id="{k}" subtype="normal_part">',
-               f'      <metadata key="name" value="{name}"/>',
-               '      <metadata key="matrix" value="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1"/>',
-               f'      <metadata key="extruder" value="{ext}"/>',
-               f'      <mesh_stat face_count="{len(m.faces)}" edges_fixed="0" degenerate_facets="0" '
-               'facets_removed="0" facets_reversed="0" backwards_edges="0"/>',
-               '    </part>', '  </object>']
+        for oid, pname, pext, pm in part_ids[k]:
+            ms += [f'    <part id="{oid}" subtype="normal_part">',
+                   f'      <metadata key="name" value="{pname}"/>',
+                   '      <metadata key="matrix" value="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1"/>',
+                   f'      <metadata key="extruder" value="{pext}"/>',
+                   f'      <mesh_stat face_count="{len(pm.faces)}" edges_fixed="0" degenerate_facets="0" '
+                   'facets_removed="0" facets_reversed="0" backwards_edges="0"/>',
+                   '    </part>']
+        ms += ['  </object>']
     k = 0
     for pi, (pname, pm) in enumerate(plates, 1):
         ms += ['  <plate>', f'    <metadata key="plater_id" value="{pi}"/>', f'    <metadata key="plater_name" value="{html.escape(pname)}"/>',
@@ -277,12 +309,24 @@ def verify(path, expect):
         obj = z.read("3D/Objects/object_1.model").decode()
         ms = z.read("Metadata/model_settings.config").decode()
     rows = []
-    for k, (name, ext, _) in enumerate(expect, 1):
-        body = re.search(rf'<object id="{k}" type="model">(.*?)</object>', obj, re.S).group(1)
-        V = np.array(re.findall(r'<vertex x="([^"]+)" y="([^"]+)" z="([^"]+)"/>', body), float)
-        F = np.array(re.findall(r'<triangle v1="(\d+)" v2="(\d+)" v3="(\d+)"/>', body), int)
-        m = trimesh.Trimesh(V, F, process=False)   # index topology, as the slicer reads it
-        ext_ok = f'<metadata key="name" value="{name}"/>\n    <metadata key="extruder" value="{ext}"/>' in ms
+    with zipfile.ZipFile(path) as z:
+        rootxml = z.read("3D/3dmodel.model").decode()
+    for k, (name, ext, m0) in enumerate(expect, 1):
+        comp = re.search(rf'<object id="{100 + k}"[^>]*><components>(.*?)</components>', rootxml, re.S).group(1)
+        oids = re.findall(r'objectid="(\d+)"', comp)
+        subs = m0.metadata.get("subparts") or [(name, ext, m0)]
+        assert len(oids) == len(subs), name
+        pieces, ext_ok = [], True
+        for oid, (pn, pe, _) in zip(oids, subs):
+            body = re.search(rf'<object id="{oid}" type="model">(.*?)</object>', obj, re.S).group(1)
+            V = np.array(re.findall(r'<vertex x="([^"]+)" y="([^"]+)" z="([^"]+)"/>', body), float)
+            F = np.array(re.findall(r'<triangle v1="(\d+)" v2="(\d+)" v3="(\d+)"[^/]*/>', body), int)
+            pm = trimesh.Trimesh(V, F, process=False)   # index topology, as the slicer reads it
+            assert pm.is_watertight, (name, pn)
+            pieces.append(pm)
+            ext_ok &= f'<part id="{oid}" subtype="normal_part">\n      <metadata key="name" value="{pn}"/>\n      <metadata key="matrix" value="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1"/>\n      <metadata key="extruder" value="{pe}"/>' in ms
+        m = trimesh.util.concatenate(pieces) if len(pieces) > 1 else pieces[0]
+        ext_ok &= f'<metadata key="name" value="{name}"/>\n    <metadata key="extruder" value="{ext}"/>' in ms
         rows.append((name, ext, m.is_watertight, round(m.volume / 1000, 2), round(m.bounds[0][2], 3),
                      round(m.bounds[1][2], 1), ext_ok))
     return rows
@@ -327,7 +371,8 @@ if __name__ == "__main__":
     write_generic(OUT / "plates" / "VoiceClock_shells_only_PLA_generic.3mf", SHELLS_ONLY_PLA)
     write_generic(OUT / "plates" / "VoiceClock_back_plate_only_generic.3mf", BACK_PLATE_ONLY_PLA)
     write_generic(OUT / "plates" / "VoiceClock_internals_PLA_generic.3mf", INTERNALS_PLA)
-    write_generic(OUT / "plates" / "VoiceClock_light_ring_PETG_generic.3mf", LIGHT_RING_PETG)
+    write_generic(OUT / "plates" / "VoiceClock_light_ring_PETG_generic.3mf",      # one body; generic slicers get one colour
+                  [("ring_shell" if n == "ring_shell_2c" else n, e, x, y, r) for n, e, x, y, r in LIGHT_RING_PETG])
     write_generic(OUT / "plates" / "VoiceClock_internals_with_back_plate_PLA_generic.3mf", INTERNALS_WITH_BACK_PLATE_PLA)
     for old in OUT.glob("VoiceClock_plate*.3mf"):
         old.unlink()

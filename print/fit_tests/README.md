@@ -33,7 +33,6 @@ Short, untextured bands of the shells at every interface, plus the small parts a
 4. **Light ring.**
    - Press the ring shell onto the ring base. The tabs go in the slots, and the crush ribs should grip without forcing.
    - Set the ring-bore band over it: there should be an even gap of about 0.6 mm all round.
-   - With foil tape fitted, light the LEDs to judge the glow before the real print.
 5. **Spider.** The M3 × 12 screws should start in the d3.1 holes by hand and seat on the CrowPanel hub.
 
 If anything binds, note which part and roughly how much, before changing the CAD.

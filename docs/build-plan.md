@@ -11,12 +11,12 @@
 > | Stack in the case | Centred only; nothing keyed it | **Keyed.** The 4 cradle ribs run down the wall into carrier notches (0.2 mm per side). Spider M3 holes are Ø3.1 |
 > | Dial angle | v1 dial sat ~5° anticlockwise (one photo, ±2°): a fixed offset in Elecrow's panel or the print, not play (the CAD chain is exact) | The spider turns the CrowPanel pattern −5° (`CP_ROT_TRIM_DEG`). The firmware has no trim; judge by eye and adjust that one number |
 > | Front face | Flat bezel; shell printed face-down (rough) | **No flat face.** The sphere runs to the ring and the front shell prints **face-up** |
-> | Light ring | Solid PETG tube at 100 % infill | **Foil-tape-lined hollow channel.** The inner wall carries the 3 board spacers on the clamp screws; the sleeve and diffuser cap stand 2.35 mm proud of the sphere. Modelled at roughly 50–80 × brighter |
+> | Light ring | Solid PETG tube at 100 % infill | **Hollow channel with white PETG walls** (foil tape dropped 11 Nov 2026: too fiddly, and it ate the tolerances). The inner wall carries the 3 board spacers on the clamp screws; the sleeve and diffuser cap stand 2.35 mm proud of the sphere. Modelled at roughly 50–80 × brighter |
 > | USB-C board | Self-tapping into a 4 mm wall | **2 horizontal M2 heat-set inserts** in 2 pads on the socket side. The screws go in from the rim side, where a short hex key reaches them |
 > | Speaker | 0.9 mm below the screw tip | **4.4 mm below the tip** (the hole runs into the plate) |
 > | Wood variant | Per-layer ±9 °C drift; all wood PLA | **Fixed temperatures**: cool and hot cherry heads plus walnut cores, on a **plain-PLA core**; new ring model; no relief |
 >
-> Hardware now: 3 × M3 × 12, 3 × M2 × 20, 4 × M2 × 10, 7 M2 inserts, aluminium foil tape. The assembly guide is in `docs/assembly/ASSEMBLY.md`.
+> Hardware now: 3 × M3 × 12, 3 × M2 × 20, 4 × M2 × 10, 7 M2 inserts. The assembly guide is in `docs/assembly/ASSEMBLY.md`.
 
 > **v1 update (5 Nov 2026), after the first full print.** The CAD is the source of truth. What changed from the plan below:
 >
@@ -58,7 +58,7 @@ An open-source Home Assistant voice clock shaped like the reference photo: a sph
 
 - **The knob sticks out.** The CrowPanel ring sits about 7 mm proud of the face so you can grip and turn it. The flat face (the bezel) surrounds it with a 0.75 mm gap.
 - **The case is a sphere.** It's no longer a cylinder.
-- **The bezel ring glows.** In v2 it's a foil-lined hollow channel (ring base + ring shell) with a diffuser cap, lit by the reSpeaker's LED ring, which sits right behind the display edge.
+- **The bezel ring glows.** In v2 it's a white-walled hollow channel (ring base + ring shell) with a diffuser cap, lit by the reSpeaker's LED ring, which sits right behind the display edge.
 - **Audio lives on the reSpeaker.** It does not go on the CrowPanel (section 3). That closes the open audio question in [crowpanel-esphome-notes.md](crowpanel-esphome-notes.md).
 
 ![Concept side section](img/section-concept.png)
