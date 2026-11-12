@@ -2,7 +2,11 @@
 
 An open-source bedside clock and Home Assistant voice satellite: a knit-textured 116 mm sphere with a round knob display on the front.
 
-![Voice Clock](docs/assembly/img/hero_front.jpg)
+![Voice Clock, printed in Full Spectrum walnut](docs/img/real/walnut_v2_photo.jpg)
+
+![Turning the knob to dim a lamp](docs/img/real/knob_demo.gif)
+
+[Full demo video (MP4, 34 s)](docs/img/real/demo.mp4)
 
 - **Clock face and controls:** Elecrow CrowPanel 2.1" rotary display (ESP32-S3, 480 × 480 round IPS, turn-and-press knob, touch). Analog clock, timer ring, alarm, night mode and a light/media control page, in ESPHome + LVGL.
 - **Voice:** Seeed reSpeaker XVF3800 4-mic array with XIAO ESP32-S3: wake word, echo cancellation, 3 W speaker and the 12-LED ring that lights a white-walled light channel round the knob.
