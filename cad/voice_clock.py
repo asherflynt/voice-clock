@@ -87,8 +87,10 @@ CP_REAR_Z     = -21.0 + CP_Z0                  # 8.6   connectors end here
 CP_SCREWS_NOM = [(-5.15, -2.98), (5.15, -2.98), (0.0, 5.95)]   # D x,y (M3), before the trim
 CP_KEEPOUT_NOM = [(1.6, 8.5, 14.1, 17.8), (-8.5, -1.6, 14.1, 17.8),
                   (10.6, 14.4, -3.5, 3.5)]     # rear 4-pin plug keep-outs (x0,x1,y0,y1), before the trim
-CP_ROT_TRIM_DEG = -5.0    # rotates the CrowPanel (its screws in the spider) about D +Z. The assembled v1
-                          # dial sat ~5 deg CCW (one photo, +-2). The CAD chain has no offset of its own
+CP_ROT_TRIM_DEG = -2.8    # rotates the CrowPanel (its screws in the spider) about D +Z. The assembled v1
+                          # dial sat ~5 deg CCW (one photo, +-2), so v2 printed with -5.0. The v2 photo
+                          # (12 Nov 2026, phone level, 12 dial marks fitted) shows the dial 2.2 deg CW,
+                          # so the real offset is ~2.8 deg CCW. The CAD chain has no offset of its own
                           # (CrowPanel pattern 90/210/330, reSpeaker holes symmetric, mute button up under
                           # the plunger), so this is a FIXED offset in Elecrow's panel or the print, not
                           # play. The firmware has no trim (75f142a); if 12 sits X deg CCW, add -X.

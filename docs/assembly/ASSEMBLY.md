@@ -185,4 +185,4 @@ In this picture: **1** Back plate, **2** USB-C breakout (5.1k), **3** Rear shell
 
 ## Firmware
 
-Flash the clock face with the ESPHome config in `firmware/`, and the reSpeaker with the formatBCE XVF3800 integration. Cap the speaker volume (the runaway follow-up loop seen on 6 Nov ran at 100 %). The v2 spider turns the CrowPanel 5° clockwise to cancel the tilt seen on v1; the firmware has no trim, so check the dial by eye. If 12 still sits X° anticlockwise, change `CP_ROT_TRIM_DEG` in `cad/voice_clock.py` by -X° and reprint the spider.
+Flash the clock face with the ESPHome config in `firmware/`, and the reSpeaker with the formatBCE XVF3800 integration. Cap the speaker volume (the runaway follow-up loop seen on 6 Nov ran at 100 %). The spider turns the CrowPanel 2.8° clockwise to cancel the panel's fixed tilt (measured on v1 and v2); the firmware has no trim, so check the dial by eye. If 12 still sits X° anticlockwise, change `CP_ROT_TRIM_DEG` in `cad/voice_clock.py` by -X° and reprint the spider.

@@ -56,7 +56,7 @@ Version 2 (6 Nov 2026), after the v1 print fell apart:
 
 `cad/check.py` checks every part against Seeed's reSpeaker STEP (put it in `cad/vendor/`), sweeps both twist locks with the detent fingers and pawls bent, and drops the stack in. v2 has not been printed yet; the tolerances to confirm on the first print are all single parameters in `cad/voice_clock.py` (`BLK_TOP`, `FING_BUMP_R`, `BP_TOOTH_RO`, `CARRIER_KEY_CLR`, `RING_BORE_R`).
 
-The CrowPanel's native top points left (`lvgl: rotation: 90`, see `firmware/README.md`). The v2 spider turns the panel 5° clockwise (`CP_ROT_TRIM_DEG`) to level the dial; check it by eye after assembly.
+The CrowPanel's native top points left (`lvgl: rotation: 90`, see `firmware/README.md`). The spider turns the panel 2.8° clockwise (`CP_ROT_TRIM_DEG`) to level the dial; check it by eye after assembly.
 
 ## License
 
