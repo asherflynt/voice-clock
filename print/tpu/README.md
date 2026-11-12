@@ -5,4 +5,5 @@
 - Snapmaker TPU 95A HF profile: 230 °C nozzle, engineering plate at 30 °C, 0.2 mm layers, 100 % infill, 2 walls.
 - A 3 mm brim on the small speaker washers only (they're tiny and would otherwise lift); none on the grip pads.
 - About 7 min and 3 g.
+- TPU on another head: `cad/slice_tpu.py 3` writes `TPU_U1_head3.*` (TPU on head 3, T2).
 - Rebuild with `cad/slice_tpu.py`.

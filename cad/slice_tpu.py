@@ -3,8 +3,8 @@
   .venv/bin/python voice_clock.py && .venv/bin/python slice_tpu.py
       -> out/tpu/TPU_U1.3mf (project) + TPU_U1.gcode
 
-Heads 1-3 are listed only so the TPU lands on head 4 (the slot the other U1 files use for TPU);
-nothing prints from them. Object settings from make_3mf.SETTINGS: 100 % infill, 2 walls, a 3 mm
+The other heads are listed only so the TPU lands on head 4 (the slot the other U1 files use for TPU)
+or the head given on the command line; nothing prints from them. Object settings from make_3mf.SETTINGS: 100 % infill, 2 walls, a 3 mm
 brim on the small washers only. Engineering plate.
 """
 import json
@@ -18,7 +18,11 @@ TPU_BASE = "Snapmaker TPU 95A HF @U1 0.4 nozzle"
 FILLER = "Snapmaker PETG Translucent @U1 0.4 nozzle"        # heads 1-3: unused on this plate
 PROC_BASE = "0.20mm Standard @Snapmaker U1 (0.4 nozzle)"
 PROC_NAME = "0.20mm TPU parts @Snapmaker U1 (0.4 nozzle)"
-ITEMS = [("foot_pads", 4, 110, 135, 0), ("tpu_washers", 4, 175, 135, 0)]
+SLOT = 4          # default TPU head; `slice_tpu.py 3` puts it on head 3 instead (-> TPU_U1_head3.*)
+
+
+def items(slot):
+    return [("foot_pads", slot, 110, 135, 0), ("tpu_washers", slot, 175, 135, 0)]
 PROC = {
     "skirt_loops": "0",
     "enable_support": "0",
@@ -27,12 +31,13 @@ PROC = {
 }
 
 
-def main():
-    shutil.rmtree(OUT, ignore_errors=True)
-    sliced = OUT / "sliced"
+def main(slot=SLOT):
+    tag = "" if slot == SLOT else f"_head{slot}"
+    sliced = OUT / f"sliced{tag}"
+    shutil.rmtree(sliced, ignore_errors=True)
     sliced.mkdir(parents=True)
-    model = OUT / "TPU_model.3mf"
-    M3.write(model, [("TPU - grip pads + speaker washers - head 4", M3.place(ITEMS))])
+    model = OUT / f"TPU_model{tag}.3mf"
+    M3.write(model, [(f"TPU - grip pads + speaker washers - head {slot}", M3.place(items(slot)))])
 
     mach = W.resolve(W.PRINTER)
     mach["from"] = "system"
@@ -44,22 +49,22 @@ def main():
     proc.pop("wipe_tower_filament", None)       # the 2.4.1 CLI segfaults on it
     files = {}
     for kind, d in (("machine", mach), ("process", proc)):
-        files[kind] = OUT / f"{kind}.json"
+        files[kind] = sliced / f"{kind}.json"
         files[kind].write_text(json.dumps(d, indent=1))
     fil_files = []
-    for i, base in enumerate([FILLER, FILLER, FILLER, TPU_BASE], 1):
+    for i, base in enumerate([TPU_BASE if i == slot else FILLER for i in range(1, 5)], 1):
         f = W.resolve(base)
         name = f"TPU 95A HF @U1" if base == TPU_BASE else f"unused head {i} @U1"
         f.update({"name": name, "from": "User", "inherits": base, "filament_settings_id": [name],
                   "compatible_printers": [W.PRINTER]})
         f.pop("setting_id", None)
-        p = OUT / f"filament_{i}.json"
+        p = sliced / f"filament_{i}.json"
         p.write_text(json.dumps(f, indent=1))
         fil_files.append(str(p))
 
     common = ["--arrange", "0", "--load-settings", f"{files['machine']};{files['process']}",
               "--load-filaments", ";".join(fil_files)]
-    proj = OUT / "TPU_U1.3mf"
+    proj = OUT / f"TPU_U1{tag}.3mf"
     r = W.flatpak_cli(common + ["--export-3mf", str(proj), str(model)], timeout=900)
     print("project rc", r.returncode, proj if proj.exists() else "MISSING")
     r = W.flatpak_cli(common + ["--slice", "0", "--outputdir", str(sliced), str(model)], timeout=900)
@@ -69,9 +74,11 @@ def main():
         print(r.stderr[-3000:], r.stdout[-3000:])
     g = sliced / "plate_1.gcode"
     if g.exists():
-        shutil.copy(g, OUT / "TPU_U1.gcode")
-        print("gcode ->", OUT / "TPU_U1.gcode")
+        shutil.copy(g, OUT / f"TPU_U1{tag}.gcode")
+        print("gcode ->", OUT / f"TPU_U1{tag}.gcode")
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    OUT.mkdir(parents=True, exist_ok=True)
+    main(int(sys.argv[1]) if len(sys.argv) > 1 else SLOT)
