@@ -264,6 +264,33 @@ USB_BOSS_D    = 5.0       # the board touches only these bosses round its holes 
 USB_BOSS_H    = 0.8
 USB_SCREW_L   = 10.0
 
+# ambient light sensor (v3): Adafruit #5378 right-angle VEML7700 breakout (STEP: vendor/adafruit_5378_veml7700.step,
+# from github.com/adafruit/Adafruit_CAD_Parts, MIT). The VEML7700 looks out of the board's long edge, parallel to the
+# PCB, so the board lies flat (parallel to the reSpeaker) on a pad at the top of the rear shell, behind the carrier,
+# with its sensor edge against the wall. The window looks along D +Y: 15 deg behind world vertical, away from the
+# display and light ring. Wired to the XIAO's I2C (D4 SDA, D5 SCL, 3V3, GND) with a STEMMA QT / Qwiic lead.
+# Board frame (STEP): x along the long edge, y inward from the hole row to the sensor edge (y = 17.78), z = PCB normal
+# (parts on +z). In D it is placed with STEP x -> D x (centred), STEP y -> D +Y, STEP z -> D +Z (parts face the carrier).
+LUX_STEP      = VENDOR / "adafruit_5378_veml7700.step"
+LUX_PCB       = (25.4, 17.78, 1.57)
+LUX_CORNER_R  = 2.54
+LUX_HOLES     = [(2.54, 15.24), (22.86, 15.24)]   # the 2 mounting holes (d2.5) next to the sensor edge
+LUX_SENSOR    = (12.69, 17.65, 2.82)            # centre of the VEML7700's window face (STEP)
+LUX_PARTS_H   = 4.53 - 1.57                     # tallest part above the PCB (the STEMMA QT sockets)
+LUX_PCB_Z     = -21.0                           # PCB back face (the pad's top face)
+LUX_EDGE_GAP  = 0.3                             # closest PCB edge -> rear shell wall
+LUX_PAD_DEPTH = 2.8                             # pad inner face this far inside the hole centres
+LUX_PAD_W     = 26.0
+LUX_SCREW_L   = 6.0                             # 2 x M2 x 6 socket head into 2 M2 inserts in the pad
+LUX_BORE_D    = 2.4                             # window: d2.4 bore, flared to LUX_FLARE_D on the outside
+LUX_FLARE_D   = 5.0
+LUX_FLARE_T   = 1.6                             # flare depth (measured along the bore)
+LUX_SHROUD_GAP = 0.4                            # PCB edge -> shroud face (the sensor face is 0.13 behind the edge)
+LUX_SHROUD_R  = 2.6                             # shroud half-width round the d2.4 bore
+LUX_CABLE_ANG = 60.0                            # cable notch in the carrier's rim (between the 25 deg key rib and the plunger)
+LUX_CABLE_W   = 5.0
+LUX_CABLE_R   = 48.5
+
 # ---------------------------------------------------------------- derived
 C_Z    = FACE_Z - sqrt(SPHERE_R**2 - FACE_R**2)          # sphere centre z (-2.79)
 R_IN   = SPHERE_R - WALL
@@ -638,6 +665,9 @@ def rear_shell():
     shell = shell + (ballast_skin() & env & zslab(BACK_Z, BAL_TOP))
     # grip-pad recess in the flat base
     shell = shell - pad_recess("rear")
+    # ambient light sensor (v3): pad with 2 M2 inserts at the top, window through the wall
+    shell = shell + lux_pad() + lux_shroud()
+    shell = shell - lux_cuts()
 
     # back plate bayonet: lip at the back opening (on the bed) + entry notches + pawl detent notches
     rl = r_in_at(BACK_Z + BP_LIP_T) + 1.0
@@ -958,6 +988,7 @@ def carrier():
             c = c - tz_prism([(-w / 2 - 0.4, zf - sgn * 0.01), (w / 2 + 0.4, zf - sgn * 0.01),
                               (w / 2, zf + sgn * 0.4), (-w / 2, zf + sgn * 0.4)][::sgn], ang, CRADLE_PAD_R - 0.5, 60)
     c = c - sector([(50.0, z0 - 1), (CARRIER_R + 1, z0 - 1), (CARRIER_R + 1, z1 + 1), (50.0, z1 + 1)], 85.0, 95.0)
+    c = c - radial_box(LUX_CABLE_ANG, LUX_CABLE_R, CARRIER_R + 1, LUX_CABLE_W, z0 - 1, z1 + 1)   # light-sensor lead
     # (relief: the installed mute plunger reaches r 50.48 at 90 deg, and the stack drops past it)
     c = c & above_floor()
     return c
@@ -967,6 +998,90 @@ def speaker_placed():
     from build123d import import_step
     spk = import_step(str(SPK_STEP))
     return Pos(0, SPK_CY, BACK_Z + SPK_GASKET + SPK_BODY[2]) * Rot(0, 180, 0) * spk
+
+
+def lux_outline(n=12):
+    """PCB outline (STEP coords): the sensor edge and its 2 rounded corners, the side that faces the wall."""
+    L, W, _ = LUX_PCB
+    pts = [(x, W) for x in (LUX_CORNER_R, L - LUX_CORNER_R)]
+    for cx, a0 in ((LUX_CORNER_R, 90.0), (L - LUX_CORNER_R, 0.0)):
+        for k in range(n + 1):
+            a = radians(a0 + 90.0 * k / n)
+            pts.append((cx + LUX_CORNER_R * cos(a), W - LUX_CORNER_R + LUX_CORNER_R * sin(a)))
+    return pts
+
+
+def lux_y0():
+    """D y of the STEP origin: the board slides out toward the wall until its outline is LUX_EDGE_GAP
+    from the inner wall at the PCB's back face (the wall only gets further out above that)."""
+    r = r_in_at(LUX_PCB_Z) - LUX_EDGE_GAP
+    L = LUX_PCB[0]
+    return min(sqrt(r ** 2 - (x - L / 2) ** 2) - y for x, y in lux_outline())
+
+
+def lux_d(bx, by, bz=0.0):
+    """STEP coords -> D frame."""
+    return Vector(bx - LUX_PCB[0] / 2, lux_y0() + by, LUX_PCB_Z + bz)
+
+
+def lux_window():
+    """Window axis: (y of the outer surface, z) at x = 0."""
+    zw = lux_d(*LUX_SENSOR).Z
+    return r_out_at(zw), zw
+
+
+def lux_placed():
+    from build123d import import_step
+    o = lux_d(0, 0, 0)
+    # flattened to plain solids: booleans on the imported assembly compound give wrong volumes
+    return Compound(list((Pos(o.X, o.Y, o.Z) * import_step(str(LUX_STEP))).solids()))
+
+
+def lux_screw_tip_z():
+    return LUX_PCB_Z + LUX_PCB[2] - LUX_SCREW_L
+
+
+def lux_pad():
+    """Pad under the sensor board: flat top at the PCB back, a vertical inner face (prints without
+    overhang in the back-rim-down rear shell) running down into the wall."""
+    yh = lux_d(*LUX_HOLES[0]).Y
+    y_in = yh - LUX_PAD_DEPTH
+    pad = Pos(0, y_in, BACK_Z) * Box(LUX_PAD_W, 80, LUX_PCB_Z - BACK_Z, align=(Align.CENTER, Align.MIN, Align.MIN))
+    return pad & sphere_out()
+
+
+def lux_shroud():
+    """Light shroud round the window on the inner wall: the board's corners meet the curved wall first,
+    so the sensor face sits ~2.4 mm in from the wall; this closes that gap to LUX_SHROUD_GAP round the
+    bore. Its underside is a 45 deg slope into the wall (prints without support)."""
+    y_edge = lux_d(0, LUX_PCB[1]).Y
+    y0 = y_edge + LUX_SHROUD_GAP
+    _, zw = lux_window()
+    h = LUX_SHROUD_R
+    blk = Pos(0, y0, zw - h - 6) * Box(2 * h, 12, 2 * h + 6, align=(Align.CENTER, Align.MIN, Align.MIN))
+    blk = blk & half((0, 1, 1), (Vector(0, y0, zw - h)).dot(Vector(0, 1, 1).normalized()))   # lowest at the wall
+    return blk & sphere_out()
+
+
+def lux_cuts():
+    """Insert holes in the pad and the window through the wall."""
+    cut = None
+    tip = lux_screw_tip_z()
+    for hx, hy in LUX_HOLES:
+        p = lux_d(hx, hy)
+        h = cyl(M2_INSERT_D / 2, LUX_PCB_Z - M2_INSERT_L, LUX_PCB_Z + 1, p.X, p.Y) \
+            + Pos(p.X, p.Y, LUX_PCB_Z - INSERT_CHAMFER) * Cone(M2_INSERT_D / 2, M2_INSERT_D / 2 + INSERT_CHAMFER,
+                                                              INSERT_CHAMFER + 0.01, align=(Align.CENTER, Align.CENTER, Align.MIN)) \
+            + cyl(1.2, tip - SCREW_MARGIN, LUX_PCB_Z, p.X, p.Y)
+        cut = h if cut is None else cut + h
+    y_out, zw = lux_window()
+    r = LUX_BORE_D / 2
+    y0 = lux_d(*LUX_SENSOR).Y + 0.05
+    bore = radial_cyl(r, 90, y0, y_out + 2, zw)
+    roof = Plane.XZ * Polygon((-r * 0.7071, zw + r * 0.7071), (r * 0.7071, zw + r * 0.7071), (0, zw + r * 1.4142), align=None)
+    roof = extrude(roof, amount=40, both=True) & (Pos(0, y0, zw) * Box(10, y_out + 2 - y0, 10, align=(Align.CENTER, Align.MIN, Align.CENTER)))
+    flare = radial_cone(r, LUX_FLARE_D / 2 + 0.3, 90, y_out - LUX_FLARE_T, y_out + 0.4, zw)
+    return cut + bore + roof + flare
 
 
 _RS_STEP = None
@@ -1056,6 +1171,7 @@ def proxies():
     xiao = Rot(0, 0, RS_ROT) * Pos(0, 39, -RS_T) * Box(18, 22, 4.5, align=(Align.CENTER, Align.CENTER, Align.MAX))
     p["rs_xiao"] = xiao
     p["speaker"] = speaker_placed()
+    p["lux_board"] = lux_placed()
     return p
 
 

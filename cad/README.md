@@ -2,6 +2,8 @@
 
 A parametric [build123d](https://github.com/gumyr/build123d) model of the enclosure described in [`../docs/build-plan.md`](../docs/build-plan.md).
 
+**v3 (13 Nov 2026)** adds an ambient light sensor: Adafruit's right-angle VEML7700 (#5378, STEP in `vendor/`, MIT) on a pad with 2 M2 inserts at the top of the rear shell, behind the carrier, looking out of a Ø2.4 window (flared to Ø5) 15° behind vertical. A shroud on the inner wall closes the gap between the sensor and the curved wall, and a 5 mm notch in the carrier's rim at 60° carries its lead to the XIAO. All of it is in the `LUX_*` constants; `check.py` has a section for it.
+
 **v2 (6 Nov 2026)** fixes everything the first wood print showed up:
 - **Shells twist-lock.** The front and rear shells use a 7-lug bayonet with 4 flexure detent fingers, and the back plate a 3-lug bayonet with two flexure pawls. v1's pull-apart snaps are gone.
 - **The board stack is keyed.** It can't turn in the case.
@@ -46,12 +48,12 @@ Every dimension is a named constant at the top of `voice_clock.py`. Values marke
 | Part | Plate / slot | Orientation | Notes |
 |---|---|---|---|
 | front_shell | 1 → slot 2 (PLA) | **Face up** (seam on the bed) | Sphere runs up to the light-ring bore. 7 bayonet blocks and the 4 mic boots print on the bed. The mic channels (`mic_channel()`) have pointed roofs (a cone up the vertical leg, a 55° ridge on the radial leg), so no ceiling is flatter than 45° and nothing bridges. 5 mm brim |
-| rear_shell | 1 → slot 2 (PLA) | Back rim down | Bayonet collar and 7 lugs at the top, 4 full-height key ribs, **ballast pocket** (about 30 cm³, low behind the carrier), grip-pad recess, mute guide boss, back-plate lip at the bed. 5 mm brim |
+| rear_shell | 1 → slot 2 (PLA) | Back rim down | Bayonet collar and 7 lugs at the top, 4 full-height key ribs, **ballast pocket** (about 30 cm³, low behind the carrier), grip-pad recess, mute guide boss, back-plate lip at the bed. **v3:** light-sensor pad (flat top, vertical inner face) with 2 M2 inserts, the window (teardrop roof) and its shroud (45° underside), all printable without supports. 5 mm brim |
 | back_plate | 1 → slot 2 (PLA) | Outer face down | 3 bayonet lugs, 2 flexure pawls, coin slot, 4 M2 inserts (speaker 2, USB-C 2). The USB-C board's socket side bears on 2 pads (bosses round its holes only); its screws go in from the rim side, where a hex key comes straight in over the plate |
 | mute_plunger | 1 (PLA) or 3 (white PETG) | Cap down | 100% infill. Use the PETG one if you have it: its snap barb is tougher |
 | ring_base | 3 → slot 2 (white PETG) | Spacers down | Light-channel inner wall (its white face is the inner reflector) plus the 3 board spacers on the clamp screws |
 | ring_shell | 3 → slot 1 natural + slot 2 white PETG, one print | Cap down | One object, two colours: natural PETG for the cap and the band above the sphere (z ≥ `RING_SPLIT_Z`), white PETG for the rest of the sleeve. A 1.4 mm diffuser cap (frosted by the textured PEI). The cap spans the whole ring and overlaps the inner wall's top, so there is no gap at the face and no straight view down to the LEDs |
-| carrier | 2 → slot 2 (PLA) | Back face down | Bulkhead; its 4 notches key the stack on the rear shell's ribs |
+| carrier | 2 → slot 2 (PLA) | Back face down | Bulkhead; its 4 notches key the stack on the rear shell's ribs. **v3:** 5 mm lead notch in the rim at 60° (about 1 o'clock) |
 | spider | 2 → slot 2 (PLA) | Plate down | 100% infill. CrowPanel pattern turned by `CP_ROT_TRIM_DEG` |
 | foot_pads | 4 → slot 4 (TPU) | Flat | 2 grip pads for the recesses in the flat base (glue in with CA). They stand 0.4 mm proud |
 | tpu_washers | 4 → slot 4 (optional) | Flat | 4 speaker isolation washers |
@@ -71,22 +73,24 @@ Every dimension is a named constant at the top of `voice_clock.py`. Values marke
 | 3 | M2 × 20 socket head | Carrier → reSpeaker → ring_base spacer → M2 insert in the spider | 2.5 mm |
 | 2 | M2 × 10 socket head | Speaker ears: head, TPU washer, ear, TPU washer, boss insert | 3.0 mm; 4.4 mm of hole below the tip |
 | 2 | M2 × 10 socket head | USB-C breakout, from the rim side → M2 inserts at the far face of its 2 pads (through holes) | 3 mm insert, tip 2.4 mm past the pad and 7.8 mm short of the speaker |
+| 2 | M2 × 6 socket head | v3 light-sensor board → M2 inserts in its pad, straight in from the front while the rear shell is empty | 3 mm; 2.5 mm of hole below the tip. M2 × 8 or longer would break through the shell |
 
 | Qty | Insert (M2 × 3 × Ø3.2, hole Ø2.9) | Where |
 |---|---|---|
-| 7 | | Spider underside 3, speaker bosses 2, USB-C pads 2 (pressed in horizontally from the pads' speaker-side face) |
+| 9 | | Spider underside 3, speaker bosses 2, USB-C pads 2 (pressed in horizontally from the pads' speaker-side face), light-sensor pad 2 (vertically, from the front) |
 
 **Also needed:**
 - 1/16" adhesive closed-cell foam: 4 mic gaskets Ø5 with a Ø2 hole, stuck **to the front shell's mic boots**, plus a speaker-face ring.
 - **Ballast:** about 160 g of steel BBs or shot (4.5 mm airgun BBs are cheap) with **slow-cure (30 min or longer) epoxy**, or about 300 g of tungsten putty. Modelling clay only adds about 55 g.
 - **CA glue** for the TPU grip pads.
 - Wire, the MX1.25 pigtail and heat shrink.
+- **v3:** Adafruit #5378 right-angle VEML7700 board and a 100–150 mm STEMMA QT / Qwiic cable.
 
 ## Assembly order
 
 Full steps are in [`../docs/assembly/ASSEMBLY.md`](../docs/assembly/ASSEMBLY.md).
 
-1. Fit the 7 M2 inserts.
+1. Fit the 9 M2 inserts.
 2. Make the power harness and bench-test both boards.
 3. Swap the CrowPanel's 3 rear screws for M3 × 12 through the spider.
 4. **Light ring, part 1.**
@@ -95,7 +99,7 @@ Full steps are in [`../docs/assembly/ASSEMBLY.md`](../docs/assembly/ASSEMBLY.md)
 5. reSpeaker (mute "A" at 12 o'clock), carrier, 3 × M2 × 20 into the spider (snug only).
 6. **Light ring, part 2.** Press the ring_shell on over the knob: tabs into the slots.
 7. **Ballast** (before the stack goes in): stand the rear shell on its back rim and fill the pocket along the bottom of the shell to 1 mm below its rim. Use steel shot stirred into slow-cure epoxy, poured in two layers so the epoxy doesn't heat the PLA (it softens around 55 °C), or press in tungsten putty and skim it with a little epoxy. Let it cure, then glue the 2 TPU grip pads into the recesses in the flat base.
-8. Click the mute plunger into the rear shell and drop the stack in: the carrier's notches go over the 4 ribs.
+8. Click the mute plunger into the rear shell. **v3:** screw the light-sensor board onto its pad (2 × M2 × 6, straight down through the front opening) and plug in its lead. Drop the stack in: the carrier's notches go over the 4 ribs, and the sensor lead lies in the carrier's rim notch.
 9. **Front shell.**
    - Stick the 4 mic gaskets onto the boots.
    - Set the shell on turned 10° anticlockwise (seen from the front), so the base flats are offset by a finger's width.
@@ -130,6 +134,7 @@ Full steps are in [`../docs/assembly/ASSEMBLY.md`](../docs/assembly/ASSEMBLY.md)
   - channel width, bore clearance, knob exposure
   - crush ribs and how the ring goes on
 - **Screws:** every screw length against its insert, with at least 2.5 mm of hole below each tip.
+- **Light sensor (v3):** board clear of the carrier and the reSpeaker STEP; the window open from the sensor face to the outside; the shroud gap; the board drops onto its pad; the insert holes stay inside the shell; a hex key reaches both screws straight in from the front.
 
 ## Still to verify on the bench
 

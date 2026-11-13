@@ -45,6 +45,7 @@ ALLOWED = {
     frozenset({"cp_knob", "cp_glass"}), frozenset({"cp_pcb", "cp_conn"}),
     frozenset({"rs_pcb", "rs_leds"}), frozenset({"rs_pcb", "rs_xiao"}),
     frozenset({"back_plate", "speaker"}), frozenset({"mute_plunger", "rear_shell"}),
+    frozenset({"rear_shell", "lux_board"}),
 }
 print(flush=True); print("== pairwise overlap, locked (mm^3)")
 for a, b in itertools.combinations(allp, 2):
@@ -97,7 +98,7 @@ print(flush=True); print("== the stack drops into the rear shell from the front"
 stack = [RS_EDGE, parts["carrier"], parts["spider"], parts["ring_base"], parts["ring_shell"],
          prox["cp_knob"], prox["cp_pcb"]]
 worst = 0.0
-rear_plg = parts["rear_shell"] + parts["mute_plunger"]       # the plunger is clicked in first
+rear_plg = parts["rear_shell"] + parts["mute_plunger"] + prox["lux_board"]   # plunger and light sensor fitted first
 for s in SW + [9, 10, 11, 15]:
     for st in stack:
         worst = max(worst, vol(Pos(0, 0, s) * st, rear_plg))
@@ -228,6 +229,8 @@ for phi in (-BP_TWIST, -24, -16, -8, -4, -1, 0):
     for m in moving:
         worst = max(worst, vol(t * m, rear))
     worst = max(worst, vol(t * spk, parts["carrier"]))
+    for m in moving:
+        worst = max(worst, vol(t * m, prox["lux_board"]))
 flag(worst < 0.01, f"twist sweep (plate, speaker, USB-C board + screws) vs rear shell + carrier: max overlap {worst:.3f}")
 v_lock = vol(bp, rear)
 flag(v_lock < 0.05, f"locked: back plate x rear shell {v_lock:.3f} mm3 (teeth sit in their notches)")
@@ -414,6 +417,42 @@ v_key = vol(key, bp_only)
 flag(v_key < 0.01, f"hex key and screw reach both USB-C screws straight in from the plate's rim ({v_key:.3f} mm3)")
 print(f"  inserts: M2 (hole d{M2_INSERT_D}, {INSERT_CHAMFER} mm lead-in): spider 3 (through), speaker bosses 2, "
       f"USB-C pads 2 (pressed in from the pads' speaker-side face)")
+
+print(flush=True); print("== ambient light sensor (Adafruit #5378 VEML7700, top of the rear shell)")
+lux = prox["lux_board"]
+rear = parts["rear_shell"]
+d = lux.distance_to(parts["carrier"])
+flag(d >= 1.0, f"sensor board -> carrier: {d:.2f} mm")
+zgap = min(s.bounding_box().min.Z for s in rs_solids) - lux.bounding_box().max.Z   # the board is wholly behind it
+flag(zgap >= 2.0, f"sensor board -> reSpeaker STEP: {zgap:.1f} mm (axial gap, a lower bound)")
+sf = lux_d(*LUX_SENSOR)
+y_out, zw = lux_window()
+ray = Pos(sf.X, sf.Y + 0.02, sf.Z) * Rot(-90, 0, 0) * Cylinder(0.9, y_out + 3 - sf.Y, align=(Align.CENTER, Align.CENTER, Align.MIN))
+blocked = vol(ray, rear) + sum(vol(ray, p) for n, p in parts.items() if n != "rear_shell")
+flag(blocked < 0.01, f"window open from the sensor face to the outside ({blocked:.3f} mm3)")
+gap = lux_d(0, LUX_PCB[1]).Y + LUX_SHROUD_GAP - sf.Y
+flag(0.2 <= gap <= 1.0, f"sensor face -> light shroud {gap:.2f} mm (bare wall would be {r_in_at(sf.Z) - sf.Y:.1f} mm)")
+up_ang = degrees(atan2(UP_D.Z, UP_D.Y))
+print(f"  window: d{LUX_BORE_D} bore flared to d{LUX_FLARE_D}, at z {zw:.1f} on top, looking {up_ang:.0f} deg behind vertical")
+worst = 0.0
+for s in SW:                  # down through the front opening held 1 mm toward the centre (its corners are 0.7 mm
+    dy = -1.0 * min(1.0, s / 5.0)   # wider than the bayonet collar), then out onto the pad over the last 5 mm
+    worst = max(worst, vol(Pos(0, dy, s) * lux, rear))
+flag(worst < 0.01, f"board goes in past the collar (1 mm in from the wall) and onto its pad: max overlap {worst:.3f}")
+tip = lux_screw_tip_z()
+eng = min(LUX_SCREW_L - LUX_PCB[2], M2_INSERT_L)
+flag(eng >= M2_INSERT_L, f"M2x{LUX_SCREW_L:.0f}: full {eng:.0f} mm insert engaged, {SCREW_MARGIN} mm of hole below the tip")
+reach = None
+for hx, hy in LUX_HOLES:
+    p = lux_d(hx, hy)
+    skin = r_out_at(tip - SCREW_MARGIN) - (hypot(p.X, p.Y) + 1.2)
+    flag(skin >= 0.8, f"insert hole at x {p.X:+.1f}: {skin:.1f} mm of shell outside its bottom")
+    top = LUX_PCB_Z + LUX_PCB[2]
+    k = cyl(2.1, top, top + 2.2, p.X, p.Y) + cyl(1.0, top + 2.2, COL_TOP + 5, p.X, p.Y)
+    reach = k if reach is None else reach + k
+v = vol(reach, rear)
+flag(v < 0.01, f"empty rear shell: hex key straight in from the front reaches both screws ({v:.3f} mm3)")
+print(f"  carrier: {LUX_CABLE_W:.0f} mm cable notch at {LUX_CABLE_ANG:.0f} deg (r {LUX_CABLE_R} out) for the STEMMA QT lead")
 
 print(flush=True); print("== mic channels (port -> outside, all 4 diagonals)")
 fs = parts["front_shell"]

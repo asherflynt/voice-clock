@@ -1,6 +1,6 @@
 # Voice Clock wiring and soldering
 
-The only wiring inside the clock is power: one 5 V USB-C inlet feeds the reSpeaker, and the CrowPanel is fed from the reSpeaker's spare 5V and GND header pins on its LED side. The speaker plugs into the reSpeaker and the mute button is mechanical, so neither needs any soldering.
+Apart from the v3 light sensor's lead ([sheet 06](#sheet-06-light-sensor-v3)), the only wiring inside the clock is power: one 5 V USB-C inlet feeds the reSpeaker, and the CrowPanel is fed from the reSpeaker's spare 5V and GND header pins on its LED side. The speaker plugs into the reSpeaker and the mute button is mechanical, so neither needs any soldering.
 
 The chain is **USB-C inlet → disconnect → reSpeaker header → CrowPanel**. The only wire opening in the stack is the carrier's centre hole, and nothing runs round the reSpeaker's edge, so the light ring, carrier and rear shell need no cable notch or gap.
 
@@ -18,6 +18,7 @@ The chain is **USB-C inlet → disconnect → reSpeaker header → CrowPanel**. 
 | 1 pair | 2-pin wire-to-wire connector, ≥ 3 A, 22 AWG leads: **JST-SM** (LED-strip type) or **JST-XH** male/female | The back-plate disconnect. JST-PH isn't suitable: its crimps only take 24–32 AWG and it's rated 2 A. |
 | — | Silicone wire: 22 AWG red + black | About 30 cm of each is plenty |
 | — | Heat shrink: 1.5, 2.5 and 4.8 mm | |
+| 1 | **v3:** STEMMA QT / Qwiic cable (JST SH 1.0 mm 4-pin), 100–150 mm | The light-sensor lead. Cut one plug off; one cable makes two leads. |
 | 1 | 470 µF / 10 V electrolytic capacitor (optional) | Smooths amp peaks at the B–C splice |
 | — | Flux-core solder (0.6–0.8 mm), flux pen, hot glue, small zip ties | |
 
@@ -96,6 +97,25 @@ Do these in order. Stop at the first one that fails.
 
 **Back-feed rule:** never plug a laptop into either board while the inlet is powered.
 
+## Sheet 06: light sensor (v3)
+
+*Not in the printable PDF yet.*
+
+The Adafruit #5378 VEML7700 board joins the XIAO's I2C bus, which the XIAO already uses to talk to the XVF3800 (address 0x2C; the VEML7700 is 0x10). The board has its own 3.3 V regulator, level shifting and 10 kΩ pull-ups, so it runs from the XIAO's 3V3.
+
+| STEMMA QT wire | Signal | XIAO pin (on the back of the reSpeaker) |
+|---|---|---|
+| Red | VIN | **3V3** |
+| Black | GND | **GND** |
+| Blue | SDA | **D4** (GPIO5, labelled I2C_SDA on Seeed's pinout) |
+| Yellow | SCL | **D5** (GPIO6, labelled I2C_SCL) |
+
+1. **Check the colours first.** Some generic Qwiic cables don't use Adafruit's colours. Plug the cable into the sensor board and beep each wire against the board's VIN, GND, SDA and SCL pads.
+2. Cut the plug off one end, leaving about 120 mm of lead. Strip 2 mm and tin each wire.
+3. Solder the 4 wires to the tops of the XIAO's castellated pins, on the board's back, and slip 1.5 mm heat shrink over each joint. **3V3, not 5V**: they're next to each other in the XIAO's right-hand column.
+4. **Route.** From the XIAO (3 o'clock seen from the front), run the lead round behind the reSpeaker to about 1 o'clock, through the 5 mm notch in the carrier's rim (between the key rib and the mute button), then back to the sensor board at 12 o'clock behind the carrier. It plugs into the board's right-hand socket (seen from the front).
+5. **Bench check:** flash the reSpeaker with `firmware/respeaker-light-sensor.yaml` added. Its log should show the VEML7700 found at 0x10 during the I2C scan, and **Ambient Light** in HA should follow a torch held over the sensor.
+
 ## v2 note: the UART link
 
 The CrowPanel's UART pins are level-shifted to **5 V logic** (BSN20 MOSFETs pulled up to 5 V in Elecrow's schematic). The XIAO ESP32-S3 is 3.3 V only. For a future ESP-to-ESP link, add a level shifter. Don't run those wires for v1.
@@ -108,3 +128,4 @@ The CrowPanel's UART pins are level-shifted to **5 V logic** (BSN20 MOSFETs pull
   - that the header's 5V feeds both the XVF3800 and the XIAO
   - which of the CrowPanel's rear ports is the power port, and its pin order
   - the pad names on your USB-C breakout
+  - v3: the XIAO pin names in the table above (from Seeed's pinout image) and your Qwiic cable's wire colours

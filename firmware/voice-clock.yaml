@@ -72,6 +72,9 @@ globals:
   - id: sun_down
     type: bool
     initial_value: 'false'
+  - id: room_lux         # v3 light sensor on the reSpeaker; NAN while it isn't reporting
+    type: float
+    initial_value: 'NAN'
   - id: night
     type: bool
     initial_value: 'false'
@@ -223,6 +226,15 @@ sensor:
           }
       - script.execute: update_overlays
 
+  # v3: room light level from the VEML7700 on the reSpeaker (firmware/respeaker-light-sensor.yaml).
+  - platform: homeassistant
+    id: ha_lux
+    entity_id: ${lux_sensor}
+    internal: true
+    on_value:
+      - lambda: 'id(room_lux) = x;'
+      - script.execute: eval_night
+
   # Music player volume (0-1) and mute.
   - platform: homeassistant
     id: ha_volume
@@ -291,6 +303,21 @@ number:
             - light.turn_on:
                 id: display_backlight
                 brightness: !lambda 'return x / 100.0f;'
+
+  - platform: template
+    id: night_lux
+    name: "Night Light Level"
+    icon: mdi:brightness-6
+    unit_of_measurement: "lx"
+    min_value: 0.5
+    max_value: 50
+    step: 0.5
+    initial_value: 3
+    restore_value: true
+    optimistic: true
+    entity_category: config
+    on_value:
+      - script.execute: eval_night
 
 switch:
   - platform: template
@@ -374,14 +401,22 @@ time:
         - script.execute: update_hands
 
 script:
-  # Night mode: all bedroom lamps off and the sun is down.
+  # Night mode: the room is dark (v3 light sensor: below "Night Light Level", back to day above
+  # twice that). Without a sensor reading: all bedroom lamps off and the sun is down.
   - id: eval_night
     then:
       - if:
           condition:
             lambda: |-
-              bool want = id(sun_down);
-              for (int i = 0; i < vc::MUSIC_IDX; i++) want = want && !id(states_on)[i];
+              bool want;
+              float lx = id(room_lux);
+              if (!std::isnan(lx)) {
+                float t = id(night_lux).state;
+                want = id(night) ? (lx < 2.0f * t) : (lx < t);
+              } else {
+                want = id(sun_down);
+                for (int i = 0; i < vc::MUSIC_IDX; i++) want = want && !id(states_on)[i];
+              }
               want = want || id(force_night).state;
               return want != id(night);
           then:
@@ -781,6 +816,8 @@ display:
 substitutions:
   # reSpeaker voice satellite entity prefix (alarm + timers).
   voice_sat: respeaker_xvf3800_assistant
+  # v3 light sensor (created on the reSpeaker by respeaker-light-sensor.yaml).
+  lux_sensor: sensor.respeaker_xvf3800_assistant_ambient_light
   # Media player controlled from the control page (volume / mute).
   music_player: media_player.bedroom_speaker   # <- your HA media player
   c_dial: "0xFCEBEC"

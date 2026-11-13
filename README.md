@@ -9,6 +9,7 @@ An open-source bedside clock and Home Assistant voice satellite: a knit-textured
 [Full demo video (MP4, 34 s)](docs/img/real/demo.mp4)
 
 - **Clock face and controls:** Elecrow CrowPanel 2.1" rotary display (ESP32-S3, 480 × 480 round IPS, turn-and-press knob, touch). Analog clock, timer ring, alarm, night mode and a light/media control page, in ESPHome + LVGL.
+- **Light sensor (v3):** an Adafruit right-angle VEML7700 looks out of a small window on top of the case and switches night mode when the room goes dark.
 - **Voice:** Seeed reSpeaker XVF3800 4-mic array with XIAO ESP32-S3: wake word, echo cancellation, 3 W speaker and the 12-LED ring that lights a white-walled light channel round the knob.
 - **Enclosure:** parametric build123d CAD, every dimension a named parameter, with automated interference and fit checks. Prints without supports. Both shells twist-lock, and a ballast pocket plus TPU grip pads keep it still when you turn the knob.
 
@@ -18,7 +19,7 @@ An open-source bedside clock and Home Assistant voice satellite: a knit-textured
 |---|---|
 | **Print** | [`print/`](print): `VoiceClock_U1.3mf` (4 plates, Snapmaker U1, per-part settings embedded), a ready-to-print U1 TPU plate ([`print/tpu`](print/tpu/README.md)), Bambu Lab projects for the X1C, P1S, A1 and A1 mini ([`print/bambu`](print/bambu/README.md)), single-plate 3MFs, and STL/STEP for any slicer. Filament slots: 1 = natural or clear PETG (the light ring's glowing band), 2 = matte PLA (shells, carrier and spider) or, on the light-ring plate, white PETG (the channel walls and mute button), 4 = TPU (grip pads and speaker washers). |
 | **Wire** | [Wiring and soldering sheets](docs/wiring/WIRING.md) ([printable PDF](docs/wiring/wiring_sheets.pdf)): wiring diagram, exact solder points on each board, cut list, splice details, cable route and a power-up checklist. |
-| **Assemble** | [Illustrated assembly guide](docs/assembly/ASSEMBLY.md) ([web version](docs/assembly/index.html)): 11 steps, numbered callouts for every part and fastener. |
+| **Assemble** | [Illustrated assembly guide](docs/assembly/ASSEMBLY.md) ([web version](docs/assembly/index.html)): 12 steps, numbered callouts for every part and fastener. |
 | **Flash** | [`firmware/`](firmware): ESPHome config for the CrowPanel clock face. The reSpeaker runs the [formatBCE XVF3800 ESPHome integration](https://github.com/formatBCE/Respeaker-XVF3800-ESPHome-integration). |
 | **See it** | [All renders](docs/renders.md): both wood variants from four angles, and every assembly step. |
 | **Modify** | [`cad/`](cad): `voice_clock.py` (model), `check.py` (fit checks), `make_3mf.py` (print files), `blender/` (photoreal renders and callouts). |
@@ -31,8 +32,10 @@ An open-source bedside clock and Home Assistant voice satellite: a knit-textured
 | 1 | Seeed reSpeaker XVF3800 4-mic array with XIAO ESP32-S3 |
 | 1 | 4428 3 W 8 Ω speaker with JST-PH lead (its STEP model is in `cad/vendor/`) |
 | 1 | USB-C breakout with 5.1 kΩ CC resistors, and a 5 V 3 A USB-C charger |
-| 10 | Screws: 3 × M3 × 12, 3 × M2 × 20, 4 × M2 × 10 (socket head) |
-| 7 | Brass M2 heat-set inserts (3 × 3.2 mm) |
+| 1 | Adafruit #5378 right-angle VEML7700 lux sensor, STEMMA QT (about $5; its STEP model is in `cad/vendor/`) |
+| 1 | STEMMA QT / Qwiic cable (JST SH 4-pin), 100–150 mm |
+| 12 | Screws: 3 × M3 × 12, 3 × M2 × 20, 4 × M2 × 10, 2 × M2 × 6 (socket head) |
+| 9 | Brass M2 heat-set inserts (3 × 3.2 mm) |
 | about 160 g | Steel BBs or shot in slow-cure epoxy (or about 300 g tungsten putty) for the ballast pocket |
 | | 1/16" adhesive closed-cell foam, CA glue, 22 AWG wire, 2-pin JST-SM or JST-XH pair, MX1.25 4-pin pigtail, heat shrink |
 
@@ -48,6 +51,13 @@ The [build plan](docs/build-plan.md) explains the design decisions: mic-channel 
 | [![Turned walnut](docs/img/wood/walnut_front.jpg)](print/wood_walnut/README.md) | **Turned walnut, Full Spectrum** ([`print/wood_walnut`](print/wood_walnut/README.md)): modelled on a real turned bowl. Snapmaker Orca's Full Spectrum layer mixing turns 4 heads into 8 tones: fine side-grain streaks that fade in tone, rippled end grain, lighter earlywood and soft heartwood zones, in JAYO oak, maple and walnut over a plain-PLA core (no cherry). About 1 day 9 h at 0.08 mm layers; print the tone swatch first. |
 
 ## Status
+
+Version 3 (13 Nov 2026) adds an ambient light sensor:
+
+- **Where it sits.** Adafruit's right-angle VEML7700 board (#5378) lies flat on a pad at the top of the rear shell, behind the carrier, with the sensor against a Ø2.4 mm window just behind the mute button. The window looks up and 15° back, away from the display and the light ring, so the clock doesn't read its own glow. A small shroud round the window closes the gap between the sensor and the curved wall.
+- **How it's wired.** A STEMMA QT lead runs to the XIAO's I2C pins on the back of the reSpeaker (through a new notch in the carrier's rim). The CrowPanel's own I2C port sits inside the light ring, where no lead can reach it without breaking the ring's glow.
+- **What it does.** The reSpeaker publishes **Ambient Light** to Home Assistant (`firmware/respeaker-light-sensor.yaml`). The clock switches night mode on below **Night Light Level** (3 lx by default) and back above twice that. Without a reading, it falls back to the v2 rule (sun down and all bedroom lamps off).
+- **Changed parts:** rear shell (pad, 2 inserts, window, shroud) and carrier (lead notch). Everything else is unchanged from v2.
 
 Version 2 (6 Nov 2026), after the v1 print fell apart:
 

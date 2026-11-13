@@ -1,0 +1,28 @@
+# v3 ambient light sensor: Adafruit #5378 right-angle VEML7700 on the reSpeaker's XIAO ESP32-S3.
+#
+# Add this package to the reSpeaker XVF3800 voice satellite's ESPHome config (the formatBCE
+# integration), next to that config:
+#
+#   packages:
+#     light_sensor: !include respeaker-light-sensor.yaml
+#
+# The sensor shares the XIAO's I2C bus with the XVF3800 (D4 = GPIO5 SDA, D5 = GPIO6 SCL), which that
+# config already sets up, so there is no i2c: block here. The VEML7700 is at 0x10; the XVF3800 at 0x2C.
+# If that config has more than one i2c bus, add `i2c_id:` with the XVF3800's bus.
+#
+# The clock (voice-clock.yaml) reads the result from Home Assistant as `lux_sensor`
+# (sensor.<device name>_ambient_light) and switches night mode on below "Night Light Level".
+
+sensor:
+  - platform: veml7700
+    address: 0x10
+    update_interval: 5s
+    ambient_light:
+      name: "Ambient Light"
+      filters:
+        - sliding_window_moving_average:
+            window_size: 3
+            send_every: 1
+        - or:
+            - delta: 10%
+            - throttle: 60s

@@ -2,6 +2,8 @@
 
 *Written 31 Oct 2026 from the vendor documentation and STEP models measured in code. The CAD in [`cad/`](../cad) is the source of truth where this plan and the model differ.*
 
+> **v3 update (13 Nov 2026): ambient light sensor.** An Adafruit #5378 right-angle VEML7700 (STEMMA QT, about $5, Adafruit publishes its STEP) lies flat on a pad at 12 o'clock in the rear shell, behind the carrier, with the sensor against a Ø2.4 window 15° behind vertical. **Why not the CrowPanel's I2C port:** the light ring's walls run from the reSpeaker to the face and enclose the CrowPanel's connectors, so a lead to it would have to pierce the ring (a dark spot, which v2 removed) or the reSpeaker. Instead the sensor shares the XIAO's I2C bus with the XVF3800, the lead stays behind the board (through a notch in the carrier's rim), and the lux value reaches the clock through HA, like the sun and lamp states the night mode already used. Facing up and back keeps the display and light ring out of its view. See `cad/README.md`, `docs/wiring/WIRING.md` sheet 06 and `firmware/README.md`.
+>
 > **v2 update (6 Nov 2026), after printing v1 in wood PLA.** v1 fitted, but it wasn't secure: the shells pulled apart, the back plate turned and fell out, the stack could turn in the rear shell with the front shell off, the USB-C board's self-tapping screws didn't hold, and the speaker screws bottomed out. The light ring barely glowed: a ray trace puts the v1 guide at about 0.4 % efficiency, because 35 mm of solid FDM PETG scatters at every layer and the LED pocket leaked inward. The wood-grain temperature drift was invisible. The CAD (`cad/voice_clock.py`) is again the source of truth. What changed:
 >
 > | | v1 | v2 |
