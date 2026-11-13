@@ -6,7 +6,7 @@ Analog clock face + device control page for the **Elecrow CrowPanel 2.1" rotary 
 - `ha_light.yaml`: package that mirrors one Home Assistant light onto the control page
 - `voice_clock.h`: device table for the control page (names + entity IDs, in knob order)
 - `secrets.example.yaml`: copy to `secrets.yaml`
-- `respeaker-light-sensor.yaml` (v3): package for the **reSpeaker's** ESPHome config that reads the VEML7700 light sensor on the XIAO's I2C bus
+- `respeaker-light-sensor.yaml` (v3 light-sensor variant, untested on hardware): package for the **reSpeaker's** ESPHome config that reads the VEML7700 light sensor on the XIAO's I2C bus
 
 ## Configure
 
@@ -14,7 +14,9 @@ Analog clock face + device control page for the **Elecrow CrowPanel 2.1" rotary 
 2. In `voice-clock.yaml`, set the three `light.*` entities in `packages:`, `music_player`, `voice_sat` (the entity prefix of your reSpeaker XVF3800 voice satellite) and `lux_sensor` in `substitutions:`.
 3. Keep `voice_clock.h` in sync: same light entities, in the same order, and the names you want on screen.
 
-## Light sensor (v3)
+## Light sensor (v3 variant, untested)
+
+Only for the optional light-sensor enclosure variant (`print/v3_light_sensor`). The config compiles, but it hasn't run with the sensor fitted. Without a sensor nothing changes: night mode uses the v2 rule whenever there's no light reading.
 
 1. Copy `respeaker-light-sensor.yaml` next to the reSpeaker's ESPHome config and add it under `packages:` (instructions at the top of the file). It reuses the I2C bus that config already sets up for the XVF3800.
 2. Flash the reSpeaker. HA gets a new **Ambient Light** sensor (lux); set `lux_sensor` in `voice-clock.yaml` to its entity ID.

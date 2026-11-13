@@ -24,33 +24,33 @@ HARDWARE = [
     ("3", "M3 × 12 socket head", "Spider to the CrowPanel hub (replaces its 3 rear screws)"),
     ("3", "M2 × 20 socket head", "Carrier, through the reSpeaker and the ring base's spacers, into the spider"),
     ("4", "M2 × 10 socket head", "Speaker (2), USB-C breakout (2)"),
-    ("2", "M2 × 6 socket head", "Light sensor board (v3)"),
-    ("9", "M2 heat-set insert (3 × 3.2 mm)", "Spider 3, speaker bosses 2, USB-C pads 2, light-sensor pad 2"),
+    ("7", "M2 heat-set insert (3 × 3.2 mm)", "Spider 3, speaker bosses 2, USB-C pads 2 (+2 in the light-sensor pad for the variant)"),
+    ("(2)", "M2 × 6 socket head", "Light-sensor variant only: the sensor board"),
     ("1", "USB-C breakout with 5.1 kΩ CC resistors", "Power inlet on the back plate"),
     ("—", "1/16\" adhesive closed-cell foam", "4 mic gaskets, 1 speaker ring"),
     ("about 160 g", "Steel BBs or shot (4.5 mm airgun BBs) + slow-cure epoxy, or about 300 g tungsten putty", "Ballast pocket in the rear shell"),
     ("—", "CA (superglue)", "Grip pads"),
     ("—", "22 AWG silicone wire, 2-pin JST-SM or JST-XH pair, MX1.25 4-pin pigtail, heat shrink, zip tie", "Power harness (docs/wiring/WIRING.md)"),
-    ("1", "Adafruit #5378 right-angle VEML7700 lux sensor (STEMMA QT)", "Light sensor at the top of the rear shell (v3)"),
-    ("1", "STEMMA QT / Qwiic (JST SH 4-pin) cable, 100–150 mm", "Light sensor lead; one end cut off and soldered to the XIAO"),
+    ("(1)", "Adafruit #5378 right-angle VEML7700 lux sensor (STEMMA QT)", "Light-sensor variant only (untested)"),
+    ("(1)", "STEMMA QT / Qwiic (JST SH 4-pin) cable, 100–150 mm", "Light-sensor variant only: its lead, one end soldered to the XIAO"),
 ]
 TOOLS = ["Soldering iron with an M2 heat-set tip", "Hex keys 1.5 and 2.5 mm", "Multimeter",
          "Wire strippers, flush cutters, heat gun", "Craft knife", "5 mm and 2 mm hole punch"]
 ELECTRONICS = ["Elecrow CrowPanel 2.1\" rotary display", "Seeed reSpeaker XVF3800 with XIAO ESP32-S3",
-               "4428 3 W 8 Ω speaker", "Adafruit #5378 right-angle VEML7700 light sensor", "5 V 3 A USB-C charger"]
+               "4428 3 W 8 Ω speaker", "5 V 3 A USB-C charger", "optional: Adafruit #5378 VEML7700 light sensor (untested variant)"]
 
 # guide step -> (render id(s) or None, title, instructions, check)
 STEPS = [
     (("step_01", "step_01b"), "Heat-set inserts",
-     ["The M2 insert holes are Ø2.9, the size already confirmed on this printer. All 9 inserts go into PLA, so set the iron to about 190–200 °C.",
+     ["The M2 insert holes are Ø2.9, the size already confirmed on this printer. All 7 inserts (9 with the light-sensor variant) go into PLA, so set the iron to about 190–200 °C.",
       "Spider (first picture): 3 inserts in the underside at the end of each arm.",
       "Back plate, speaker bosses (second picture): 2 inserts in the round bosses either side of the grille. The holes run deep on purpose: there is room below the screw tip for the plastic the insert pushes down.",
       "Back plate, USB-C pads: the two small blocks either side of the USB-C slot. Press 1 insert into each <b>horizontally from the side facing the speaker bosses</b> (the face with the lead-in chamfer), flush with that face. The holes sit only 2.9 mm above the plate, so use a slim insert tip and tilt the iron a few degrees up off the plate, or prop the plate on a wedge. Support the pad from the slot side while you press.",
-      "Rear shell, light-sensor pad (v3): the flat-topped block inside the shell at 12 o'clock, just behind the mute button. With the shell standing on its back opening, its top faces straight up at you through the front: press 2 inserts in vertically, flush with the pad."],
+      "Light-sensor variant only, rear shell pad: the flat-topped block inside the shell at 12 o'clock, just behind the mute button. With the shell standing on its back opening, its top faces straight up at you through the front: press 2 inserts in vertically, flush with the pad."],
      "Run an M2 screw into each insert by hand. It should start straight and stop on the thread, not on plastic."),
     (None, "Power harness",
      ["Follow <code>docs/wiring/WIRING.md</code>.",
-      "Light sensor lead (v3): solder the cut end of the STEMMA QT cable to the XIAO's 3V3, GND, D4 (SDA) and D5 (SCL) pins on the back of the reSpeaker (WIRING.md sheet 05).",
+      "Light-sensor variant only: solder the cut end of the STEMMA QT cable to the XIAO's 3V3, GND, D4 (SDA) and D5 (SCL) pins on the back of the reSpeaker (WIRING.md sheet 05).",
       "Leave about 30 mm of slack in the USB-C lead and the speaker lead: the back plate turns 32° when it locks."],
      "With a multimeter, confirm 5 V and GND are not shorted. Power both boards on the bench and confirm they boot before anything goes into the case."),
     ("step_02", "Spider bracket onto the CrowPanel",
@@ -76,15 +76,16 @@ STEPS = [
       "Let it cure fully before the stack goes in: the carrier sits 2 mm above the rim.",
       "Glue the two TPU grip pads into the shallow recesses in the flat base (the large one on the rear shell, the small one on the front shell) with a few drops of CA."],
      "Nothing stands above the pocket's rim, and the pads sit flat in their recesses."),
-    ("step_lux", "Light sensor (v3)",
-     ["Stand the rear shell on its back opening. Lower the sensor board in through the front, held a little toward the middle (its corners are just wider than the bayonet collar), and lay it on its pad at 12 o'clock, parts up, the white VEML7700 at the edge facing the small window in the shell wall. The board's two holes next to that edge sit over the inserts.",
+    ("step_lux", "Light sensor (optional, untested v3 variant)",
+     ["<b>Skip this step for the standard build.</b> It needs the light-sensor rear shell and carrier from <code>print/v3_light_sensor</code>, which haven't been test-printed yet.",
+      "Stand the rear shell on its back opening. Lower the sensor board in through the front, held a little toward the middle (its corners are just wider than the bayonet collar), and lay it on its pad at 12 o'clock, parts up, the white VEML7700 at the edge facing the small window in the shell wall. The board's two holes next to that edge sit over the inserts.",
       "Fit 2 × M2 × 6 with a 1.5 mm hex key straight down through the front opening. Snug only: it's a 2 g board.",
       "Plug the STEMMA QT lead into the board's socket on the right (seen from the front, the XIAO side)."],
      "Look in through the window from outside: you should see the sensor's white face filling the hole."),
     ("step_08", "Into the rear shell",
      ["Push the mute button into the hole at the top of the rear shell from outside until its barb clicks.",
       "Stand the rear shell on its back opening and pass the speaker and power leads out through it.",
-      "v3: lay the light-sensor lead into the notch in the carrier's rim at about 1 o'clock (seen from the front) so it can't be pinched against the shell wall.",
+      "Light-sensor variant only: lay its lead into the notch in the carrier's rim at about 1 o'clock (seen from the front) so it can't be pinched against the shell wall.",
       "Lower the stack in, display up, mute button (A) under the plunger. The carrier's 4 notches (with lead-in chamfers) slide down over the 4 ribs on the shell wall, and the board edge lands on the rib pads. It only goes in one way."],
      "The stack can't turn at all."),
     ("step_09", "Front shell (twist lock)",
@@ -263,7 +264,7 @@ def page(img_prefix="img/"):
     <div>
       <p class="eyebrow">Open-source Home Assistant voice clock · assembly guide</p>
       <h1>Voice Clock assembly</h1>
-      <p class="lede">A knit-textured 116 mm sphere around a CrowPanel 2.1" knob display, a reSpeaker XVF3800 microphone array and a 3 W speaker. Twelve steps. v3 adds an ambient light sensor; v2: both shells twist-lock with detent clicks, the electronics stack is keyed so it can't turn, the light ring is a white-walled channel, and a steel-shot ballast keeps it still when you turn the knob.</p>
+      <p class="lede">A knit-textured 116 mm sphere around a CrowPanel 2.1" knob display, a reSpeaker XVF3800 microphone array and a 3 W speaker. Twelve steps (step 8, the light sensor, is an optional untested variant). v2: both shells twist-lock with detent clicks, the electronics stack is keyed so it can't turn, the light ring is a white-walled channel, and a steel-shot ballast keeps it still when you turn the knob.</p>
       <div class="facts"><span><b>10</b>printed parts</span><span><b>10</b>screws</span><span><b>7</b>heat-set inserts</span><span><b>2</b>twist locks</span></div>
     </div>
     <img src="{img_prefix}hero_front.jpg" alt="The finished Voice Clock: a knit-textured sphere with a round clock display and a glowing light ring" width="1800" height="1350">
@@ -293,7 +294,7 @@ def markdown():
     out = ["# Voice Clock assembly (v3)", "", "![Finished Voice Clock](img/hero_front.jpg)", "",
            "> **v2, 6 Nov 2026.** The shells twist-lock, the stack is keyed, the light ring is a white-walled channel, the "
            "USB-C board and speaker screw into heat-set inserts, and a ballast pocket plus TPU grip pads keep the clock "
-           "still when you turn the knob. **v3 (13 Nov 2026)** adds an ambient light sensor at the top of the rear shell (step 8). "
+           "still when you turn the knob. **Optional, untested v3 variant (13 Nov 2026):** an ambient light sensor at the top of the rear shell (step 8; skip it for the standard build). "
            "Pictures are rendered from `cad/` (the v3 sensor isn't in the pictures yet); this file is generated by `build_guide.py`.", "",
            "## Before you start", "", "| Plate | Parts | Material | Notes |", "|---|---|---|---|"]
     out += [f"| {p} | {a} | {b} | {c} |" for p, a, b, c in PLATES]

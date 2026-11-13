@@ -1,6 +1,6 @@
 # Voice Clock wiring and soldering
 
-Apart from the v3 light sensor's lead ([sheet 06](#sheet-06-light-sensor-v3)), the only wiring inside the clock is power: one 5 V USB-C inlet feeds the reSpeaker, and the CrowPanel is fed from the reSpeaker's spare 5V and GND header pins on its LED side. The speaker plugs into the reSpeaker and the mute button is mechanical, so neither needs any soldering.
+Apart from the optional v3 light sensor's lead ([sheet 06](#sheet-06-light-sensor-v3)), the only wiring inside the clock is power: one 5 V USB-C inlet feeds the reSpeaker, and the CrowPanel is fed from the reSpeaker's spare 5V and GND header pins on its LED side. The speaker plugs into the reSpeaker and the mute button is mechanical, so neither needs any soldering.
 
 The chain is **USB-C inlet → disconnect → reSpeaker header → CrowPanel**. The only wire opening in the stack is the carrier's centre hole, and nothing runs round the reSpeaker's edge, so the light ring, carrier and rear shell need no cable notch or gap.
 
@@ -99,7 +99,7 @@ Do these in order. Stop at the first one that fails.
 
 ## Sheet 06: light sensor (v3)
 
-*Not in the printable PDF yet.*
+*Optional, for the untested light-sensor variant only (`print/v3_light_sensor`). Not in the printable PDF yet.*
 
 The Adafruit #5378 VEML7700 board joins the XIAO's I2C bus, which the XIAO already uses to talk to the XVF3800 (address 0x2C; the VEML7700 is 0x10). The board has its own 3.3 V regulator, level shifting and 10 kΩ pull-ups, so it runs from the XIAO's 3V3.
 

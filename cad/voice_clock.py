@@ -30,6 +30,7 @@ v2 (6 Nov 2026), after printing v1 in wood PLA:
 Run:  .venv/bin/python voice_clock.py          -> out/ (STL, STEP)
 Values marked VERIFY are from vendor CAD/drawings, not calipers yet.
 """
+import os
 from math import cos, sin, radians, sqrt, atan2, degrees, hypot
 from pathlib import Path
 from build123d import (Sphere, Cylinder, Cone, Box, Pos, Rot, Plane, Polygon,
@@ -271,6 +272,9 @@ USB_SCREW_L   = 10.0
 # display and light ring. Wired to the XIAO's I2C (D4 SDA, D5 SCL, 3V3, GND) with a STEMMA QT / Qwiic lead.
 # Board frame (STEP): x along the long edge, y inward from the hole row to the sensor edge (y = 17.78), z = PCB normal
 # (parts on +z). In D it is placed with STEP x -> D x (centred), STEP y -> D +Y, STEP z -> D +Z (parts face the carrier).
+# UNTESTED VARIANT (not printed yet): off by default, so the default build is the printed v2.
+# Build it with  VC_LIGHT_SENSOR=1 .venv/bin/python voice_clock.py  (outputs go to the usual out/ names).
+LIGHT_SENSOR  = os.environ.get("VC_LIGHT_SENSOR", "0") not in ("", "0")
 LUX_STEP      = VENDOR / "adafruit_5378_veml7700.step"
 LUX_PCB       = (25.4, 17.78, 1.57)
 LUX_CORNER_R  = 2.54
@@ -666,8 +670,9 @@ def rear_shell():
     # grip-pad recess in the flat base
     shell = shell - pad_recess("rear")
     # ambient light sensor (v3): pad with 2 M2 inserts at the top, window through the wall
-    shell = shell + lux_pad() + lux_shroud()
-    shell = shell - lux_cuts()
+    if LIGHT_SENSOR:
+        shell = shell + lux_pad() + lux_shroud()
+        shell = shell - lux_cuts()
 
     # back plate bayonet: lip at the back opening (on the bed) + entry notches + pawl detent notches
     rl = r_in_at(BACK_Z + BP_LIP_T) + 1.0
@@ -988,7 +993,8 @@ def carrier():
             c = c - tz_prism([(-w / 2 - 0.4, zf - sgn * 0.01), (w / 2 + 0.4, zf - sgn * 0.01),
                               (w / 2, zf + sgn * 0.4), (-w / 2, zf + sgn * 0.4)][::sgn], ang, CRADLE_PAD_R - 0.5, 60)
     c = c - sector([(50.0, z0 - 1), (CARRIER_R + 1, z0 - 1), (CARRIER_R + 1, z1 + 1), (50.0, z1 + 1)], 85.0, 95.0)
-    c = c - radial_box(LUX_CABLE_ANG, LUX_CABLE_R, CARRIER_R + 1, LUX_CABLE_W, z0 - 1, z1 + 1)   # light-sensor lead
+    if LIGHT_SENSOR:                                    # light-sensor lead
+        c = c - radial_box(LUX_CABLE_ANG, LUX_CABLE_R, CARRIER_R + 1, LUX_CABLE_W, z0 - 1, z1 + 1)
     # (relief: the installed mute plunger reaches r 50.48 at 90 deg, and the stack drops past it)
     c = c & above_floor()
     return c
@@ -1171,7 +1177,8 @@ def proxies():
     xiao = Rot(0, 0, RS_ROT) * Pos(0, 39, -RS_T) * Box(18, 22, 4.5, align=(Align.CENTER, Align.CENTER, Align.MAX))
     p["rs_xiao"] = xiao
     p["speaker"] = speaker_placed()
-    p["lux_board"] = lux_placed()
+    if LIGHT_SENSOR:
+        p["lux_board"] = lux_placed()
     return p
 
 
