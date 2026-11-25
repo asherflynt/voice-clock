@@ -4,10 +4,11 @@ Uses the vendor reSpeaker STEP (not a proxy) for every clearance that involves t
 both twist locks through their whole travel.
 """
 import itertools
-from math import degrees, radians, atan2, hypot, asin
+from math import degrees, radians, atan2, hypot, asin, isnan, isfinite
 from voice_clock import *
 
 bad = 0
+vol_errors = []
 
 
 def flag(ok, msg):
@@ -16,12 +17,25 @@ def flag(ok, msg):
     print(f"  {msg:70s} {'ok' if ok else 'PROBLEM'}", flush=True)
 
 
-def vol(a, b):
+def nmax(a, b):
+    """max() that keeps a NaN (a failed boolean) instead of dropping it."""
+    return float("nan") if isnan(a) or isnan(b) else max(a, b)
+
+
+def vol(a, b, label):
+    """Overlap volume of a & b. A failed or non-finite boolean is flagged as a PROBLEM here (named by
+    label) and returns NaN, so the caller's own check fails too rather than passing on a missing result."""
     try:
         r = a & b
-        return 0.0 if r is None else r.volume
-    except Exception:
-        return float("nan")
+        v = 0.0 if r is None else r.volume
+        if isfinite(v):
+            return v
+        err = f"non-finite volume {v}"
+    except Exception as e:
+        err = f"{type(e).__name__}: {' '.join(str(e).split())}"[:120]
+    vol_errors.append(label)
+    flag(False, f"boolean failed: {label} ({err})")
+    return float("nan")
 
 
 parts = {n: f() for n, f in PRINT_PARTS.items() if n not in ("tpu_washers", "foot_pads")}
@@ -49,8 +63,8 @@ ALLOWED = {
 }
 print(flush=True); print("== pairwise overlap, locked (mm^3)")
 for a, b in itertools.combinations(allp, 2):
-    v = vol(allp[a], allp[b])
-    if v > 0.01:
+    v = vol(allp[a], allp[b], f"{a} x {b}")
+    if v > 0.01:                                       # (a failed boolean is flagged inside vol)
         ok = frozenset({a, b}) in ALLOWED and v < 1.5
         flag(ok, f"{a} x {b}: {v:.3f} mm3 {'(contact)' if ok else 'CLASH'}")
 
@@ -64,19 +78,21 @@ pcb = max(rs_solids, key=lambda s: s.volume)
 
 
 def _rmax(s):
+    """Radial reach of s from the axis, from its bounding-box corners: never below the true reach, so the
+    `_rmax(s) > 44` selections below (edge components) can only take in extra solids, never miss one."""
     b = s.bounding_box()
-    return max(abs(b.min.X), abs(b.max.X), abs(b.min.Y), abs(b.max.Y))
+    return max(hypot(x, y) for x in (b.min.X, b.max.X) for y in (b.min.Y, b.max.Y))
 
 
-def step_overlap(p):
+def step_overlap(p, name):
     pb = p.bounding_box()
     v = 0.0
-    for s in rs_solids:
+    for i, s in enumerate(rs_solids):
         sb = s.bounding_box()
         if sb.max.X < pb.min.X or sb.min.X > pb.max.X or sb.max.Y < pb.min.Y or sb.min.Y > pb.max.Y \
                 or sb.max.Z < pb.min.Z or sb.min.Z > pb.max.Z:
             continue
-        v += vol(s, p)
+        v += vol(s, p, f"{name} x rs_solid[{i}]")
     return v
 
 
@@ -84,7 +100,7 @@ RS_EDGE = Compound([pcb] + [s for s in rs_solids if s is not pcb and _rmax(s) > 
 RS_FRONT = Compound([s for s in rs_solids if s is not pcb and s.bounding_box().min.Z > -0.05])
 print(f"  ({len(RS_EDGE.solids())} reSpeaker solids reach past r 44)", flush=True)
 for n in ("rear_shell", "front_shell", "carrier", "ring_base", "ring_shell", "spider", "mute_plunger"):
-    v = step_overlap(parts[n])
+    v = step_overlap(parts[n], n)
     contact = n in ("rear_shell", "carrier", "ring_base", "ring_shell")
     flag(v < (1.5 if contact else 0.01), f"{n} x reSpeaker STEP: {v:.3f} mm3")
 for n in ("ring_base", "ring_shell"):
@@ -95,15 +111,16 @@ flag(d > 0.2, f"edge components -> rear shell, closest {d:.2f} mm")
 
 SW = [0.3, 0.6, 1, 2, 3, 5, 8, 12, 20, 30, 45]
 print(flush=True); print("== the stack drops into the rear shell from the front")
-stack = [RS_EDGE, parts["carrier"], parts["spider"], parts["ring_base"], parts["ring_shell"],
-         prox["cp_knob"], prox["cp_pcb"]]
+stack = [("RS_EDGE", RS_EDGE), ("carrier", parts["carrier"]), ("spider", parts["spider"]),
+         ("ring_base", parts["ring_base"]), ("ring_shell", parts["ring_shell"]),
+         ("cp_knob", prox["cp_knob"]), ("cp_pcb", prox["cp_pcb"])]
 worst = 0.0
 rear_plg = parts["rear_shell"] + parts["mute_plunger"]       # the plunger is clicked in first
 if LIGHT_SENSOR:
     rear_plg = rear_plg + prox["lux_board"]                  # and the light sensor
 for s in SW + [9, 10, 11, 15]:
-    for st in stack:
-        worst = max(worst, vol(Pos(0, 0, s) * st, rear_plg))
+    for st_name, st in stack:
+        worst = nmax(worst, vol(Pos(0, 0, s) * st, rear_plg, f"stack drop z=+{s}: {st_name} x rear_plg"))
 flag(worst < 0.01, f"stack into rear shell (mute plunger already fitted): max overlap {worst:.3f}")
 
 # ---------------------------------------------------------------- front <-> rear bayonet
@@ -112,14 +129,16 @@ band = zslab(-8, 10)
 fs_band = parts["front_shell"] & band
 rs_band = parts["rear_shell"] & band
 fs = parts["front_shell"]
-stack_fs = [parts["ring_shell"], prox["cp_knob"], RS_EDGE]
+stack_fs = [("ring_shell", parts["ring_shell"]), ("cp_knob", prox["cp_knob"]), ("RS_EDGE", RS_EDGE)]
 # 1) axial approach at the entry angle (front turned TW_ANGLE CCW = unlocked)
 entry = Rot(0, 0, TW_ANGLE)
 worst = 0.0
 for s in SW:
-    worst = max(worst, vol(Pos(0, 0, s) * (entry * fs_band), rs_band))
-    for st in stack_fs:
-        worst = max(worst, vol(Pos(0, 0, s) * (entry * fs), st))
+    worst = nmax(worst, vol(Pos(0, 0, s) * (entry * fs_band), rs_band,
+                            f"front entry z=+{s}: fs_band x rs_band"))
+    for st_name, st in stack_fs:
+        worst = nmax(worst, vol(Pos(0, 0, s) * (entry * fs), st,
+                                f"front entry z=+{s}: front_shell x {st_name}"))
 flag(worst < 0.01, f"front shell on at the entry angle (+{TW_ANGLE:.0f} deg): max overlap {worst:.3f}")
 # 2) the twist, seated: front from +TW_ANGLE back to 0 (clockwise seen from the front). The detent
 #    fingers flex radially by design, so they are masked here and checked on their own below.
@@ -133,10 +152,10 @@ fs_rigid = fs_band - fmask
 rigid_vol, finger_vol, worst_stack = 0.0, 0.0, 0.0
 for phi in (TW_ANGLE, 9, 8, 7, 6, 5, 4, 3, 2, 1.5, 1, 0.5, 0.25, 0):
     t = Rot(0, 0, phi)
-    rigid_vol = max(rigid_vol, vol(t * fs_rigid, rs_band))
-    finger_vol = max(finger_vol, vol(t * (fs_band & fmask), rs_band))
-    for st in stack_fs:
-        worst_stack = max(worst_stack, vol(t * fs, st))
+    rigid_vol = nmax(rigid_vol, vol(t * fs_rigid, rs_band, f"front twist phi={phi}: fs_rigid x rs_band"))
+    finger_vol = nmax(finger_vol, vol(t * (fs_band & fmask), rs_band, f"front twist phi={phi}: fs_fingers x rs_band"))
+    for st_name, st in stack_fs:
+        worst_stack = nmax(worst_stack, vol(t * fs, st, f"front twist phi={phi}: front_shell x {st_name}"))
 n_lugs = len(TW_LUGS)
 flag(rigid_vol < 0.01, f"twist sweep vs rear shell (rigid parts): max overlap {rigid_vol:.3f} mm3")
 defl = COL_RO - FING_BUMP_R
@@ -146,9 +165,9 @@ print(f"  detent fingers: {len(TW_FINGERS)} x {Lf:.1f} mm long, {FING_T:.1f} thi
       f"(strain {f_strain * 100:.2f} %), click into V-grooves at lock; bump overlap while riding {finger_vol:.2f} mm3")
 flag(f_strain < 0.012 and 0 < finger_vol, "detent fingers flex within the strain limit and do engage the collar")
 flag(worst_stack < 0.01, f"twist sweep vs light ring, knob and board: max overlap {worst_stack:.3f}")
-v_lock = vol(fs_band, rs_band)
+v_lock = vol(fs_band, rs_band, "locked: fs_band x rs_band")
 flag(v_lock < 0.05, f"locked: front x rear overlap {v_lock:.3f} mm3 (bumps sit in their dimples)")
-v_over = vol(Rot(0, 0, -0.6) * fs_band, rs_band)
+v_over = vol(Rot(0, 0, -0.6) * fs_band, rs_band, "front over-travel -0.6 deg: fs_band x rs_band")
 flag(v_over > 0.05, f"stop posts block over-travel (-0.6 deg overlap {v_over:.2f} mm3)")
 flat = COL_RO + LUG_FLAT - BLK_RI
 print(f"  lug engagement: flat bearing {flat:.2f} mm radial on {n_lugs} lugs, axial clearance {LUG_Z0 - BLK_TOP:.2f} mm")
@@ -202,7 +221,7 @@ for t in BP_PAWLS:
     # a real cantilever doesn't move at its root; the rigid-rotation model does, so skip the last 2 deg
     rootzone = sector([(BP_PAWL_SLOT[0] - 1, BACK_Z - 4), (BP_TOOTH_RO + 1, BACK_Z - 4),
                        (BP_TOOTH_RO + 1, BACK_Z + 4), (BP_PAWL_SLOT[0] - 1, BACK_Z + 4)], t + BP_PAWL_LEN - 2.0, t + BP_PAWL_LEN + 1)
-    hit = vol(best[1] - rootzone, wall)
+    hit = vol(best[1] - rootzone, wall, f"pawl {t:.0f} deg bent x slot wall")
     flag(hit < 0.01, f"pawl at {t:.0f} deg bent {abs(best[0]):.2f} deg (tooth {need:.2f} mm in) clears its slot wall ({hit:.3f} mm3)")
     bp_bent = bp_bent + best[1]
 usb_y_top, usb_y_back = usb_pcb_y()
@@ -218,26 +237,28 @@ scr_all = tips
 L_, H_, T_ = USB_PCB                               # the board itself (PCB + socket) turns with the plate too
 tips = tips + Pos(0, usb_y_back + T_ / 2, BACK_Z + H_ / 2) * Box(L_, T_, H_) \
             + Pos(0, USB_CY, BACK_Z - 1.48 + 7.3 / 2) * Box(8.94, USB_SOCKET_H, 7.3)
-moving = [bp_bent, spk, tips]
+moving = [("back_plate", bp_bent), ("speaker", spk), ("usb_pcb+screws", tips)]
 worst = 0.0
 entry = Rot(0, 0, -BP_TWIST)
 for s in SW:
-    for m in moving:
-        worst = max(worst, vol(Pos(0, 0, -s) * (entry * m), rb_band))
+    for m_name, m in moving:
+        worst = nmax(worst, vol(Pos(0, 0, -s) * (entry * m), rb_band,
+                                f"back plate entry z=-{s}: {m_name} x rb_band"))
 flag(worst < 0.01, f"back plate in at the entry angle (-{BP_TWIST:.0f} deg): max overlap {worst:.3f}")
 worst = 0.0
 for phi in (-BP_TWIST, -24, -16, -8, -4, -1, 0):
     t = Rot(0, 0, phi)
-    for m in moving:
-        worst = max(worst, vol(t * m, rear))
-    worst = max(worst, vol(t * spk, parts["carrier"]))
+    for m_name, m in moving:
+        worst = nmax(worst, vol(t * m, rear, f"back plate twist phi={phi}: {m_name} x rear_shell"))
+    worst = nmax(worst, vol(t * spk, parts["carrier"], f"back plate twist phi={phi}: speaker x carrier"))
     if LIGHT_SENSOR:
-        for m in moving:
-            worst = max(worst, vol(t * m, prox["lux_board"]))
+        for m_name, m in moving:
+            worst = nmax(worst, vol(t * m, prox["lux_board"], f"back plate twist phi={phi}: {m_name} x lux_board"))
 flag(worst < 0.01, f"twist sweep (plate, speaker, USB-C board + screws) vs rear shell + carrier: max overlap {worst:.3f}")
-v_lock = vol(bp, rear)
+v_lock = vol(bp, rear, "locked: back_plate x rear_shell")
 flag(v_lock < 0.05, f"locked: back plate x rear shell {v_lock:.3f} mm3 (teeth sit in their notches)")
-flag(vol(Rot(0, 0, 0.6) * bp_rigid, rear) > 0.05, "hard stop blocks over-travel")
+flag(vol(Rot(0, 0, 0.6) * bp_rigid, rear, "back plate over-travel +0.6 deg: bp_rigid x rear_shell") > 0.05,
+     "hard stop blocks over-travel")
 flat_bp = (BP_LIP_RI + 0.5) - BP_LIP_RI
 print(f"  lugs: flat bearing {flat_bp:.2f} mm on the lip (then 45 deg out to r {BP_LUG_RO}), axial clearance {BP_LUG_Z0 - BACK_Z - BP_LIP_T:.2f} mm")
 flag(flat_bp >= 0.5, "back-plate lugs bear flat on the lip >= 0.5 mm")
@@ -253,7 +274,7 @@ key_r = (CRADLE_PAD_R + CARRIER_R) / 2
 play = degrees(CARRIER_KEY_CLR / key_r)
 flag(play < 0.25, f"carrier notches on the {len(CRADLE_ANG)} key ribs: +-{CARRIER_KEY_CLR:.2f} mm -> +-{play:.2f} deg")
 flag(KEY_Z0 < CARRIER_Z0 - 0.5, f"key ribs reach below the carrier (z {KEY_Z0} vs {CARRIER_Z0})")
-v = vol(parts["carrier"], rear)
+v = vol(parts["carrier"], rear, "carrier x rear_shell (key ribs)")
 flag(v < 0.01, f"carrier x key ribs: {v:.3f} mm3")
 m2 = (CARRIER_M2_CLR - 1.886) / 2
 print(f"  carrier M2 holes d{CARRIER_M2_CLR}: hole tolerance alone allows +-{degrees(m2 / 33):.2f} deg between board and carrier")
@@ -288,8 +309,8 @@ flag(bal > 20, "ballast pocket holds more than 20 cm3")
 flag(CARRIER_Z0 - BAL_TOP >= 1.5, f"pocket rim {CARRIER_Z0 - BAL_TOP:.1f} mm below the carrier")
 for side in ("front", "rear"):
     pad = foot_pad_placed(side)
-    o = vol(pad, parts[side + "_shell"])
-    br = vol(pad_recess(side), cavity())
+    o = vol(pad, parts[side + "_shell"], f"{side} grip pad x {side}_shell")
+    br = vol(pad_recess(side), cavity(), f"{side} pad_recess x cavity")
     flag(o < 0.01 and br < 0.01, f"{side} grip pad: sits in its recess ({o:.3f} mm3), stands {PAD_T - PAD_RECESS:.1f} mm proud, floor intact ({br:.3f})")
 
 # weight, stability and knob-turn resistance (electronics masses are estimates)
@@ -322,8 +343,8 @@ flag(PLG_Z - PLG_ROD_R < -3.75 + 0.2 and PLG_Z + PLG_ROD_R > -2.20 - 0.2,
 flag(SPLIT_Z - (PLG_Z + PLG_CB_R) >= 1.0, f"counterbore to seam {SPLIT_Z - (PLG_Z + PLG_CB_R):.2f} mm")
 nub = radial_box(90, RS_MUTE_TIP_R - 1.0, RS_MUTE_TIP_R, 2.9, -3.75, -2.20)
 pressed = Pos(0, -(gap + 0.25), 0) * parts["mute_plunger"]
-flag(vol(pressed, nub) > 0.01, "pressed plunger reaches the nub")
-flag(vol(parts["mute_plunger"], rear) < 0.01, "plunger slides free in its bore")
+flag(vol(pressed, nub, "pressed mute_plunger x nub") > 0.01, "pressed plunger reaches the nub")
+flag(vol(parts["mute_plunger"], rear, "mute_plunger x rear_shell") < 0.01, "plunger slides free in its bore")
 
 # ---------------------------------------------------------------- light ring
 print(flush=True); print("== light ring")
@@ -335,26 +356,30 @@ w_lo = RING_SLV_RI - (RING_IW_R1 + RING_IW_T)
 w_hi = RING_SLV_RI - (RING_IW_R2 + RING_IW_T)
 print(f"  channel width {w_lo:.2f} mm (z {z2}..{z3}), {w_hi:.2f} mm at the knob (z {z4}..)")
 flag(w_hi >= 1.5, "channel at least 1.5 mm wide everywhere")
-d = parts["ring_base"].distance_to(parts["spider"]) if vol(parts["ring_base"], parts["spider"]) < 0.01 else 0
-v = vol(parts["ring_base"] - zslab(-1, STANDOFF_L + 0.01), parts["spider"])
+d = parts["ring_base"].distance_to(parts["spider"]) if vol(parts["ring_base"], parts["spider"], "ring_base x spider") < 0.01 else 0
+v = vol(parts["ring_base"] - zslab(-1, STANDOFF_L + 0.01), parts["spider"], "ring_base (inner wall) x spider")
 flag(v < 0.01, f"inner wall clears the spider pads: {v:.3f} mm3")
-flag(vol(parts["ring_base"], prox["cp_knob"]) < 0.01 and vol(parts["ring_shell"], prox["cp_knob"]) < 0.01, "ring clears the knob")
+flag(vol(parts["ring_base"], prox["cp_knob"], "ring_base x cp_knob") < 0.01
+     and vol(parts["ring_shell"], prox["cp_knob"], "ring_shell x cp_knob") < 0.01, "ring clears the knob")
 flag(RING_BORE_R - RING_SLV_RO >= 0.25, f"front-shell bore -> ring_shell: {RING_BORE_R - RING_SLV_RO:.2f} mm (the front shell turns round it)")
 # retention: lifted by more than the collar gap + 0.2, the ring_shell's collar hits the front shell
 lift = RING_COLLAR_GAP + 0.2
-v = vol(Pos(0, 0, lift) * parts["ring_shell"], parts["front_shell"])
+v = vol(Pos(0, 0, lift) * parts["ring_shell"], parts["front_shell"], f"lifted (+{lift:.1f} mm) ring_shell x front_shell")
 flag(v > 1.0, f"front shell captures the ring_shell (lifted {lift:.1f} mm the collar bites {v:.1f} mm3)")
 print(f"  ring stands {RING_PROUD:.1f} mm proud of the sphere (top z {RING_TOP_Z:.2f}); knob exposed "
       f"{CP_KNOB_Z[1] - RING_TOP_Z:.1f} mm (v1: {KNOB_PROUD:.1f})")
 flag(CP_KNOB_Z[1] - RING_TOP_Z >= 4.5, "knob stays grippable (>= 4.5 mm exposed)")
-flag(vol(parts["ring_shell"], parts["front_shell"]) < 0.01, "ring_shell clears the front shell (mic boots, bore)")
+flag(vol(parts["ring_shell"], parts["front_shell"], "ring_shell x front_shell") < 0.01,
+     "ring_shell clears the front shell (mic boots, bore)")
 # the shell slides on over the knob from the front once the stack is screwed together
 worst = 0.0
+ring_base_lo = parts["ring_base"] - zslab(RING_TOP_Z - 3, RING_TOP_Z + 1)
 for s in SW:
-    for st in (prox["cp_knob"], parts["ring_base"] - zslab(RING_TOP_Z - 3, RING_TOP_Z + 1)):
-        worst = max(worst, vol(Pos(0, 0, s) * parts["ring_shell"], st))
+    for st_name, st in (("cp_knob", prox["cp_knob"]), ("ring_base", ring_base_lo)):
+        worst = nmax(worst, vol(Pos(0, 0, s) * parts["ring_shell"], st,
+                                f"ring_shell slide z=+{s}: ring_shell x {st_name}"))
 flag(worst < 0.01, f"ring_shell slides on from the front: max overlap {worst:.3f}")
-v = vol(parts["ring_base"], parts["ring_shell"])
+v = vol(parts["ring_base"], parts["ring_shell"], "ring_base x ring_shell")
 flag(0.01 < v < 1.5, f"crush ribs bite the cap's skirt: {v:.2f} mm3")
 # the face: the cap overlaps the inner wall's top, so no straight line from the face reaches the channel
 flag(RING_CAP_RI <= RING_IW_R2 + 1e-6, f"cap covers the inner wall's top (cap from r {RING_CAP_RI:.2f}, wall from r {RING_IW_R2:.2f})")
@@ -364,7 +389,7 @@ print(flush=True); print("== spider vs CrowPanel plug keep-outs")
 for (x0, x1, y0, y1) in CP_KEEPOUT_NOM:
     k = Rot(0, 0, CP_ROT_TRIM_DEG) * (Pos((x0 + x1) / 2, (y0 + y1) / 2, 0) *
                                       Box(x1 - x0, y1 - y0, CP_REAR_Z, align=(Align.CENTER, Align.CENTER, Align.MIN)))
-    flag(vol(k, parts["spider"]) < 0.01, f"keep-out {x0, x1, y0, y1}")
+    flag(vol(k, parts["spider"], f"keep-out {(x0, x1, y0, y1)} x spider") < 0.01, f"keep-out {x0, x1, y0, y1}")
 
 print(flush=True); print("== speaker")
 bb = spk.bounding_box()
@@ -416,7 +441,7 @@ for sx in (-1, 1):                                 # bench: plate on its own, he
     feed = Pos(hx, usb_y_back - 0.01, BACK_Z + USB_HOLE_Z) * Rot(90, 0, 0) * Cylinder(2.1, USB_SCREW_L + 6.0,
                                                                                       align=(Align.CENTER, Align.CENTER, Align.MIN))
     key = (k + feed) if key is None else key + k + feed
-v_key = vol(key, bp_only)
+v_key = vol(key, bp_only, "USB-C hex key/screw feed x back_plate")
 flag(v_key < 0.01, f"hex key and screw reach both USB-C screws straight in from the plate's rim ({v_key:.3f} mm3)")
 print(f"  inserts: M2 (hole d{M2_INSERT_D}, {INSERT_CHAMFER} mm lead-in): spider 3 (through), speaker bosses 2, "
       f"USB-C pads 2 (pressed in from the pads' speaker-side face)")
@@ -432,7 +457,8 @@ if LIGHT_SENSOR:                                   # untested variant: VC_LIGHT_
     sf = lux_d(*LUX_SENSOR)
     y_out, zw = lux_window()
     ray = Pos(sf.X, sf.Y + 0.02, sf.Z) * Rot(-90, 0, 0) * Cylinder(0.9, y_out + 3 - sf.Y, align=(Align.CENTER, Align.CENTER, Align.MIN))
-    blocked = vol(ray, rear) + sum(vol(ray, p) for n, p in parts.items() if n != "rear_shell")
+    blocked = vol(ray, rear, "lux ray x rear_shell") + sum(
+        vol(ray, p, f"lux ray x {n}") for n, p in parts.items() if n != "rear_shell")
     flag(blocked < 0.01, f"window open from the sensor face to the outside ({blocked:.3f} mm3)")
     gap = lux_d(0, LUX_PCB[1]).Y + LUX_SHROUD_GAP - sf.Y
     flag(0.2 <= gap <= 1.0, f"sensor face -> light shroud {gap:.2f} mm (bare wall would be {r_in_at(sf.Z) - sf.Y:.1f} mm)")
@@ -441,7 +467,7 @@ if LIGHT_SENSOR:                                   # untested variant: VC_LIGHT_
     worst = 0.0
     for s in SW:                  # down through the front opening held 1 mm toward the centre (its corners are 0.7 mm
         dy = -1.0 * min(1.0, s / 5.0)   # wider than the bayonet collar), then out onto the pad over the last 5 mm
-        worst = max(worst, vol(Pos(0, dy, s) * lux, rear))
+        worst = nmax(worst, vol(Pos(0, dy, s) * lux, rear, f"lux drop z=+{s}, dy={dy:.2f}: lux_board x rear_shell"))
     flag(worst < 0.01, f"board goes in past the collar (1 mm in from the wall) and onto its pad: max overlap {worst:.3f}")
     tip = lux_screw_tip_z()
     eng = min(LUX_SCREW_L - LUX_PCB[2], M2_INSERT_L)
@@ -454,29 +480,32 @@ if LIGHT_SENSOR:                                   # untested variant: VC_LIGHT_
         top = LUX_PCB_Z + LUX_PCB[2]
         k = cyl(2.1, top, top + 2.2, p.X, p.Y) + cyl(1.0, top + 2.2, COL_TOP + 5, p.X, p.Y)
         reach = k if reach is None else reach + k
-    v = vol(reach, rear)
+    v = vol(reach, rear, "lux hex key x rear_shell")
     flag(v < 0.01, f"empty rear shell: hex key straight in from the front reaches both screws ({v:.3f} mm3)")
     print(f"  carrier: {LUX_CABLE_W:.0f} mm cable notch at {LUX_CABLE_ANG:.0f} deg (r {LUX_CABLE_R} out) for the STEMMA QT lead")
 
 print(flush=True); print("== mic channels (port -> outside, all 4 diagonals)")
 fs = parts["front_shell"]
-others = [p for n, p in parts.items() if n != "front_shell"] + [prox["cp_knob"], prox["cp_pcb"]]
+others = [(n, p) for n, p in parts.items() if n != "front_shell"] + [("cp_knob", prox["cp_knob"]), ("cp_pcb", prox["cp_pcb"])]
 rs_front = [s for s in rs_solids if s is not pcb and s.bounding_box().max.Z > 0.0]
 open_ok, wall_ok, voids = True, True, []
 for ang in (45, 135, 225, 315):
     core = mic_channel(ang, -0.15) - zslab(-5, 0.02)            # air path from the PCB face outward
-    blocked = vol(core, fs) + sum(vol(core, p) for p in others) + sum(vol(core, q) for q in rs_front)
+    blocked = (vol(core, fs, f"mic {ang} deg core x front_shell")
+               + sum(vol(core, p, f"mic {ang} deg core x {n}") for n, p in others)
+               + sum(vol(core, q, f"mic {ang} deg core x rs_front[{i}]") for i, q in enumerate(rs_front)))
     ring = (mic_channel(ang, 0.8) - mic_channel(ang)) & sector(
         [(RS_MIC_R + 1.5, SPLIT_Z + 0.01), (R_IN - 0.5, SPLIT_Z + 0.01), (R_IN - 0.5, 20), (RS_MIC_R + 1.5, 20)],
         ang - 12, ang + 12)                                     # inside the boot (below z SPLIT_Z is the gasket gap)
-    frac = vol(ring, fs) / ring.volume                          # boot material round the bore (no break-through)
-    voids.append(vol(mic_channel(ang, 0.5), fs))
+    frac = vol(ring, fs, f"mic {ang} deg boot ring x front_shell") / ring.volume  # boot material round the bore (no break-through)
+    voids.append(vol(mic_channel(ang, 0.5), fs, f"mic {ang} deg shell volume x front_shell"))
     print(f"  {ang:3d} deg: blocked {blocked:.3f} mm3, boot wall >= 0.8 mm over {frac * 100:.1f} % of the bore")
     open_ok &= blocked < 0.01
     wall_ok &= frac > 0.98
 flag(open_ok, "mic channels open from the port to the outside (front shell cut, no part or board component in the way)")
 flag(wall_ok, "boot wall at least 0.8 mm round each bore (no break-through into the cavity)")
-flag(max(voids) - min(voids) < 0.05, f"the 4 channels are identical (shell material round them: spread {max(voids) - min(voids):.3f} mm3)")
+spread = float("nan") if any(isnan(v) for v in voids) else max(voids) - min(voids)
+flag(spread < 0.05, f"the 4 channels are identical (shell material round them: spread {spread:.3f} mm3)")
 L = MIC_CH_Z + r_out_at(MIC_CH_Z) - RS_MIC_R
 print(f"  centreline {L:.1f} mm (quarter-wave about {343e3 / (4 * (L + 0.85 * MIC_BORE / 2)) / 1000:.1f} kHz); "
       f"pointed roofs (cone + {degrees(atan2(MIC_ROOF_TAN, 1)):.0f} deg ridge), ceiling >= 45 deg everywhere in the face-up print")
@@ -484,4 +513,4 @@ print(flush=True); print("== mic channel length (mm):", round(r_out_at(MIC_CH_Z)
 print("== depth: CrowPanel rear -> spider top:", round(CP_REAR_Z - (STANDOFF_L + SPIDER_T), 2), "mm")
 print(f"== size: d{2 * SPHERE_R:.0f} sphere, {SPHERE_R + CEN.dot(UP_D) - FOOT_H:.1f} mm tall, "
       f"{CP_KNOB_Z[1] - (BACK_Z - BACK_T):.1f} mm deep incl. knob, base d{2 * FOOT_R:.0f}")
-print("RESULT:", "PASS" if not bad else f"{bad} problem(s)")
+print("RESULT:", "PASS" if not bad else f"{bad} problem(s), {len(vol_errors)} of them failed booleans")

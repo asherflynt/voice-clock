@@ -12,7 +12,10 @@ v2 (6 Nov 2026), after printing v1 in wood PLA:
   * Front shell <-> rear shell: a 7-lug bayonet. The rear shell's collar rises 5.5 mm past the seam
     inside the front shell; the front shell's blocks slide under its lugs when the front shell turns
     TW_ANGLE clockwise (seen from the front). A bump on each block clicks into a dimple in its lug;
-    the mic gaskets keep it pressed in. Flat bearing faces, so it cannot cam apart.
+    the mic gaskets keep it pressed in. Flat bearing faces, so it cannot cam apart. A continuous
+    360 deg light-tight baffle closes every collar gap above SPLIT_Z (low bridges through tunnels under
+    the four mic boots, a flat-base baffle in a matching front-floor recess, and an outer USB-C/jack
+    skirt tied to the collar by radial closure webs; see seam_baffle()).
   * Back plate: a 3-lug bayonet into a lip at the back opening, turned BP_TWIST clockwise seen from
     the back, held by 2 in-plane flexure pawls.
   * The stack (CrowPanel + spider + reSpeaker + light ring + carrier) is keyed: the 4 cradle ribs
@@ -178,7 +181,26 @@ FING_KERF_RO  = BLK_RI + FING_T + 0.8
 FING_LEN      = 6.5       # mm, from the block's CCW (free) end
 FING_BUMP_R   = 53.05     # bump apex: rides the collar face (r COL_RO) 0.15 nominal, ~0.35 as printed
 COL_GROOVE_R  = 52.75     # V-groove bottom in the collar face (lock and entry positions)
-TW_EXCL       = [(162.0, 218.0), (246.0, 296.0)]   # USB-C/jack, base flat (front floor sweeps it)
+TW_EXCL       = [(169.5, 212.0), (246.0, 296.0)]   # USB-C/jack (STEP: PCB tabs, USB-C, jack at 173.8-205.7 deg,
+                                               # r <= 53.16; the collar's flange can't pass them), base flat
+                                               # (front floor sweeps it)
+# light-tight seam baffle: rear-shell walls above SPLIT_Z that close every collar gap, so no near-horizontal ray
+# from inside reaches the seam (the mic gaskets hold the front shell up to 0.2 mm off it). All are sectors about Z,
+# so the twist is free; the front shell has matching reliefs (boot tunnels, floor recess).
+BAF_TOP       = 2.25      # top of the mic-gap bridges, closure webs and flat-base baffle
+BAF_BEVEL     = 0.25      # 45 deg lead-in on every baffle top edge
+BAF_BRIDGE_R  = (51.75, 52.85)   # low bridges through the 4 mic-boot collar gaps (on a 45 deg flange)
+BAF_FLAT_R    = (52.1, 52.9)     # flat-base baffle (reset nub r 51.6 inside it, front floor recess round it)
+BAF_FLAT_ARC  = (245.5, 296.5)
+BAF_SKIRT_R   = (53.70, 54.75)   # outer skirt round the USB-C/jack arc: 0.54 outside the edge parts (the stack
+BAF_SKIRT_TOP = 3.5              # drops past it), 0.39 inside the front wall at its top (r_in(3.5) = 55.14)
+BAF_SKIRT_ARC = (TW_EXCL[0][0] - 0.7, TW_EXCL[0][1] + 1.5)   # starts 0.55 deg past block 154.5's entry sweep
+BAF_WEB_RO    = 54.5      # radial closure webs (r BAF_BRIDGE_R[0]..here) tie the collar ends to the skirt
+BOOT_SLOT_R   = (51.45, 53.15)   # front: tunnel under each mic boot that the bridge runs through (0.3 a side)
+BOOT_SLOT_Z   = (2.5, 3.35)      # tunnel wall top, gable ridge (45 deg); the bore's 0.8 mm envelope starts at 3.4
+FLOOR_REC_R   = (50.0, 53.15)    # front: recess in the flat-base floor for the flat baffle (1.0 mm to the base)
+FLOOR_REC_Z   = 2.3              # recess wall top, then a 45 deg roof inward
+FLOOR_REC_ARC = (240.0, 300.0)   # covers the floor at every twist angle (the floor is r <= 53.15 at 256-284 deg)
 
 # back plate bayonet
 BP_LIP_T      = 2.0       # lip at the rear shell's back opening (on its bed)
@@ -207,7 +229,7 @@ BAL_Z_STEP    = -36.2                          # to r 30 (clear of the speaker a
 
 # grip pads: TPU pads in shallow recesses in the flat base (both shells)
 PAD_INSET     = 2.5       # from the edge of the flat
-PAD_SEAM_GAP  = 1.5       # each side of the seam
+PAD_SEAM_GAP  = 2.0       # each side of the seam (front: keeps >= 1 mm to the floor recess for the baffle)
 PAD_RECESS    = 0.8
 PAD_T         = 1.2       # stands PAD_T - PAD_RECESS = 0.4 mm proud
 PAD_CLR       = 0.2
@@ -216,7 +238,8 @@ PAD_RESET_NOTCH = (7.5, -8.0)                  # |u| < 7.5, w < -8: the floor un
 # mic channels / boots
 MIC_BORE      = 2.0
 MIC_LUG_Z0    = SPLIT_Z   # boot underside (on the front shell's bed); 1/16" foam 1.6 -> 1.1
-MIC_CH_Z      = 3.0
+MIC_CH_Z      = 5.2       # radial bore height (v2: 3.0): above the boot tunnel for the seam baffle; the ridge
+                          # (MIC_CH_Z + MIC_ROOF_H * r = 6.92) stays under BOOT_SLIM_Z
 MIC_ROOF_TAN  = 1.42815   # tan 55 deg: radial bore roof slope (prints face-up, 35 deg from vertical)
 MIC_ROOF_H    = 1.71696   # ridge height / bore radius: the roof meets the circle exactly at its 45 deg point,
                           # so no part of the ceiling is flatter than 45 deg from vertical
@@ -505,24 +528,38 @@ def foot_pads():
     return rear + front
 
 
-def ballast_skin():
-    """Inner wall of the ballast pocket (r, z polygon swept over BAL_ARC, with end walls)."""
+def _ballast_dims():
     lo, hi, za, T = BAL_R_LOW, BAL_R_HIGH, BAL_Z_STEP, BAL_T
     zb = za + (lo - hi)
-    skin = [(lo, BACK_Z - 0.01), (lo + T, BACK_Z - 0.01), (lo + T, za - 0.5), (hi + T, zb - 0.5), (hi + T, BAL_TOP),
-            (hi, BAL_TOP), (hi, zb), (lo, za)]
-    end = [(lo, BACK_Z - 0.01), (SPHERE_R, BACK_Z - 0.01), (SPHERE_R, BAL_TOP), (hi, BAL_TOP), (hi, zb), (lo, za)]
+    dz = T * (sqrt(2.0) - 1.0)     # the ramp's pocket face lies on r + z = lo + za + T*sqrt(2): T off its inner face
+    return lo, hi, za, zb, dz, T
+
+
+def _ballast_ends():
+    """The 2 end walls: flat slabs BAL_T thick (not degrees), each on the inside of its end of BAL_ARC."""
+    lo, hi, za, zb, _, T = _ballast_dims()
+    f = Plane.XZ * Polygon((lo, BACK_Z - 0.01), (SPHERE_R, BACK_Z - 0.01), (SPHERE_R, BAL_TOP), (hi, BAL_TOP),
+                           (hi, zb), (lo, za), align=None)
     a0, a1 = BAL_ARC
-    return sector(skin, a0, a1) + sector(end, a0, a0 + 1.2) + sector(end, a1 - 1.2, a1)
+    return (Rot(0, 0, a0) * extrude(f, amount=T, dir=(0, 1, 0))) + (Rot(0, 0, a1) * extrude(f, amount=T, dir=(0, -1, 0)))
+
+
+def ballast_skin():
+    """Inner wall of the ballast pocket (r, z polygon swept over BAL_ARC, with end walls), BAL_T thick throughout."""
+    lo, hi, za, zb, dz, T = _ballast_dims()
+    skin = [(lo, BACK_Z - 0.01), (lo + T, BACK_Z - 0.01), (lo + T, za + dz), (hi + T, zb + dz), (hi + T, BAL_TOP),
+            (hi, BAL_TOP), (hi, zb), (lo, za)]
+    a0, a1 = BAL_ARC
+    return sector(skin, a0, a1) + _ballast_ends()
 
 
 def ballast_pocket():
     """The empty pocket volume (for checks and the fill estimate)."""
-    lo, hi, za, T = BAL_R_LOW, BAL_R_HIGH, BAL_Z_STEP, BAL_T
-    zb = za + (lo - hi)
-    pts = [(lo + T, BACK_Z), (SPHERE_R, BACK_Z), (SPHERE_R, BAL_TOP - 1.0), (hi + T, BAL_TOP - 1.0), (hi + T, zb - 0.5), (lo + T, za - 0.5)]
+    lo, hi, za, zb, dz, T = _ballast_dims()
+    pts = [(lo + T, BACK_Z), (SPHERE_R, BACK_Z), (SPHERE_R, BAL_TOP - 1.0), (hi + T, BAL_TOP - 1.0), (hi + T, zb + dz),
+           (lo + T, za + dz)]
     a0, a1 = BAL_ARC
-    return sector(pts, a0 + 1.2, a1 - 1.2) & cavity()
+    return (sector(pts, a0, a1) - _ballast_ends()) & cavity()
 
 
 def boot_gap_half():
@@ -559,8 +596,15 @@ def front_shell():
     shell = shell - cyl(RING_BORE_R, 20.0, SPHERE_R + 10)          # light-ring bore
     shell = shell - pad_recess("front")                            # grip-pad recess in the flat base
     ri, ro = r_in_at(SPLIT_Z), r_out_at(SPLIT_Z)                   # elephant's-foot chamfers on the bed rim
-    shell = shell - revolve_rz([(ri - 0.01, SPLIT_Z - 0.01), (ri + 0.3, SPLIT_Z - 0.01), (ri - 0.01, SPLIT_Z + 0.31)])
+    # inner rim: only where the sphere is the cavity edge (a full ring would cut 2 grooves through the solid
+    # flat-base floor, cavity to outside); along the floor's own edge a planar chamfer, kept inside r_in + 0.3
+    shell = shell - (revolve_rz([(ri - 0.01, SPLIT_Z - 0.01), (ri + 0.3, SPLIT_Z - 0.01), (ri - 0.01, SPLIT_Z + 0.31)])
+                     & half(UP_D, FLOOR_TOP))
+    shell = shell - floor_edge_chamfer()
+    # outer rim (the flat base's edge is inside ro - 0.3, so this ring never reaches the flat: no through-cut)
     shell = shell - revolve_rz([(ro - 0.3, SPLIT_Z - 0.01), (ro + 1.0, SPLIT_Z - 0.01), (ro + 1.0, SPLIT_Z + 1.3)])
+    # recess in the flat-base floor for the rear shell's flat baffle (at every twist angle), 45 deg roof
+    shell = shell - floor_recess()
     # room for the rear lugs' tips to sweep (only where a lug passes)
     for a, span in TW_LUGS:
         shell = shell - sector([(R_IN - 2, LUG_Z0 - 0.15), (TW_GROOVE_R, LUG_Z0 - 0.15),
@@ -578,6 +622,7 @@ def front_shell():
             lug = lug - tz_prism(t if s > 0 else t[::-1], ang, BOOT_SLIM_R, SPHERE_R + 2)
         shell = shell + (lug & env)
     for ang in (45, 135, 225, 315):
+        shell = shell - boot_slot(ang)          # tunnel for the rear shell's low bridge (seam baffle)
         shell = shell - mic_channel(ang)
     # bayonet blocks (built up from the bed); 4 of them carry a radial flexure finger whose bump
     # clicks into a V-groove in the collar at the locked angle (the detent has its own spring)
@@ -594,6 +639,66 @@ def front_shell():
             blk = blk + finger_bump(a, span)
         shell = shell + (blk & env)
     return shell
+
+
+def _bed_chamfer(r, outward, a0, a1, c=0.3):
+    """45 deg elephant's-foot chamfer on a front-shell bed edge at radius r (material on the outward/inward side)."""
+    z0, z1 = SPLIT_Z - 0.01, SPLIT_Z + c + 0.01
+    pts = [(r - 0.01, z0), (r + c, z0), (r - 0.01, z1)] if outward else [(r - c, z0), (r + 0.01, z0), (r + 0.01, z1)]
+    return sector(pts, a0, a1)
+
+
+def floor_edge_chamfer(c=0.3):
+    """Elephant's-foot chamfer along the front shell's flat-base floor edge (floor face x bed face): a wedge
+    under the plane through both faces' c-offset lines, on the floor side, inside r_in + c."""
+    n = UP_D - Vector(0, 0, 1)                                  # p.n >= FLOOR_TOP - SPLIT_Z - c
+    wedge = half(n, (FLOOR_TOP - SPLIT_Z - c) / n.length) & half(-UP_D, -(FLOOR_TOP + 0.01))
+    return wedge & zslab(SPLIT_Z - 0.01, SPLIT_Z + c + 0.2) & sphere_in(c)
+
+
+def floor_recess():
+    """Recess up into the front shell's flat-base floor that the rear flat baffle sits in (45 deg roof)."""
+    f0, f1 = FLOOR_REC_R
+    a0, a1 = FLOOR_REC_ARC
+    rec = sector([(f0, SPLIT_Z - 0.1), (f1, SPLIT_Z - 0.1), (f1, FLOOR_REC_Z), (f0, FLOOR_REC_Z + (f1 - f0))], a0, a1)
+    return rec + _bed_chamfer(f1, True, a0, a1)
+
+
+def boot_slot(ang):
+    """Tunnel under a mic boot (r BOOT_SLOT_R, 45 deg gable roof) for the low bridge; cuts the whole 5 mm bar
+    (the bridge passes under it at every twist angle). Elephant's-foot chamfers on both bed edges."""
+    s0, s1 = BOOT_SLOT_R
+    zw, zr = BOOT_SLOT_Z
+    assert abs((zr - zw) - (s1 - s0) / 2) < 1e-6, "boot slot roof must be 45 deg"
+    h = boot_gap_half() + 0.5
+    a0, a1 = ang - h, ang + h
+    slot = sector([(s0, SPLIT_Z - 0.1), (s1, SPLIT_Z - 0.1), (s1, zw), ((s0 + s1) / 2, zr), (s0, zw)], a0, a1)
+    return slot + _bed_chamfer(s1, True, a0, a1) + _bed_chamfer(s0, False, a0, a1)
+
+
+def seam_baffle():
+    """Rear-shell walls above SPLIT_Z closing every collar gap (light baffle for the seam). Each piece stands on
+    a 45 deg flange down and out to the wall (the rear shell prints back-rim down) and overlaps the collar it
+    meets, so the barrier is continuous round 360 deg. Not yet clipped to the envelope."""
+    b, top = BAF_BEVEL, BAF_TOP
+
+    def prof(r0, r1, zt, z0=SPLIT_Z):
+        return [(r0, z0), (r0, zt - b), (r0 + b, zt), (r1 - b, zt), (r1, zt - b), (r1, z0),
+                (COL_FLANGE_R, z0), (COL_FLANGE_R, z0 - (COL_FLANGE_R - r0))]
+    parts = []
+    h = boot_gap_half()
+    for d in (45.0, 135.0, 225.0, 315.0):                    # bridges through the mic-boot gaps (whole twist sweep)
+        parts.append(sector(prof(*BAF_BRIDGE_R, top), d - h - 0.5, d + TW_ANGLE + h + 0.5))
+    parts.append(sector(prof(*BAF_FLAT_R, top), *BAF_FLAT_ARC))          # flat base
+    s0, s1 = BAF_SKIRT_ARC
+    parts.append(sector(prof(*BAF_SKIRT_R, BAF_SKIRT_TOP), s0, s1))     # USB-C / jack skirt
+    e0, e1 = TW_EXCL[0]
+    r0, r1 = BAF_BRIDGE_R[0], BAF_WEB_RO                     # closure webs: collar end -> skirt (both overlap them)
+    wt = BAF_SKIRT_TOP                                      # as tall as the skirt: no channel over a web into the collar annulus
+    web = [(r0, SPLIT_Z - 0.2), (r0, wt - b), (r0 + b, wt), (r1 - b, wt), (r1, wt - b), (r1, SPLIT_Z - 0.2)]
+    parts.append(sector(web, s0 + 0.1, e0 - 0.1))
+    parts.append(sector(web, e1 + 0.1, s1 - 0.1))
+    return parts
 
 
 def finger_span(a, span):
@@ -662,8 +767,12 @@ def rear_shell():
 
     # floor pocket under the reset button + PCB tab (6 o'clock)
     r0, r1, z0, z1 = RS_BTN_BODY
-    pocket = radial_box(270, r0 - 0.5, RS_RST_TIP_R + 1.5, 12.0, z0 - 0.8, SPLIT_Z + 0.5)
-    shell = shell - (pocket & half(UP_D, FOOT_H + 0.9))
+    pocket = radial_box(270, r0 - 0.5, RS_RST_TIP_R + 0.42, 12.0, z0 - 0.8, SPLIT_Z + 0.5)   # 0.4 past the nub
+    shell = shell - (pocket & half(UP_D, FOOT_H + 0.9))           # (floor left under the flat baffle)
+
+    # light-tight seam baffle: closes every collar gap above SPLIT_Z (after the pocket: its flange stays whole)
+    for p in seam_baffle():
+        shell = shell + (p & env)
 
     # ballast pocket (steel shot in epoxy / tungsten putty), low and behind the carrier
     shell = shell + (ballast_skin() & env & zslab(BACK_Z, BAL_TOP))
@@ -1084,8 +1193,9 @@ def lux_cuts():
     r = LUX_BORE_D / 2
     y0 = lux_d(*LUX_SENSOR).Y + 0.05
     bore = radial_cyl(r, 90, y0, y_out + 2, zw)
-    roof = Plane.XZ * Polygon((-r * 0.7071, zw + r * 0.7071), (r * 0.7071, zw + r * 0.7071), (0, zw + r * 1.4142), align=None)
-    roof = extrude(roof, amount=40, both=True) & (Pos(0, y0, zw) * Box(10, y_out + 2 - y0, 10, align=(Align.CENTER, Align.MIN, Align.CENTER)))
+    # teardrop roof over the bore (prints back-rim down), along the whole window: 45 deg sides from a ridge at
+    # 1.38 r, crossing the circle just above its 45 deg points (a tangent roof makes a degenerate boolean)
+    roof = tz_prism([(-0.8 * r, zw + 0.58 * r), (0.8 * r, zw + 0.58 * r), (0.0, zw + 1.38 * r)], 90, y0, y_out + 2)
     flare = radial_cone(r, LUX_FLARE_D / 2 + 0.3, 90, y_out - LUX_FLARE_T, y_out + 0.4, zw)
     return cut + bore + roof + flare
 
