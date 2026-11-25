@@ -52,6 +52,8 @@ The [build plan](docs/build-plan.md) explains the design decisions: mic-channel 
 
 ## Status
 
+**Untested version: v4 light-tight seam (24 Nov 2026).** On this `v4` branch, designed and checked in CAD only, not printed yet. The v2 print let a little LED light out at the joint between the front and rear shells, so the rear shell gets a 360° light baffle behind the seam. The mic ports move 2.2 mm up the sphere to make room for it, so both shells and the TPU grip pads change; everything else is the v2 part. The standard print files (`print/VoiceClock_U1.3mf`, Bambu, plates, TPU, fit tests, STL/STEP) are v4; the wood, walnut and v3 light-sensor files are still v2. The printed, tested v2 is on `main`. Details: [`cad/README.md`](cad/README.md).
+
 **Untested variant: v3 light sensor (13 Nov 2026).** This is an optional add-on to v2, designed and checked in CAD only. It hasn't been printed, wired or run on the hardware, so the default print files stay v2. Files and notes are in [`print/v3_light_sensor`](print/v3_light_sensor/README.md); build it from source with `VC_LIGHT_SENSOR=1`.
 
 - **Where it sits.** Adafruit's right-angle VEML7700 board (#5378) lies flat on a pad at the top of the rear shell, behind the carrier, with the sensor against a Ø2.4 mm window just behind the mute button. The window looks up and 15° back, away from the display and the light ring, so the clock doesn't read its own glow. A small shroud round the window closes the gap between the sensor and the curved wall.
